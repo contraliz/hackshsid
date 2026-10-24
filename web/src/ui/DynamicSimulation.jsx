@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { formatNumber } from './Controls.jsx';
+import { LiveTrafficView } from './LiveTrafficView.jsx';
 
 const LABELS = {
   facility_kwh: ['Facility energy', 'kWh'], grid_kwh: ['Grid imports', 'kWh'],
@@ -21,9 +22,31 @@ export function DynamicSimulation() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const [selectedPolicy, setSelectedPolicy] = useState('forecast');
+  const [minute, setMinute] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const [speed, setSpeed] = useState(4);
+
+  const selectedReplay = result?.policies?.[selectedPolicy]?.replay;
+  const lastMinute = Math.max(0, (selectedReplay?.frames?.length || 1) - 1);
+
+  useEffect(() => {
+    if (!playing || !selectedReplay?.frames?.length) return undefined;
+    const timer = window.setInterval(() => {
+      setMinute((current) => {
+        if (current >= lastMinute) {
+          setPlaying(false);
+          return current;
+        }
+        return current + 1;
+      });
+    }, 1000 / speed);
+    return () => window.clearInterval(timer);
+  }, [playing, selectedReplay, lastMinute, speed]);
 
   async function run(event) {
     event.preventDefault();
+    setPlaying(false); setMinute(0);
     setBusy(true); setError('');
     try {
       const response = await fetch('/api/dynamic-simulation', {
@@ -33,6 +56,8 @@ export function DynamicSimulation() {
       const body = await response.json();
       if (!response.ok) throw new Error(body.error || `Request failed (${response.status})`);
       setResult(body);
+      setSelectedPolicy(body.selected_policy && body.policies?.[body.selected_policy] ? body.selected_policy : 'forecast');
+      setMinute(0);
     } catch (e) { setError(e.message || 'Simulation failed.'); }
     finally { setBusy(false); }
   }
@@ -43,7 +68,7 @@ export function DynamicSimulation() {
       <form className="dynamic-controls" onSubmit={run}>
         <label>Nodes<input type="number" min="2" max="64" value={controls.nodes} onChange={(e) => setControls({ ...controls, nodes: e.target.value })} /></label>
         <label>GPUs per node<input type="number" min="1" max="16" value={controls.gpus_per_node} onChange={(e) => setControls({ ...controls, gpus_per_node: e.target.value })} /></label>
-        <label>Traffic seed<input type="number" min="0" value={controls.seed} onChange={(e) => setControls({ ...controls, seed: e.target.value })} /></label>
+        <label>Traffic seed<input type="number" min="0" value={controls.seed} onChange={(e) => { setPlaying(false); setMinute(0); setControls({ ...controls, seed: e.target.value }); }} /></label>
         <label>EWMA alpha<input type="number" min="0.05" max="0.8" step="0.05" value={controls.forecast_alpha} onChange={(e) => setControls({ ...controls, forecast_alpha: e.target.value })} /></label>
         <label>Fallback margin<input type="number" min="0" max="1" step="0.05" value={controls.margin_fraction} onChange={(e) => setControls({ ...controls, margin_fraction: e.target.value })} /></label>
         <label>Minimum active fleet<input type="number" min="0" max="1" step="0.05" value={controls.min_active_fraction} onChange={(e) => setControls({ ...controls, min_active_fraction: e.target.value })} /></label>
@@ -55,6 +80,24 @@ export function DynamicSimulation() {
       {result && <div className="dynamic-output" aria-live="polite">
         <p className="control-help">Seed {result.seed} · {result.nodes} × {result.gpus_per_node} = {result.fleet_gpus} installed GPUs · {result.requests_generated} generated requests · offered peak {result.offered_peak_gpus} GPUs · selected policy: {result.selected_policy}. Results are synthetic.</p>
         <p className="control-help">Flexible schedule admission: <strong>{result.flexible_schedule.admission_status}</strong>{result.flexible_schedule.admission_reason ? ` — ${result.flexible_schedule.admission_reason}` : ` — ${result.flexible_schedule.priority_policy} LP schedule is shared across all three node policies. Fixed real-time reservations constrain LP admission; generated requests replace that reservation in minute energy accounting.`}</p>
+        <div className="simulation-playback" aria-label="Simulation replay controls">
+          <label htmlFor="replay-policy">Controller</label>
+          <select id="replay-policy" value={selectedPolicy} onChange={(event) => { setPlaying(false); setMinute(0); setSelectedPolicy(event.target.value); }}>
+            {Object.entries(result.policies).map(([key, policy]) => <option key={key} value={key}>{policy.label}</option>)}
+          </select>
+          {selectedReplay?.frames?.length ? <>
+            <button type="button" className="quiet-button" onClick={() => setPlaying((value) => !value)}>{playing ? 'Pause' : 'Play'}</button>
+            <label htmlFor="replay-speed">Speed</label>
+            <select id="replay-speed" value={speed} onChange={(event) => setSpeed(Number(event.target.value))}><option value="1">1×</option><option value="4">4×</option><option value="16">16×</option></select>
+            <button type="button" className="quiet-button" onClick={() => { setPlaying(false); setMinute(0); }}>Reset</button>
+            <label className="simulation-seek-label" htmlFor="replay-minute">{String(Math.floor(minute / 60)).padStart(2, '0')}:{String(minute % 60).padStart(2, '0')} / 23:59</label>
+            <input id="replay-minute" type="range" min="0" max={lastMinute} value={Math.min(minute, lastMinute)} onChange={(event) => { setPlaying(false); setMinute(Number(event.target.value)); }} aria-label="Simulation minute" />
+          </> : <span className="control-help">This result does not include minute-by-minute replay data.</span>}
+        </div>
+        {selectedReplay && <>
+          <LiveTrafficView replay={selectedReplay} minute={minute} />
+          {/* Node power visualization integration point: <NodePowerView replay={selectedReplay} minute={minute} onMinuteChange={setMinute} gpusPerNode={result.gpus_per_node} /> */}
+        </>}
         <div className="job-table-wrap"><table className="comparison-table">
           <thead><tr><th>Measure</th>{Object.entries(result.policies).map(([key, item]) => <th key={key}>{item.label}</th>)}</tr></thead>
           <tbody>{Object.entries(LABELS).map(([key, [label, unit]]) => <tr key={key}><th scope="row">{label}</th>{Object.entries(result.policies).map(([policy, item]) => <td key={policy}>{formatNumber(item.metrics[key], key.includes('fraction') ? 3 : key.includes('minutes') ? 1 : 2)}{unit ? ` ${unit}` : ''}</td>)}</tr>)}</tbody>
