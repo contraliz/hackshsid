@@ -58,6 +58,7 @@ def test_comparison_uses_same_offered_work_and_balanced_energy():
         assert m["served_gpu_minutes"] <= m["offered_gpu_minutes"]
         assert m["requests_completed"] + m["requests_queued_at_horizon"] + m["requests_running_at_horizon"] + m["requests_rejected"] == result["requests_generated"]
         assert all(sum(row[k] for k in ("active_nodes", "warm_nodes", "booting_nodes", "off_nodes")) == result["nodes"] for row in policy["state_trace"])
+        assert abs(policy["metrics"]["energy_accounted_gpu_minutes"] - policy["metrics"]["served_gpu_minutes"] - policy["metrics"]["flexible_gpu_hours_delivered"] * 60) < 0.1
 
 
 def test_invalid_hardware_rejected():
@@ -83,6 +84,7 @@ def test_dynamic_simulation_api_returns_policy_comparison():
     body = response.get_json()
     assert set(body["policies"]) == {"always_on", "reactive", "forecast"}
     assert body["selected_policy"] == "forecast"
+    assert body["flexible_schedule"]["admission_status"] == "infeasible"
 
 
 def test_batch_aging_prevents_new_work_from_backfilling_an_aged_head():
@@ -95,3 +97,53 @@ def test_batch_aging_prevents_new_work_from_backfilling_an_aged_head():
     waiting = deque(statuses)
     assert _choose_waiting_request(waiting, statuses, minute=16, free_gpus=4) is None
     assert _choose_waiting_request(waiting, statuses, minute=16, free_gpus=8) == "batch-old"
+
+
+def test_flexible_commitment_is_protected_and_completes_by_deadline_under_all_controllers():
+    flexible = [{"id": "committed", "name": "Committed training", "arrival": 0,
+                 "deadline": 2, "gpu_hours": 20, "max_gpus": 20, "tier": "pro"}]
+    burst = [{"id": f"burst-{i}", "class": "interactive", "arrival": 0,
+              "gpus": 8, "duration": 30, "latency": 2} for i in range(20)]
+    result = run_dynamic_comparison({"nodes": 12, "gpus_per_node": 8, "seed": 11,
+                                     "bursts": False, "flexible_jobs": flexible,
+                                     "request_trace": burst})
+    assert result["flexible_schedule"]["admission_status"] == "admitted"
+    for policy in result["policies"].values():
+        metrics = policy["metrics"]
+        assert metrics["flexible_jobs_admitted"] == 1
+        assert metrics["flexible_jobs_deadline_met"] == 1
+        assert metrics["flexible_gpu_hours_scheduled"] == 20
+        assert metrics["flexible_gpu_hours_delivered"] == 20
+        assert metrics["flexible_gpu_hours_unmet"] == 0
+        assert metrics["flexible_commitment_missed_gpu_minutes"] == 0
+        assert metrics["energy_accounted_gpu_minutes"] == metrics["served_gpu_minutes"] + 20 * 60
+        assert metrics["requests_completed"] == 20
+        assert metrics["p95_wait_minutes"] > 0
+
+
+def test_flexible_admission_reports_capacity_and_deadline_infeasibility():
+    impossible = [{"id": "too-large", "name": "Infeasible batch", "arrival": 0,
+                   "deadline": 1, "gpu_hours": 100, "max_gpus": 100, "tier": "pro"}]
+    result = run_dynamic_comparison({"nodes": 12, "gpus_per_node": 8, "seed": 11,
+                                     "bursts": False, "flexible_jobs": impossible,
+                                     "request_trace": []})
+    assert result["flexible_schedule"]["admission_status"] == "infeasible"
+    assert result["flexible_schedule"]["admission_reason"] == "Infeasible"
+    for policy in result["policies"].values():
+        assert policy["metrics"]["flexible_jobs_admitted"] == 0
+        assert policy["metrics"]["flexible_gpu_hours_scheduled"] == 0
+        assert policy["metrics"]["flexible_gpu_hours_unmet"] == 100
+        assert policy["flexible_jobs"][0]["status"] == "not_admitted"
+
+
+def test_default_flexible_lp_work_is_shared_delivered_and_deadline_safe():
+    result = run_dynamic_comparison({"nodes": 32, "gpus_per_node": 8, "seed": 2026, "bursts": False})
+    assert result["flexible_schedule"]["admission_status"] == "admitted"
+    scheduled = result["flexible_schedule"]["scheduled_gpu_hours"]
+    assert scheduled == 3060
+    for policy in result["policies"].values():
+        metrics = policy["metrics"]
+        assert metrics["flexible_gpu_hours_delivered"] == scheduled
+        assert metrics["flexible_gpu_hours_unmet"] == 0
+        assert metrics["flexible_jobs_deadline_met"] == len(result["flexible_jobs"])
+        assert max(row["forecast_capacity_shortfall_gpus"] for row in policy["state_trace"]) == 0
