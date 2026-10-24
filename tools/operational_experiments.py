@@ -61,6 +61,9 @@ METRIC_FIELDS = (
 
 CSV_FIELDS = (
     "scenario", "scenario_description", "seed", "record_kind", "controller", "controller_label", "status", "error",
+    "objective_analysis_status", "objective_scope", "objective_candidate_status", "objective_service_eligible",
+    "pareto_absolute_tolerance", "pareto_relative_tolerance",
+    "pareto_frontier_candidate", "minimum_facility_kwh", "minimum_cost_cny", "minimum_emissions_kg",
     "nodes", "gpus_per_node", "fleet_gpus", "scenario_config_json", "assumptions_json",
     "selected_policy", "canonical_comparison_status", "comparison_baseline_label",
     "canonical_service_comparable", "canonical_service_note",
@@ -289,7 +292,7 @@ def _finite_or_none(value: Any) -> float | None:
 
 
 def _attach_canonical_comparison(row: dict[str, Any], baseline: Any, comparison: Any,
-                                 controller: str) -> None:
+                                 controller: str, objective_analysis: Any = None) -> None:
     status = _canonical_comparison_status(baseline, comparison, controller)
     row["canonical_comparison_status"] = status
     if status != "available":
@@ -311,6 +314,31 @@ def _attach_canonical_comparison(row: dict[str, Any], baseline: Any, comparison:
         # Keep the backend percentage for transparent analysis, but call it a
         # saving only when its canonical service-equivalence check passed.
         row[f"{field}_savings_pct"] = reported if comparison["service_comparable"] else None
+    _attach_objective_candidate(row, objective_analysis, controller)
+
+
+def _attach_objective_candidate(row: dict[str, Any], analysis: Any, candidate_key: str) -> None:
+    if not isinstance(analysis, dict):
+        row["objective_analysis_status"] = "unavailable"
+        return
+    row["objective_analysis_status"] = analysis.get("status")
+    row["objective_scope"] = analysis.get("scope")
+    tolerance = analysis.get("tolerance")
+    if isinstance(tolerance, dict):
+        row["pareto_absolute_tolerance"] = tolerance.get("absolute")
+        row["pareto_relative_tolerance"] = tolerance.get("relative")
+    candidates = analysis.get("candidates")
+    candidate = candidates.get(candidate_key) if isinstance(candidates, dict) else None
+    if not isinstance(candidate, dict):
+        return
+    row["objective_candidate_status"] = candidate.get("status")
+    row["objective_service_eligible"] = candidate.get("service_eligible")
+    row["pareto_frontier_candidate"] = candidate.get("pareto_frontier")
+    minima = candidate.get("individual_minima")
+    if isinstance(minima, dict):
+        row["minimum_facility_kwh"] = minima.get("facility_kwh")
+        row["minimum_cost_cny"] = minima.get("cost_cny")
+        row["minimum_emissions_kg"] = minima.get("emissions_kg")
 
 
 def run_batch(seeds: list[int], scenario_names: list[str], *, runner: Callable[[dict[str, Any]], dict[str, Any]] = run_dynamic_comparison,
@@ -343,6 +371,7 @@ def run_batch(seeds: list[int], scenario_names: list[str], *, runner: Callable[[
                     metrics=unscheduled["metrics"], policy=unscheduled,
                     flexible_summary=unscheduled,
                 )
+                _attach_objective_candidate(baseline_row, result.get("objective_analysis"), "unscheduled")
                 comparison_map = result.get("comparisons")
                 if not isinstance(comparison_map, dict):
                     baseline_row["canonical_comparison_status"] = "missing_controller_comparison"
@@ -367,7 +396,8 @@ def run_batch(seeds: list[int], scenario_names: list[str], *, runner: Callable[[
                     flexible_summary=result.get("flexible_schedule"),
                 )
                 comparison = result.get("comparisons", {}).get(controller) if isinstance(result.get("comparisons"), dict) else None
-                _attach_canonical_comparison(row, unscheduled, comparison, controller)
+                _attach_canonical_comparison(row, unscheduled, comparison, controller,
+                                             result.get("objective_analysis"))
 
                 comparable = controller == "always_on" or (
                     isinstance(baseline, dict) and same_service_outcome(policy, baseline))
@@ -399,6 +429,7 @@ def write_outputs(rows: list[dict[str, Any]], output_dir: Path | str, *, seeds: 
         "- Controller comparisons come from one simulator invocation per seed/scenario, which evaluates all supported controllers against the same request trace and flexible schedule.",
         "- Canonical scheduled-versus-unscheduled percentages are taken from the simulator response. Formula: `(unscheduled baseline − scheduled result) / unscheduled baseline × 100`; negative values mean increases. Percent savings are shown only when the simulator says service outcomes are comparable.",
         "- The unscheduled baseline is all-nodes-active, immediate FIFO/ASAP work without energy scheduling. The existing `always_on` controller remains flexible-LP scheduled; it is not the unscheduled baseline.",
+        "- Three-objective results are a Pareto frontier of the simulated same-trace candidates (facility kWh, grid cost CNY, operational grid kg CO₂), not a global optimizer. Only API-marked service-eligible candidates enter the frontier; no scalar weights are applied.",
         "- The older scheduled-controller cost diagnostic remains separately labeled; its percentage is shown only when request terminal statuses and flexible-work outcomes match. Latency metrics are shown separately.",
         "- Missing metrics are shown as unavailable (—), never as zero. Renewable inputs are the simulator's fixed synthetic profile; no renewable override is supported.", "",
     ]
@@ -424,6 +455,30 @@ def write_outputs(rows: list[dict[str, Any]], output_dir: Path | str, *, seeds: 
         baseline_row = next((row for row in group if row.get("record_kind") == "unscheduled_baseline"), None)
         policy_rows = [row for row in group if row.get("record_kind") != "unscheduled_baseline"]
         lines.extend([f"## {scenario_name} · seed {seed}", "", desc, "", f"Configuration: `{config}`", ""])
+        objective_status = next((row.get("objective_analysis_status") for row in group if row.get("objective_analysis_status")), None)
+        objective_rows = [row for row in group if row.get("status") == "complete"]
+        if objective_status:
+            lines.extend(["### Three-objective candidate frontier", "",
+                          "The simulator classifies service-eligible candidates by facility electricity, illustrative grid cost, and operational grid emissions together. An individual-minimum marker is per metric; a Pareto candidate is non-dominated among these simulated alternatives only. Tolerance is max(0.001 metric units, 1e-9 × max magnitude). Service eligibility means matching terminal/flexible outcomes, not meeting a declared SLA. Service-ineligible candidates remain visible but are excluded.", "",
+                          "| Candidate | Status | Service eligible | Pareto candidate | Facility kWh | Cost CNY | Grid kg CO₂ | Individual minima |",
+                          "|---|---|:---:|:---:|---:|---:|---:|---|"])
+            for row in objective_rows:
+                minima_labels = [label for key, label, field in (
+                    ("facility_kwh", "facility electricity", "minimum_facility_kwh"),
+                    ("cost_cny", "cost", "minimum_cost_cny"),
+                    ("emissions_kg", "emissions", "minimum_emissions_kg"),
+                ) if row.get(field) is True]
+                lines.append("| " + " | ".join((
+                    _md(row.get("controller_label") or row.get("controller")),
+                    _md(row.get("objective_candidate_status") or "unavailable"),
+                    _display(row.get("objective_service_eligible")),
+                    _display(row.get("pareto_frontier_candidate")),
+                    _display(row.get("facility_kwh")), _display(row.get("cost_cny")),
+                    _display(row.get("emissions_kg")), ", ".join(minima_labels) or "—",
+                )) + " |")
+            lines.append("")
+        elif objective_rows:
+            lines.extend(["### Three-objective candidate frontier", "", "Unavailable: this simulator response predates canonical Pareto analysis.", ""])
         if baseline_row:
             baseline_label = baseline_row.get("controller_label") or "Unscheduled baseline"
             selected_name = next((row.get("selected_policy") for row in policy_rows if row.get("selected_policy")), None)

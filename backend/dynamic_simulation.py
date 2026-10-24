@@ -273,6 +273,9 @@ def run_dynamic_comparison(payload: dict[str, Any] | None = None) -> dict[str, A
     }
     comparisons = {key: _compare_to_unscheduled_baseline(baseline, policy, key)
                    for key, policy in policies.items()}
+    objective_analysis = _pareto_objective_analysis(baseline, policies, comparisons)
+    for key, comparison in comparisons.items():
+        comparison["objective_candidate"] = objective_analysis["candidates"].get(key)
     forecast_policy = policies["forecast"]
     margin_sources = sorted({row["forecast_margin_source"] for row in forecast_policy["state_trace"]})
     return {
@@ -290,6 +293,7 @@ def run_dynamic_comparison(payload: dict[str, Any] | None = None) -> dict[str, A
         "policies": policies,
         "unscheduled_baseline": baseline,
         "comparisons": comparisons,
+        "objective_analysis": objective_analysis,
         "assumptions": {
             "data_status": "synthetic_illustrative_not_measurements",
             "demand_model": "seeded Poisson requests; 5-minute arrivals; triangular service durations; optional hidden 3x bursts",
@@ -320,6 +324,114 @@ def run_dynamic_comparison(payload: dict[str, Any] | None = None) -> dict[str, A
             "flexible_jobs": "The existing hourly Pro-priority LP provides one fixed, shared 24-hour GPU-hour schedule for all node policies. Its fixed realtime curve is a capacity reservation only; generated requests replace that placeholder in minute-level energy accounting. LP-infeasible flexible candidates are explicitly not admitted. No runtime reallocation or preemption is performed.",
         },
     }
+
+
+OBJECTIVE_METRICS = {
+    "facility_kwh": {"label": "Facility electricity", "unit": "kWh"},
+    "cost_cny": {"label": "Grid cost", "unit": "CNY"},
+    "emissions_kg": {"label": "Operational grid emissions", "unit": "kg CO2"},
+}
+PARETO_ABS_TOLERANCE = 1e-3
+PARETO_REL_TOLERANCE = 1e-9
+
+
+def _pareto_close(left: float, right: float) -> float:
+    return max(PARETO_ABS_TOLERANCE,
+               PARETO_REL_TOLERANCE * max(abs(left), abs(right)))
+
+
+def _pareto_objective_analysis(baseline: dict[str, Any], policies: dict[str, dict[str, Any]],
+                               comparisons: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    """Classify this run's same-trace candidates; this is not a global optimum."""
+    raw = {"unscheduled": (baseline.get("label", "Unscheduled baseline"), baseline.get("metrics", {}))}
+    raw.update({key: (policy.get("label", key), policy.get("metrics", {}))
+                for key, policy in policies.items()})
+    any_comparable = any(item.get("service_comparable") is True for item in comparisons.values())
+    candidates: dict[str, dict[str, Any]] = {}
+    for key, (label, metrics) in raw.items():
+        if key == "unscheduled":
+            eligible = any_comparable
+            note = ("At least one controller has matching request terminal outcomes and flexible delivery/deadlines against this baseline."
+                    if eligible else "No controller has comparable service outcomes against this baseline.")
+        else:
+            comparison = comparisons.get(key, {})
+            eligible = comparison.get("service_comparable") is True
+            note = comparison.get("service_note") or "Service-comparability evidence is unavailable."
+        vector = {metric: (float(metrics[metric]) if _finite_objective_metric(metrics.get(metric)) else None)
+                  for metric in OBJECTIVE_METRICS}
+        eligible = eligible and all(value is not None for value in vector.values())
+        candidates[key] = {
+            "key": key, "label": label, "metrics": vector,
+            "service_eligible": eligible,
+            "service_note": note,
+            "pareto_frontier": False,
+            "individual_minima": {metric: False for metric in OBJECTIVE_METRICS},
+            "status": "service_ineligible" if not eligible else "eligible",
+        }
+
+    eligible_candidates = [item for item in candidates.values() if item["service_eligible"]]
+    if not eligible_candidates:
+        status = "no_comparable_candidates"
+    else:
+        status = "available"
+        for candidate in eligible_candidates:
+            dominated = False
+            for other in eligible_candidates:
+                if other is candidate:
+                    continue
+                no_worse = all(
+                    other["metrics"][metric] <= candidate["metrics"][metric]
+                    + _pareto_close(other["metrics"][metric], candidate["metrics"][metric])
+                    for metric in OBJECTIVE_METRICS
+                )
+                strictly_better = any(
+                    other["metrics"][metric] < candidate["metrics"][metric]
+                    - _pareto_close(other["metrics"][metric], candidate["metrics"][metric])
+                    for metric in OBJECTIVE_METRICS
+                )
+                if no_worse and strictly_better:
+                    dominated = True
+                    break
+            candidate["pareto_frontier"] = not dominated
+            candidate["status"] = "pareto_frontier" if not dominated else "dominated"
+
+    minima: dict[str, list[str]] = {}
+    for metric in OBJECTIVE_METRICS:
+        if not eligible_candidates:
+            minima[metric] = []
+            continue
+        minimum_value = min(item["metrics"][metric] for item in eligible_candidates)
+        minima[metric] = [item["key"] for item in eligible_candidates
+                          if item["metrics"][metric] <= minimum_value
+                          + _pareto_close(item["metrics"][metric], minimum_value)]
+        for key in minima[metric]:
+            candidates[key]["individual_minima"][metric] = True
+    return {
+        "status": status,
+        "scope": "simulated_candidates_same_trace_not_global_optimum",
+        "objectives": OBJECTIVE_METRICS,
+        "candidate_order": list(raw),
+        "candidates": candidates,
+        "individual_minima": minima,
+        "service_ineligible_candidates": [key for key, item in candidates.items() if not item["service_eligible"]],
+        "pareto_rule": "Candidate is non-dominated when no other service-eligible candidate is no worse in all three metrics and strictly better in at least one, after tolerances.",
+        "tolerance": {"absolute": PARETO_ABS_TOLERANCE, "relative": PARETO_REL_TOLERANCE,
+                      "rule": "max(absolute, relative × max(abs(a), abs(b))) per metric",
+                      "note": "Metric-specific units: absolute tolerance is 0.001 kWh, CNY, or kg CO2; relative tolerance is 1e-9 × max magnitude."},
+        "service_eligibility_note": "Eligibility means matching request terminal outcomes and flexible admission/delivery/deadline outcomes against baseline; it is not proof of meeting an SLA or absolute service-quality threshold.",
+        "metric_semantics": {
+            "facility_kwh": "Total facility electricity including PUE and site overhead; distinct from grid_kwh.",
+            "cost_cny": "Grid electricity cost under the illustrative tariff input.",
+            "emissions_kg": "Operational grid emissions using the configured grid factor.",
+        },
+    }
+
+
+def _finite_objective_metric(value: Any) -> bool:
+    try:
+        return not isinstance(value, bool) and math.isfinite(float(value))
+    except (TypeError, ValueError):
+        return False
 
 
 def _greedy_asap_plan(accepted_plan: dict[str, Any], fleet_gpus: int) -> dict[str, Any]:

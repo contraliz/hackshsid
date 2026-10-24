@@ -1,5 +1,7 @@
 # GridShift operational simulation experiment report
 
+The objective-analysis sections below are calculated from this saved report's recorded simulator metrics using the current API's documented rule; the source scenario output was not regenerated as part of this documentation update.
+
 - Seeds: 2026
 - Scenarios: normal_day, demand_burst, constrained_fleet
 - Simulation status: synthetic and illustrative; these are not measured infrastructure results or service guarantees.
@@ -37,6 +39,19 @@ Percentages below use the simulator's canonical unscheduled-baseline comparisons
 | Always On | complete | 3074.657 | 0 | 2562.657 | 0 | 1506.142 | -0.104 | 1409.462 | 0 | True |
 | Reactive | complete | 2875.032 | 6.493 | 2363.032 | 7.79 | 1367.897 | 9.085 | 1299.668 | 7.79 | True |
 | Forecast | complete | 2882.959 | 6.235 | 2370.959 | 7.48 | 1373.519 | 8.711 | 1304.028 | 7.48 | True |
+
+### Three-objective candidate frontier
+
+Using facility electricity, proxy cost, and operational grid emissions together, Reactive is the sole Pareto candidate and individual minimum for all three metrics in this run. All four candidates have matching terminal request outcomes and flexible-work delivery/deadline outcomes; latency differences remain separate above. The frontier covers this synthetic scenario only, not a global optimum.
+
+The tolerance is `max(0.001 metric units, 1e-9 × max magnitude)`. “Service-comparable” here means matching terminal/flexible outcomes to the baseline, not an SLA guarantee.
+
+| Candidate | Status | Facility kWh | Cost CNY | Grid kg CO₂ | Individual minimum |
+|---|---|---:|---:|---:|---|
+| Unscheduled baseline | Dominated | 3074.657 | 1504.581 | 1409.462 | — |
+| Always On | Dominated | 3074.657 | 1506.142 | 1409.462 | — |
+| Reactive | Pareto frontier | 2875.032 | 1367.897 | 1299.668 | Facility, cost, emissions |
+| Forecast | Dominated | 2882.959 | 1373.519 | 1304.028 | — |
 
 ### Scheduled-controller diagnostic
 
@@ -86,6 +101,19 @@ Percentages below use the simulator's canonical unscheduled-baseline comparisons
 | Reactive | complete | 2879.699 | 6.483 | 2367.699 | 7.776 | 1370.799 | 9.067 | 1302.234 | 7.776 | True |
 | Forecast | complete | 2888.881 | 6.185 | 2376.881 | 7.418 | 1377.501 | 8.622 | 1307.285 | 7.418 | True |
 
+### Three-objective candidate frontier
+
+Reactive is the sole Pareto candidate and individual minimum for facility electricity, proxy cost, and operational grid emissions among these four service-comparable results. This is the frontier for this synthetic burst case only, not a global optimum.
+
+The tolerance is `max(0.001 metric units, 1e-9 × max magnitude)`. “Service-comparable” means matching terminal/flexible outcomes to the baseline, not an SLA guarantee.
+
+| Candidate | Status | Facility kWh | Cost CNY | Grid kg CO₂ | Individual minimum |
+|---|---|---:|---:|---:|---|
+| Unscheduled baseline | Dominated | 3079.324 | 1507.483 | 1412.028 | — |
+| Always On | Dominated | 3079.324 | 1509.044 | 1412.028 | — |
+| Reactive | Pareto frontier | 2879.699 | 1370.799 | 1302.234 | Facility, cost, emissions |
+| Forecast | Dominated | 2888.881 | 1377.501 | 1307.285 | — |
+
 ### Scheduled-controller diagnostic
 
 This retains the earlier comparison among LP-scheduled controllers; `always_on` here is not the no-scheduling baseline.
@@ -133,6 +161,19 @@ Percentages below use the simulator's canonical unscheduled-baseline comparisons
 | Always On | complete | 684 | 0 | 398 | 0 | 220.565 | 0 | 218.9 | 0 | True |
 | Reactive | complete | 684 | 0 | 398 | 0 | 220.565 | 0 | 218.9 | 0 | True |
 | Forecast | complete | 684 | 0 | 398 | 0 | 220.565 | 0 | 218.9 | 0 | True |
+
+### Three-objective candidate frontier
+
+All four candidates are tied on the three energy/cost/emissions metrics and are non-dominated within tolerance. Every tied candidate is an individual minimum for all three metrics. The shared results do not indicate a unique policy advantage; this is only the frontier for the constrained synthetic case.
+
+The tolerance is `max(0.001 metric units, 1e-9 × max magnitude)`. “Service-comparable” means matching terminal/flexible outcomes to the baseline, not an SLA guarantee.
+
+| Candidate | Status | Facility kWh | Cost CNY | Grid kg CO₂ | Individual minimum |
+|---|---|---:|---:|---:|---|
+| Unscheduled baseline | Pareto frontier | 684 | 220.565 | 218.9 | Facility, cost, emissions |
+| Always On | Pareto frontier | 684 | 220.565 | 218.9 | Facility, cost, emissions |
+| Reactive | Pareto frontier | 684 | 220.565 | 218.9 | Facility, cost, emissions |
+| Forecast | Pareto frontier | 684 | 220.565 | 218.9 | Facility, cost, emissions |
 
 ### Scheduled-controller diagnostic
 
