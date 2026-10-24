@@ -9,6 +9,21 @@ function clockLabel(minute) {
   return `${String(Math.floor(safeMinute / 60)).padStart(2, '0')}:${String(safeMinute % 60).padStart(2, '0')}`;
 }
 
+function scrollPanelWithKeyboard(event) {
+  const panel = event.currentTarget;
+  const maxScroll = panel.scrollHeight - panel.clientHeight;
+  if (maxScroll <= 0) return;
+  const movement = event.key === 'PageDown' ? panel.clientHeight
+    : event.key === 'PageUp' ? -panel.clientHeight
+      : event.key === 'ArrowDown' ? 40
+        : event.key === 'ArrowUp' ? -40
+          : event.key === 'End' ? maxScroll
+            : event.key === 'Home' ? -maxScroll : null;
+  if (movement === null) return;
+  event.preventDefault();
+  panel.scrollTop = event.key === 'End' ? maxScroll : event.key === 'Home' ? 0 : Math.max(0, Math.min(maxScroll, panel.scrollTop + movement));
+}
+
 function stateAt(request, minute) {
   if (request.rejected_at_minute != null && request.rejected_at_minute <= minute) return 'rejected';
   if (request.completed_at_minute != null && request.completed_at_minute <= minute) return 'completed';
@@ -79,7 +94,7 @@ export function LiveTrafficView({ replay, minute, compact = false }) {
   }
 
   return (
-    <section className={`live-traffic${compact ? ' is-compact' : ''}`} aria-labelledby="live-traffic-title">
+    <section className={`live-traffic${compact ? ' is-compact' : ''}`} aria-labelledby="live-traffic-title" tabIndex={compact ? 0 : undefined} onKeyDown={scrollPanelWithKeyboard}>
       <div className="live-traffic-title-row">
         <div>
           <h3 id="live-traffic-title">Live request replay</h3>

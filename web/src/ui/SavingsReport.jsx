@@ -2,6 +2,7 @@ import './SavingsReport.css';
 
 const HEADLINE_METRICS = [
   { key: 'electricity_pct', metric: 'facility_kwh', label: 'Facility electricity', unit: 'kWh', reduction: 'savings' },
+  { key: 'grid_import_pct', metric: 'grid_kwh', label: 'Grid import', unit: 'kWh', reduction: 'reduction' },
   { key: 'cost_pct', metric: 'cost_cny', label: 'Illustrative grid cost', unit: 'CNY', reduction: 'reduction' },
   { key: 'emissions_pct', metric: 'emissions_kg', label: 'Grid emissions', unit: 'kg CO₂', reduction: 'reduction' },
 ];
@@ -59,7 +60,7 @@ export function SavingsReport({ comparison, baseline }) {
   return <section className="savings-report" aria-labelledby="savings-report-title">
     <div className="savings-report-heading">
       <h2 id="savings-report-title">Savings vs. {baselineLabel}</h2>
-      <span>Full-day totals · separate from elapsed replay cost · synthetic estimates</span>
+      <span>{optimizedLabel} · full-day totals · synthetic estimates</span>
     </div>
 
     <div className="savings-metric-row">
@@ -67,15 +68,16 @@ export function SavingsReport({ comparison, baseline }) {
         const change = metricChange(comparison.savings?.[key]);
         return <article className="savings-metric" key={key}>
           <div className="savings-metric-top"><span>{label}</span><strong className={`savings-change is-${change.kind}`}>{change.text}</strong></div>
-          <p><span>{baselineLabel}</span><strong>{quantity(baselineMetrics, metric, unit)}</strong></p>
-          <p><span>{optimizedLabel}</span><strong>{quantity(optimizedMetrics, metric, unit)}</strong></p>
+          <p className="savings-values" title={`${baselineLabel} → ${optimizedLabel}`}>
+            <span>{quantity(baselineMetrics, metric, unit)} → {quantity(optimizedMetrics, metric, unit)}</span>
+          </p>
           {change.kind === 'unavailable' && comparison.savings_reason?.[key] && <small className="savings-reason">{comparison.savings_reason[key]}</small>}
         </article>;
       })}
     </div>
 
     <details className="savings-service-details">
-      <summary>Service performance comparison</summary>
+      <summary>{comparable ? 'Service outcomes match · inspect latency and delivery differences' : 'Service outcomes differ · review before comparing savings'}</summary>
       {!hasServiceComparison && <p className="savings-report-empty" role="status">Service comparability is not provided by this API response.</p>}
       {hasServiceComparison && <>
         {!comparable && <p className="savings-service-note" role="note">{comparison.service_note || 'The baseline and optimized run did not deliver comparable service.'} Savings are shown as energy/cost/emissions totals and do not imply equal service.</p>}

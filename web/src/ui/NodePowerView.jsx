@@ -18,6 +18,21 @@ function clockLabel(minute) {
   return `${String(Math.floor(minute / 60)).padStart(2, '0')}:${String(minute % 60).padStart(2, '0')}`;
 }
 
+function scrollPanelWithKeyboard(event) {
+  const panel = event.currentTarget;
+  const maxScroll = panel.scrollHeight - panel.clientHeight;
+  if (maxScroll <= 0) return;
+  const movement = event.key === 'PageDown' ? panel.clientHeight
+    : event.key === 'PageUp' ? -panel.clientHeight
+      : event.key === 'ArrowDown' ? 40
+        : event.key === 'ArrowUp' ? -40
+          : event.key === 'End' ? maxScroll
+            : event.key === 'Home' ? -maxScroll : null;
+  if (movement === null) return;
+  event.preventDefault();
+  panel.scrollTop = event.key === 'End' ? maxScroll : event.key === 'Home' ? 0 : Math.max(0, Math.min(maxScroll, panel.scrollTop + movement));
+}
+
 function number(value, digits = 2) {
   return Number.isFinite(value) ? value.toLocaleString(undefined, { maximumFractionDigits: digits, minimumFractionDigits: digits }) : '—';
 }
@@ -98,7 +113,7 @@ export function NodePowerView({ replay, minute = 0, onMinuteChange = () => {}, g
     selectIndex(Math.round(ratio * (frames.length - 1)));
   }
 
-  return <section className={`node-power-view${compact ? ' is-compact' : ''}`} aria-labelledby="node-power-title">
+  return <section className={`node-power-view${compact ? ' is-compact' : ''}`} aria-labelledby="node-power-title" tabIndex={compact ? 0 : undefined} onKeyDown={scrollPanelWithKeyboard}>
     <div className="node-power-heading">
       <div><h3 id="node-power-title">Node power states</h3><p>{compact ? `All ${nodeIds.length} nodes · click the timeline to inspect any minute.` : 'Observed node states across the simulation; select a minute to inspect power and GPU occupancy.'}</p></div>
       <div className="node-power-total" aria-live="polite"><span>Node IT draw</span><strong>{number(totalPower)} kW</strong></div>

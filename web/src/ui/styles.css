@@ -419,6 +419,10 @@ details[open] > summary .chevron { transform: rotate(180deg); }
 .simulation-playback select { min-height: 34px; font-size: 12px; }
 .simulation-playback input[type='range'] { flex-basis: 130px; }
 .simulation-workspace { align-items: stretch; }
+.simulation-workspace > .node-power-view.is-compact,
+.simulation-workspace > .live-traffic.is-compact { max-height: 460px; overflow-y: auto; overscroll-behavior: contain; }
+.simulation-workspace > .node-power-view.is-compact:focus-visible,
+.simulation-workspace > .live-traffic.is-compact:focus-visible { outline: 3px solid rgba(22,119,242,.28); outline-offset: 2px; }
 .simulation-data-disclosure > .job-table-wrap { margin: 10px; }
 .operations-workspace .queue-error { margin: 0; }
 
@@ -433,6 +437,8 @@ details[open] > summary .chevron { transform: rotate(180deg); }
   .dashboard-tabs { min-height: 40px; }
   .dashboard-tab { flex: 1; }
   .operations-workspace { padding-top: 11px; }
+  .simulation-workspace > .node-power-view.is-compact,
+  .simulation-workspace > .live-traffic.is-compact { max-height: none; overflow-y: visible; }
   .dynamic-dashboard-heading h1 { font-size: 19px; }
   .dynamic-dashboard-heading p { max-width: 260px; }
   .dynamic-primary-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }

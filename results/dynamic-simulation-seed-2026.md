@@ -41,14 +41,19 @@ The forecast is a five-minute causal per-class arrival-rate EWMA (alpha 0.30 by 
 
 The full versioned model, equations, source dates, limitations and implementation boundary are in [`notes/model-specification.md`](../notes/model-specification.md). Same-input batch outputs are available through [`docs/operational-experiments.md`](../docs/operational-experiments.md) once generated from the integrated version.
 
-## Verification at the evidence revision
+## Final integrated verification — 2026-10-24
 
-- `pytest -q`: 41 passed at `954ee5d`.
-- `npm run build`: passed at `954ee5d`.
-- `git diff --check`: passed.
-- The integration-level UI report and Windows onedir package are still pending their follow-up commits/rebuild; this file records actual backend run output only, not packaged/UI verification.
+The current working tree re-ran the model and user-facing flow after the warm-reserve, unscheduled-baseline, report UI, and compact-scroll integration. The default API response still produced 1,440 replay frames and 2,109 requests. For the forecast controller versus the all-on FIFO/ASAP baseline, observed facility electricity was 3,079.579 → 2,890.767 kWh (6.131% lower), grid imports 2,567.579 → 2,378.767 kWh (7.354% lower), illustrative cost 1,508.613 → 1,380.123 CNY (8.517% lower), and grid emissions 1,412.169 → 1,308.322 kg (7.354% lower). Service terminal outcomes and accepted flexible work matched; waits and completion latency remain distinct and visible. These are synthetic estimates, not measured savings or tariff validation.
 
-Reproduce the 32×8 run with:
+- Full repository suite: `\.venv\Scripts\python.exe -m pytest -q` — **44 passed**.
+- `npm run build` — passed, Vite 8.3.5, 27 modules; `git diff --check` — passed.
+- `\.venv\Scripts\python.exe tools/operational_experiments.py --seeds 2026 --scenarios normal_day demand_burst constrained_fleet --output-dir results\operational-experiments\seed-2026` — **12 controller rows, 0 failed**, covering four strategies in each of three scenarios; report and CSV are checked in.
+- Playwright with installed Microsoft Edge against the source Flask server: dynamic POST returned HTTP 200; policy switching, seeking to 23:59, four baseline-comparison cards and ten service rows worked; at 1366×768 the main graph/replay panels have a bounded 460 px height with keyboard scrolling; at 390×844 the panels stack without page-level horizontal overflow. No page or console errors.
+- The Windows onedir build was rebuilt using `powershell -ExecutionPolicy Bypass -File scripts/build_windows.ps1`. Its ZIP was extracted to `C:\Users\ethna\AppData\Local\Temp\GridShift package final 20261024\GridShift-Windows-x64-onedir` and the bundled `GridShift.exe` was launched from that source-independent path with spaces. The packaged hourly `/api/schedule` and dynamic `/api/dynamic-simulation` flows returned HTTP 200/Optimal; the UI showed 1,440 frames, 2,109 requests, 3,060 flexible GPU-hours, six deadlines, all four comparison cards, and shared seek/cost updates. Desktop was 1366×768; mobile document/body width was 390 px. There were no browser/page errors, and closing the native window stopped the process.
+
+The latest packaged files, rebuilt after the bounded-scroll and keyboard-access adjustment, are `releases/GridShift-Windows-x64-onedir/GridShift.exe` (11,009,812 bytes; SHA-256 `B98E358B9F6FE182059624512A064593EE30CE18017156140D9B37298B600ECB`) and `releases/GridShift-Windows-x64-onedir.zip` (56,562,081 bytes; SHA-256 `ABA55F21359DFF648A2960F78D5E15C2951452DA7E7F2BFCBC80F61EB740CB2F`). At 1366×768 the graph and replay panels share a bounded 460 px workspace; the traffic pane supports keyboard scrolling, and the page requires about 113 px vertical scroll to see the full workspace. This is host-based package evidence, not a clean-VM or signed-executable test. Pricing remains an illustrative October 2026 Fujian agent-purchase proxy, not a verified rate for a particular Xiamen account; power/workload and forecast-margin parameters remain uncalibrated.
+
+Reproduce the default 32×8 run with:
 
 ```powershell
 .\.venv\Scripts\python.exe -c "from backend.dynamic_simulation import run_dynamic_comparison; r=run_dynamic_comparison({'seed':2026,'nodes':32,'gpus_per_node':8}); print({k:v['metrics'] for k,v in r['policies'].items()}); print(r['comparisons'])"
