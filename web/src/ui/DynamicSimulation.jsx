@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { formatNumber } from './Controls.jsx';
 import { LiveTrafficView } from './LiveTrafficView.jsx';
+import { NodePowerView } from './NodePowerView.jsx';
 
 const LABELS = {
   facility_kwh: ['Facility energy', 'kWh'], grid_kwh: ['Grid imports', 'kWh'],
@@ -96,7 +97,7 @@ export function DynamicSimulation() {
         </div>
         {selectedReplay && <>
           <LiveTrafficView replay={selectedReplay} minute={minute} />
-          {/* Node power visualization integration point: <NodePowerView replay={selectedReplay} minute={minute} onMinuteChange={setMinute} gpusPerNode={result.gpus_per_node} /> */}
+          <NodePowerView replay={selectedReplay} minute={minute} onMinuteChange={setMinute} gpusPerNode={result.gpus_per_node} />
         </>}
         <div className="job-table-wrap"><table className="comparison-table">
           <thead><tr><th>Measure</th>{Object.entries(result.policies).map(([key, item]) => <th key={key}>{item.label}</th>)}</tr></thead>
