@@ -44,12 +44,13 @@ def test_warm_target_reports_uncapped_fleet_shortfall():
 
 
 def test_warm_and_cold_readiness_are_distinct_and_pipeline_counts_once():
-    nodes = [Node("active"), Node("warm"), Node("booting", remaining=20), Node("off")]
+    nodes = [Node("active"), Node("warm"), Node("warming", remaining=5),
+             Node("booting", remaining=20), Node("off")]
     assert _projected_active_capacity(nodes, 4, 8) == 8
-    assert _projected_active_capacity(nodes, 5, 8) == 16
-    assert _projected_active_capacity(nodes, 24, 8) == 16
-    assert _projected_active_capacity(nodes, 25, 8) == 24
-    _ensure_warm_reserve(nodes, target_warm=2)
+    assert _projected_active_capacity(nodes, 5, 8) == 24
+    assert _projected_active_capacity(nodes, 24, 8) == 24
+    assert _projected_active_capacity(nodes, 25, 8) == 32
+    _ensure_warm_reserve(nodes, target_warm=3)
     assert [node.state for node in nodes].count("booting") == 1
     assert [node.state for node in nodes].count("warm") == 1
     assert [node.state for node in nodes].count("off") == 1
@@ -126,6 +127,11 @@ def test_dynamic_simulation_api_returns_policy_comparison():
     body = response.get_json()
     assert set(body["policies"]) == {"always_on", "reactive", "forecast"}
     assert body["selected_policy"] == "forecast"
+    assert body["unscheduled_baseline"]["label"] == "Always-on FIFO / ASAP (no energy scheduling)"
+    assert set(body["comparisons"]) == set(body["policies"])
+    assert set(body["comparisons"]["forecast"]["savings"]) == {
+        "electricity_pct", "cost_pct", "emissions_pct", "grid_import_pct"}
+    assert "requests_running_at_horizon" in body["unscheduled_baseline"]["metrics"]
     assert body["flexible_schedule"]["admission_status"] == "infeasible"
     replay = body["policies"]["forecast"]["replay"]
     assert replay["node_ids"] == ["node-01", "node-02", "node-03", "node-04"]

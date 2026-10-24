@@ -633,7 +633,7 @@ def _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed, al
                                        if offset in bridge_offsets and minute + offset < MINUTES_PER_DAY}
                 issued_window_forecasts[minute] = predicted_by_minute
                 _ensure_warm_reserve(nodes, target_warm)
-                reserve_pipeline = sum(x.state in ("warm", "booting") for x in nodes)
+                reserve_pipeline = sum(x.state in ("warm", "warming", "booting") for x in nodes)
                 reserve_pipeline_gap = max(0, target_warm - reserve_pipeline)
             else:
                 target_warm = target_warm_fleet_shortfall = target_warm_realizable = 0
@@ -762,7 +762,7 @@ def _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed, al
             warm_now = sum(x.state == "warm" for x in nodes)
             booting_now = sum(x.state == "booting" for x in nodes)
             warming_now = sum(x.state == "warming" for x in nodes)
-            pipeline_nodes = warm_now + booting_now
+            pipeline_nodes = warm_now + booting_now + warming_now
             reserve_pipeline_gap = max(0, target_warm - pipeline_nodes) if policy == "forecast" else 0
             total_upper = forecast_window_peak + margin
             shortfall = peak_fleet_shortfall if policy == "forecast" else 0.0
@@ -973,7 +973,7 @@ def _request_preserves_flexible_commitments(candidate_id: str, candidate: dict[s
 
 
 def _ensure_warm_reserve(nodes: list[Node], target_warm: int) -> None:
-    counted = sum(x.state in ("warm", "booting") for x in nodes)
+    counted = sum(x.state in ("warm", "warming", "booting") for x in nodes)
     deficit = max(0, target_warm - counted)
     for node in nodes:
         if not deficit:

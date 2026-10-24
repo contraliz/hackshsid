@@ -39,7 +39,27 @@ Use one homogeneous pool within a scenario. Allocate at GPU granularity; model p
 | Simulated tariff date/category | date + category | 2026-10, 1–10(20) kV agent-purchase example | Official dated provincial example only; not asserted as Xiamen customer's actual contract. Direct-market price remains an explicit scenario input. |
 | Grid CO₂ factor | kgCO₂/kWh | 0.5500 | Official 2023 East-China regional annual average, latest located in this research; not hourly marginal CO₂ and not kgCO₂e. |
 
-Node state counts are (N_A) active, (N_W) warm, (N_B) booting, and (N_O) off, with (N_A+N_W+N_B+N_O=N). A node is in exactly one state. Active capacity is (C_A=gN_A) GPUs; active use is (D_0) GPUs; existing active spare is (S_A=max(0,C_A-D_0)). Warm nodes do not count as active capacity before their warm-to-active delay. Booting nodes have a per-node ready ETA and do not count as warm or active until that ETA elapses.
+| Formula variable | Unit | Definition / current meaning |
+|---|---:|---|
+| `t` | minute | Current simulator decision time. |
+| `h` | minutes ahead | Future offset from `t`; the adopted reserve bridge checks integer offsets `tau_w <= h < tau_c`, currently 5 through 24 minutes. |
+| `N`, `g` | nodes; GPUs/node | Fixed inventory and homogeneous capacity per node for one scenario. |
+| `A_t`, `W_t`, `R_t`, `B_t`, `O_t` | nodes | Current active, warm, warming, booting, and off counts; each node occupies exactly one state. `R_t` is an in-progress warm-to-active transition. |
+| `C_t=g A_t` | GPUs | All active capacity, including occupied and spare GPUs. This is a capacity count, not active use. |
+| `D_0`, `S_t` | GPUs | Current GPU demand and active spare, `S_t=max(0,C_t-D_0)`. |
+| `Delta`, `n_{t,c}` | minutes; requests/bucket | Completed arrival bucket length (5) and observed arrivals of class `c` in that completed bucket. |
+| `lambda_{t,c}` | requests/min | Causal EWMA arrival-rate estimate for class `c`, updated from completed buckets only. |
+| `r_c` | GPU-minutes/request | Synthetic or explicitly configured workload conversion factor for class `c`. `lambda × r` has units GPUs. |
+| `F_t(h)` | GPUs | Accepted flexible GPU allocation from the fixed LP plan at the same future minute `t+h`. |
+| `Dhat_t(h)` | GPUs | Predicted total GPU demand at `t+h`: forecast arrivals + known running + averaged known queue pressure + same-minute `F_t(h)`. |
+| `M_t(h)` | GPUs | One-sided uncertainty buffer: matured-window quantile when available, otherwise the exposed uncalibrated assumption. |
+| `U_t(h)=Dhat_t(h)+M_t(h)` | GPUs | Protected upper-demand estimate at the same future minute. |
+| `tau_w`, `tau_B`, `tau_c` | minutes | Warm-to-active (5), cold-boot-to-warm (20), and total off-to-active (`tau_c=tau_B+tau_w=25`). |
+| `W_target,t` | nodes | Uncapped integer count from the adopted formula, measuring warm nodes needed beyond currently active capacity. It is a target, not a readiness guarantee. |
+| `C_ready,t(h)` | GPUs | Capacity projected ready by offset `h`, calculated from current node states and per-node remaining transition ETAs. |
+| `G_short,t(h)` | GPUs | Protected demand above installed fleet: `max(0,U_t(h)-N g)`. |
+
+Node state counts are (A_t) active, (W_t) warm, (R_t) warming, (B_t) booting, and (O_t) off, with (A_t+W_t+R_t+B_t+O_t=N). A node is in exactly one state. Active capacity is (C_t=gA_t) GPUs; active use is (D_0) GPUs; existing active spare is (S_t=max(0,C_t-D_0)). Warm nodes do not count as active capacity before their warm-to-active delay. Warming and booting nodes have per-node remaining ETAs and do not count as active until the ETA elapses.
 
 For request (i), record arrival (a_i) (min), requested GPUs (q_i) (GPU), service duration (L_i) (min), class (c_i), start/completion, queue wait (W_i), and completion latency (T_i). For flexible job (j), record release (r_j), deadline (d_j), remaining work (w_j) (GPU-hour), parallel cap (m_j) (GPU), checkpointability, and committed GPU allocations by interval. GPU-hours are work, not a concurrency count: convert to GPU capacity by dividing by interval hours.
 
@@ -85,6 +105,14 @@ For each issued forecast window, store only predictions for minutes 5 through 24
 
 Let `A_t` be the number of active nodes, including spare capacity; `C_t=g A_t` is their total active GPU capacity. Let `W_t` be warm standby nodes, `B_t` booting nodes, `O_t` off nodes, with `A_t+W_t+B_t+O_t=N`. Current warm-to-active delay is `tau_w=5 min`; off-to-warm boot is 20 min; therefore total off-to-active delay is `tau_c=25 min`. An already booting node has an individual remaining ETA, counts once in the warm/boot pipeline, and cannot supply GPUs until boot plus warm activation finish.
 
+For readiness diagnostics at offset `h`, the current state projects to:
+
+\[
+C_{ready,t}(h)=g\left(A_t+\sum_{i\in warming}\mathbf1[remaining_i\le h]+W_t\mathbf1[h\ge\tau_w]+\sum_{i\in booting}\mathbf1[remaining_i+\tau_w\le h]\right).
+\]
+
+Already-off nodes with no issued boot are not assumed to be ready just because an offset is long enough. The readiness gap is `max(0,U_t(h)-C_ready,t(h))`; installed-fleet overflow is separately `G_short,t(h)=max(0,U_t(h)-N×g)`. These are forecast diagnostics evaluated from recorded states/ETAs before a newly requested transition; starting a cold node does not retroactively remove a current bridge-window readiness gap.
+
 For the adopted reserve calculation, inspect each future minute in the bridge interval `tau_w <= h < tau_c`, and pair forecast demand and flexible commitments at that same time:
 
 \[
@@ -94,7 +122,7 @@ U_t(h)=\widehat D_t(h)+M_t(h),\qquad C_t=gA_t,
 W_{target,t}=\left\lceil\frac{\max\left(0,\max_{\tau_w\le h<\tau_c} U_t(h)-C_t\right)}{g}\right\rceil.
 \]
 
-This is the **uncapped target count** of warm nodes needed in addition to current active capacity. Since it subtracts all active capacity, active spare GPUs are already included. If active capacity covers the upper demand, `W_target=0`; there is no artificial one- or two-node reserve minimum. Existing warm and booting nodes count once toward the target pipeline. Any remaining deficit recruits only available off nodes and marks them booting; the target itself does not make cold nodes ready instantly. Report the uncapped target, realizable target, fleet node shortfall, GPU fleet shortfall, and readiness shortfalls separately. If protected demand exceeds `N×g`, report the overflow; never clip the target and call it protected. Demand for `h<tau_w` is covered only by already-active spare capacity. Requests with a latency allowance below five minutes are not protected by the warm reserve alone.
+This is the **uncapped target count** of warm nodes needed in addition to current active capacity. Since it subtracts all active capacity, active spare GPUs are already included. If active capacity covers the upper demand, `W_target=0`; there is no artificial one- or two-node reserve minimum. Existing warm, warming, and booting nodes count once toward the reserve pipeline; state/ETA still determines when they provide active GPUs. Any remaining deficit recruits only available off nodes and marks them booting; the target itself does not make cold nodes ready instantly. Report the uncapped target, realizable target, fleet node shortfall, GPU fleet shortfall, and readiness shortfalls separately. If protected demand exceeds `N×g`, report the overflow; never clip the target and call it protected. Demand for `h<tau_w` is covered only by already-active spare capacity. Requests with a latency allowance below five minutes are not protected by the warm reserve alone.
 
 The controller checks projected readiness by node state and recorded ETA, rather than treating `W_target` as immediate capacity. Warm activation completes after five minutes; a cold boot issued now becomes warm after twenty minutes and active after twenty-five. Existing one-minute dwell/hysteresis rules remain separate from the mathematical target: the calculated target may be zero while an already warm node remains temporarily on due to dwell. Current simulation's floor of active nodes is an independent configurable assumption for short-latency service, not a hidden warm-target minimum.
 
