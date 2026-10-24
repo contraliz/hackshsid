@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { formatNumber } from './Controls.jsx';
 import { LiveTrafficView } from './LiveTrafficView.jsx';
 import { NodePowerView } from './NodePowerView.jsx';
+import { SavingsReport } from './SavingsReport.jsx';
 
 const LABELS = {
   facility_kwh: ['Facility energy', 'kWh'], grid_kwh: ['Grid imports', 'kWh'],
@@ -107,6 +108,7 @@ export function DynamicSimulation() {
             <input id="replay-minute" type="range" min="0" max={lastMinute} value={Math.min(minute, lastMinute)} onChange={(event) => { setPlaying(false); setMinute(Number(event.target.value)); }} aria-label="Simulation minute" />
           </> : <span className="control-help">This result does not include minute-by-minute replay data.</span>}
         </div>
+        <SavingsReport comparison={result.comparisons?.[selectedPolicy]} baseline={result.unscheduled_baseline} />
         <div className="simulation-workspace">
           <NodePowerView compact replay={selectedReplay} minute={minute} onMinuteChange={setMinute} gpusPerNode={result.gpus_per_node} />
           <LiveTrafficView compact replay={selectedReplay} minute={minute} />
