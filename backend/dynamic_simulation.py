@@ -277,7 +277,7 @@ def _run_policy(requests, offered, forecast_b, n, gpn, seed, margin_fraction, mi
     statuses = {r["id"]: {**r, "status": "upcoming"} for r in requests}
     waiting: deque[str] = deque()
     running: dict[str, dict[str, Any]] = {}
-    timeline_states, hist_wait, hist_energy = [], [], []
+    timeline_states, hist_wait, hist_energy, replay_frames = [], [], [], []
     # time-weighted accounting at one-minute resolution
     totals = {k: 0.0 for k in ("facility_kwh", "grid_kwh", "renewable_used_kwh", "renewable_curtailed_kwh", "cost_cny", "emissions_kg")}
     served_gpu_minutes = 0
@@ -334,9 +334,9 @@ def _run_policy(requests, offered, forecast_b, n, gpn, seed, margin_fraction, mi
         # arrivals preserved, unlimited queue; over-capacity requests are explicit reject only if > fleet
         for r in arrived_at.get(minute, []):
             if r["gpus"] > n * gpn:
-                statuses[r["id"]].update(status="rejected", reason="Request exceeds installed fleet")
+                statuses[r["id"]].update(status="rejected", reason="Request exceeds installed fleet", rejected_minute=minute)
             elif len(waiting) >= 256:
-                statuses[r["id"]].update(status="rejected", reason="Queue reached the 256-request scenario limit")
+                statuses[r["id"]].update(status="rejected", reason="Queue reached the 256-request scenario limit", rejected_minute=minute)
             else:
                 statuses[r["id"]]["status"] = "queued"
                 waiting.append(r["id"])
@@ -429,6 +429,25 @@ def _run_policy(requests, offered, forecast_b, n, gpn, seed, margin_fraction, mi
         totals["renewable_curtailed_kwh"] += renewable_available - used
         totals["cost_cny"] += grid * TOU_PRICE_CNY[hour]
         totals["emissions_kg"] += grid * GRID_CO2_KG_KWH
+        # Preserve an actual one-minute playback frame. Per-node power is IT
+        # draw before shared site overhead/PUE; facility_kw includes both.
+        node_power = [
+            (1.0 if node.state == "active" else 0.25 if node.state == "warm" else 1.2 if node.state in ("warming", "booting") else 0.0)
+            + 0.35 * node.used
+            for node in nodes
+        ]
+        replay_frames.append({
+            "minute": minute,
+            "states": [node.state for node in nodes],
+            "used_gpus": [round(float(node.used), 3) for node in nodes],
+            "power_kw": [round(value, 4) for value in node_power],
+            "facility_kw": round(it_kw * 1.25, 4),
+            "grid_kwh": round(grid, 6),
+            "renewable_used_kwh": round(used, 6),
+            "cumulative_cost_cny": round(totals["cost_cny"], 6),
+            "cumulative_grid_kwh": round(totals["grid_kwh"], 6),
+            "cumulative_emissions_kg": round(totals["emissions_kg"], 6),
+        })
         if minute % 5 == 0:
             forecast_flex = _known_flex_peak(flex_plan["hourly_rates"], minute, 25)
             total_upper = _required_capacity_peak(flex_plan, minute, 25, upper)
@@ -480,10 +499,20 @@ def _run_policy(requests, offered, forecast_b, n, gpn, seed, margin_fraction, mi
         "flexible_commitment_missed_gpu_minutes": round(flexible_gpu_minutes_missed, 3),
         "flexible_deadline_misses": sum(job.get("admitted") and not job.get("deadline_met", False) for job in flex_plan["jobs"]),
     }
+    request_replay = [{
+        "id": value["id"], "tier": value["class"], "arrival_minute": value["arrival"],
+        "gpus": value["gpus"], "duration_minutes": value["duration"],
+        "started_at_minute": value.get("start"),
+        "completed_at_minute": value.get("completed_minute"),
+        "rejected_at_minute": value.get("rejected_minute"),
+        "status": value["status"],
+    } for value in statuses.values()]
     return {"label": policy.replace("_", " ").title(), "metrics": metrics, "state_trace": timeline_states,
             "request_status_counts": counts,
             "flexible_jobs": flex_plan["jobs"], "flexible_admission_status": flex_plan["admission_status"],
-            "flexible_admission_reason": flex_plan["admission_reason"]}
+            "flexible_admission_reason": flex_plan["admission_reason"],
+            "replay": {"node_ids": [f"node-{i + 1:02d}" for i in range(n)],
+                       "frames": replay_frames, "requests": request_replay}}
 
 
 def _scale_up(nodes: list[Node], target_active: int, gpn: int) -> None:

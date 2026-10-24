@@ -5,10 +5,10 @@ Generated 2026-10-24 with `backend.dynamic_simulation.run_dynamic_comparison`. T
 | Policy | Facility kWh | Grid kWh | Renewable used / curtailed kWh | CNY proxy cost* | Grid CO₂ kg** | Requests completed / running at horizon | Flexible work scheduled / delivered / unmet GPU·h | Flexible deadlines met |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | Always-on | 3,079.579 | 2,567.579 | 512.000 / 0 | 1,510.261 | 1,412.169 | 2,102 / 7 | 3,060 / 3,060 / 0 | 6 / 6 |
-| Reactive | 2,885.579 | 2,373.579 | 512.000 / 0 | 1,375.825 | 1,305.469 | 2,102 / 7 | 3,060 / 3,060 / 0 | 6 / 6 |
-| Forecast reserve | 2,885.579 | 2,373.579 | 512.000 / 0 | 1,375.825 | 1,305.469 | 2,102 / 7 | 3,060 / 3,060 / 0 | 6 / 6 |
+| Reactive | 2,883.626 | 2,371.626 | 512.000 / 0 | 1,374.940 | 1,304.394 | 2,102 / 7 | 3,060 / 3,060 / 0 | 6 / 6 |
+| Forecast reserve | 2,883.626 | 2,371.626 | 512.000 / 0 | 1,374.940 | 1,304.394 | 2,102 / 7 | 3,060 / 3,060 / 0 | 6 / 6 |
 
-Reactive and forecast are numerically identical on this seed. Their energy/cost reduction versus always-on is a synthetic result for this one trace and fixed schedule; it does not establish a generally superior policy. Request mean completion latency was 7.10 minutes and 486 of 2,102 completed requests met the illustrative response allowance under all three policies. Those allowances are diagnostics, not SLAs. No flexible commitment GPU-minutes were missed.
+Reactive and forecast are numerically identical on this seed. Their energy/cost reduction versus always-on is a synthetic result for this one trace and fixed schedule; it does not establish a generally superior policy. Request mean completion latency was 7.10 minutes and 486 of 2,102 completed requests met the illustrative response allowance under all three policies. Those allowances are diagnostics, not SLAs. No flexible commitment GPU-minutes were missed. The contemporaneous forecast-capacity check reports zero fleet shortfall for this 32×8 trace; maxima from different forecast/reservation minutes are not added together.
 
 The 12×8 (96-GPU) illustrative preset produced an LP admission result of **infeasible** for the default six-job workload (3,060 GPU-hours) under the hourly real-time reservation curve. The UI reports all six candidates as not admitted and 3,060 GPU-hours unmet; it does not claim that this preset ran the default flexible workload. Request-only results still show the trace peak exceeded the 96-GPU fleet by 11 GPUs for 4 minutes, while the uncalibrated forecast margin did not predict a fleet shortfall. Therefore, the 96-GPU request-only energy numbers are not a like-for-like comparison with the 256-GPU accepted-flex case.
 

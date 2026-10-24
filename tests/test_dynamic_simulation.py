@@ -85,6 +85,12 @@ def test_dynamic_simulation_api_returns_policy_comparison():
     assert set(body["policies"]) == {"always_on", "reactive", "forecast"}
     assert body["selected_policy"] == "forecast"
     assert body["flexible_schedule"]["admission_status"] == "infeasible"
+    replay = body["policies"]["forecast"]["replay"]
+    assert replay["node_ids"] == ["node-01", "node-02", "node-03", "node-04"]
+    assert len(replay["frames"]) == 1440
+    assert replay["frames"][0]["minute"] == 0
+    assert {"states", "used_gpus", "power_kw", "facility_kw", "grid_kwh", "renewable_used_kwh",
+            "cumulative_cost_cny", "cumulative_grid_kwh", "cumulative_emissions_kg"} <= replay["frames"][0].keys()
 
 
 def test_batch_aging_prevents_new_work_from_backfilling_an_aged_head():
@@ -147,3 +153,32 @@ def test_default_flexible_lp_work_is_shared_delivered_and_deadline_safe():
         assert metrics["flexible_gpu_hours_unmet"] == 0
         assert metrics["flexible_jobs_deadline_met"] == len(result["flexible_jobs"])
         assert max(row["forecast_capacity_shortfall_gpus"] for row in policy["state_trace"]) == 0
+
+
+def test_replay_frames_match_energy_accounting_and_request_lifecycle():
+    trace = [
+        {"id": "early", "class": "interactive", "arrival": 2, "gpus": 2, "duration": 3},
+        {"id": "late", "class": "batch", "arrival": 20, "gpus": 4, "duration": 10},
+    ]
+    result = run_dynamic_comparison({"nodes": 4, "gpus_per_node": 8, "seed": 4,
+                                     "bursts": False, "request_trace": trace})
+    for policy in result["policies"].values():
+        replay = policy["replay"]
+        metrics = policy["metrics"]
+        assert len(replay["node_ids"]) == 4
+        assert len(replay["frames"]) == 1440
+        assert len(replay["requests"]) == 2
+        assert [row["id"] for row in replay["requests"]] == ["early", "late"]
+        assert replay["requests"][0]["arrival_minute"] == 2
+        assert replay["requests"][0]["completed_at_minute"] == 5
+        assert replay["requests"][1]["started_at_minute"] == 20
+        assert replay["requests"][1]["completed_at_minute"] == 30
+        assert all(len(frame["states"]) == len(frame["power_kw"]) == len(frame["used_gpus"]) == 4
+                   for frame in replay["frames"])
+        for frame in replay["frames"]:
+            # Node-level power is IT draw, excluding shared 18kW site load and PUE.
+            assert abs(sum(frame["power_kw"]) + 18 - frame["facility_kw"] / 1.25) < 0.001
+            assert sum(frame["used_gpus"]) <= 32
+        assert abs(sum(f["facility_kw"] / 60 for f in replay["frames"]) - metrics["facility_kwh"]) < 0.01
+        assert abs(sum(f["grid_kwh"] for f in replay["frames"]) - metrics["grid_kwh"]) < 0.01
+        assert abs(replay["frames"][-1]["cumulative_cost_cny"] - metrics["cost_cny"]) < 0.001

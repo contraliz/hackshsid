@@ -122,6 +122,10 @@ At one-minute ticks, replay request arrivals/completions, fixed flexible-job GPU
 
 The minute queue uses actual running request GPUs for energy and offered/queued demand for capacity forecasts. A fixed reservation is not separately added to energy once request GPU activity and node states are modeled. Flexible workload, realtime GPU use, standby power, and boot transition are each counted once in the node/power trace.
 
+### Replay data returned to the UI
+
+Each policy response includes `replay.node_ids`, 1,440 ordered `replay.frames` (minute 0 through 1,439), and `replay.requests`. A frame records contemporaneous node `states`, `used_gpus`, and per-node IT `power_kw`, plus shared `facility_kw`, this minute's `grid_kwh`/`renewable_used_kwh`, and cumulative grid energy, cost, and emissions. The node arrays align by index with `node_ids`; node power excludes the shared 18 kW site overhead and PUE, while `facility_kw` includes both. A frame is captured after workload allocation and energy accounting for that minute, before transient flexible GPU slots are released. Request lifecycle records include ID, tier, arrival, GPU count, duration, start/completion/rejection timestamps, and horizon status; events with no occurrence by the 24-hour horizon are null. Playback must filter arrivals and lifecycle transitions by the selected simulated minute and must not present the precomputed future event list as already observed. Frame and final metric totals share the same accounting and are checked for energy balance. This replay payload is synthetic simulation output, not a live telemetry stream.
+
 ## 7. Facility energy, renewable supply, cost, and emissions
 
 Use active node idle draw, warm-node draw, boot transition power, and active-GPU incremental power with non-overlapping definitions:
