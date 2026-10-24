@@ -138,6 +138,14 @@ Reproduce the baseline, price-spike, renewable-shortage, demand-surge, and carbo
 
 The script writes `results/scenario_comparison.csv` and `results/scenario_comparison.md`. Test coverage and observed sample outputs are summarized in `results/testing-evidence.md`.
 
+Run a same-input dynamic-policy batch with the operational experiment tool:
+
+```powershell
+.\.venv\Scripts\python.exe tools/operational_experiments.py --seeds 2026 --scenarios normal_day demand_burst constrained_fleet --output-dir results\operational-experiments\seed-2026
+```
+
+The tracked [seed-2026 report](results/operational-experiments/seed-2026/report.md) and [CSV](results/operational-experiments/seed-2026/summary.csv) are actual outputs. See the [batch experiment guide](docs/operational-experiments.md) for scenarios, comparison rules, and caveats.
+
 ## Project notes
 
 - [Course and event requirements](notes/course-assessment-requirements.md)
