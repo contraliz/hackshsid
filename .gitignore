@@ -1,0 +1,14 @@
+.venv/
+node_modules/
+web/dist/
+__pycache__/
+.pytest_cache/
+build/
+*.py[cod]
+screenshots/qa-*.png
+releases/
+sources/
+.env
+.env.*
+!.env.example
+*.log

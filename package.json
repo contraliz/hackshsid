@@ -1,0 +1,17 @@
+{
+  "name": "gridshift-hackshsid",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --config web/vite.config.js web",
+    "build": "vite build --config web/vite.config.js web",
+    "preview": "vite preview --config web/vite.config.js --host 127.0.0.1"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "6.1.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "vite": "8.3.5"
+  }
+}

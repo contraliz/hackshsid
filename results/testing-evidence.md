@@ -1,0 +1,48 @@
+# Verification evidence
+
+All model inputs in this evidence are deterministic synthetic values generated for seed 2026. Outputs below are observations from the local implementation, not measured data-center results.
+
+## Model and API checks
+
+Command: `.\.venv\Scripts\python.exe -m pytest -q`
+
+Observed result: **10 passed**.
+
+Coverage includes:
+
+- deterministic default inputs and repeatable optimizer metrics;
+- solver `Optimal` status and independently checked release/deadline, job completion, per-job parallelism, GPU capacity, renewable bounds, and energy balance;
+- one shared energy/cost/emissions evaluator for ASAP and optimized schedules;
+- zero renewable availability;
+- an isolated job moving to the only cheapest eligible hour;
+- higher carbon weight lowering modeled emissions while holding workload fixed;
+- profile changes for price-spike and renewable-shortage scenarios;
+- a demand-surge LP returning `Infeasible` without relaxed or fabricated optimized work;
+- clear rejection when the total GPU count cannot cover the real-time reservation;
+- Flask API responses for optimal, infeasible, and invalid-input cases.
+
+## Frontend build and scenario run
+
+`npm run build` completed with Vite 8.3.5. `npm install` reported zero dependency vulnerabilities.
+
+Browser checks used the local Edge channel through Playwright because the Browser plugin was not available in this session. The flow **Balanced day → Evening price spike → Demand surge → Restore baseline scenario** rendered the expected optimal price-spike result, honest infeasibility state with no optimized comparison, and restored default schedule. The invalid GPU-capacity request returned HTTP 422; `/api/health` returned 200. At 390 × 844 CSS pixels the document and body remained 390 pixels wide with no page-level horizontal overflow; SVG axis labels use a larger mobile size. The page title and main heading were correct, no error overlay appeared, and the final browser console pass had no errors or warnings after adding a local favicon.
+
+Screenshots: [desktop first viewport](../screenshots/desktop-balanced.png), [desktop full page](../screenshots/desktop-full.png), [mobile full page](../screenshots/mobile-balanced.png), and [infeasible state](../screenshots/infeasible.png). See [visual-qa.md](../design/visual-qa.md) for reference comparison and copy differences.
+
+`.\.venv\Scripts\python.exe scripts\run_experiments.py` wrote [scenario_comparison.csv](scenario_comparison.csv) and [scenario_comparison.md](scenario_comparison.md). The observed default case completed 6/6 jobs in both methods; ASAP grid cost was 481.43 CU and optimized cost was 464.29 CU (3.56% lower). Optimized grid emissions were 1103.91 kgCO₂e versus 1103.68 for ASAP (0.02% higher), so the default result does not claim a carbon improvement.
+
+The evening price-spike case observed 7.90% lower cost with all deadlines met. The renewable-shortage case observed 3.23% lower cost with all deadlines met. The demand-surge case was infeasible; ASAP completed 3/6 jobs and left 1,471 GPU-hours unmet, and the LP provided no optimized schedule. These are reproducible outputs for the included model and seed only.
+
+In the carbon-weight sensitivity, cost-only optimization observed 4.51% lower cost but 2.03% higher emissions than ASAP. At carbon weight 0.8 CU/kgCO₂e, observed cost was 3.03% lower and emissions 0.53% lower. See the CSV for raw values and solve times.
+
+## Evidence boundaries
+
+The LP verifies constraints that are represented in the model. It does not verify real-world preemption overhead, model serving latency, server affinity, networking, cooling beyond PUE, forecasts, grid telemetry, or production safety. Browser workflow and responsive-layout evidence is recorded after the local visual QA pass in the workspace screenshot set.
+
+## Packaged Windows x64 executable — 2026-10-24
+
+Reproducible build command: `powershell -ExecutionPolicy Bypass -File scripts/build_windows.ps1`. It rebuilt the Vite assets, used pinned PyInstaller 6.22.3 with the existing Python 3.12.14 build environment, generated a one-file GUI EXE, and produced a folder-preserving ZIP. The final EXE is 55,657,883 bytes (SHA-256 `7B90E41598AADD616D32DEE21A1E72E23791FBB991D26F5F5D77F0D241B56901`); the ZIP is 55,205,720 bytes (SHA-256 `E2C6EAA48F8D8B7666D45EE8367D906860D0211A28E4930A28A7A99642FD8A89`). The archive contains `GridShift-Windows-x64/GridShift.exe` and `GridShift-Windows-x64/README-Run.txt`.
+
+Copied the final EXE to a temporary folder outside the project root, in a path containing spaces, and launched it. The native status window opened Edge at a newly selected URL; the listener was bound to `127.0.0.1` only. `/api/health`, `/`, and the frontend JS/CSS assets returned HTTP 200. The packaged SciPy/HiGHS LP returned Optimal for Balanced day and Evening price spike; default independent validation passed with all 6 jobs completed, grid cost 481.43325 → 464.292 CU and operational emissions 1103.68075 → 1103.91175 kgCO₂e. Demand surge returned Infeasible without optimizer metrics; GPU capacity 1 returned HTTP 422. Close/Alt+F4 stopped the listener; a relaunch selected a different port.
+
+Repository tests: `.\\.venv\\Scripts\\python.exe -m pytest -q` — **10 passed**. `.\\.venv\\Scripts\\python.exe -m compileall -q launcher.py server.py backend` — passed. There is no clean Windows VM test: this host has Python and Node installed, although the copied standalone EXE ran outside the source tree and the actual LP engine and static assets were exercised from the bundle. The EXE is unsigned; SmartScreen or antivirus may show a warning.

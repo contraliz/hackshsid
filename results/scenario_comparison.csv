@@ -1,0 +1,7 @@
+case,scenario_id,seed,gpu_count,demand_scale,renewable_scale,carbon_weight_cu_per_kg,solver_status,baseline_status,baseline_cost_cu,optimized_cost_cu,cost_savings_pct,baseline_emissions_kg,optimized_emissions_kg,emissions_change_pct,baseline_deadlines_met,optimized_deadlines_met,baseline_unmet_gpu_hours,solve_time_ms,comparable
+Balanced day,baseline,2026,256,1.0,1.0,0.35,Optimal,Complete,480.89775,464.98499962200003,3.308967525425091,1104.0430000000001,1103.313250315,0.06609794047877801,6/6,6/6,0.0,23.05800002068281,True
+Evening price spike,price-spike,2026,256,1.0,1.0,0.35,Optimal,Complete,559.5249375,517.321499622,7.542726883017601,1104.0430000000001,1103.313250315,0.06609794047877801,6/6,6/6,0.0,5.2498000441119075,True
+Renewables shortage,renewables-shortage,2026,256,1.0,1.0,0.35,Optimal,Complete,529.39275,513.479999622,3.0058496981683147,1196.743,1196.013250315,0.06097797814567438,6/6,6/6,0.0,5.228400113992393,True
+Demand surge,demand-surge,2026,256,1.8,1.0,0.35,Infeasible,Missed deadlines,640.398,,,1464.256,,,2/6,0/6,1471.0,1.6300000716000795,False
+Cost only,baseline,2026,256,1.0,1.0,0.0,Optimal,Complete,480.89775,462.380999393625,3.8504548225428286,1104.0430000000001,1120.318000504,-1.4741274120663768,6/6,6/6,0.0,5.247400142252445,True
+High carbon weight,baseline,2026,256,1.0,1.0,0.8,Optimal,Complete,480.89775,466.84874993700004,2.921411061499027,1104.0430000000001,1098.840249559,0.4712452722403053,6/6,6/6,0.0,5.3794002160429955,True
