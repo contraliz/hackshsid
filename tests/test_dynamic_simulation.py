@@ -1,11 +1,15 @@
 from backend.dynamic_simulation import (
     Node,
-    _forecast_series,
+    _arrival_rate_forecasts,
+    _compare_to_unscheduled_baseline,
+    _forecast_margin,
     _offered_gpu_trace,
+    _projected_active_capacity,
     _scale_up,
     _choose_waiting_request,
     _advance_transitions,
     _ensure_warm_reserve,
+    _warm_target,
     generate_requests,
     run_dynamic_comparison,
 )
@@ -14,12 +18,50 @@ from backend.dynamic_simulation import (
 def test_synthetic_trace_is_seeded_and_forecast_is_causal():
     first = generate_requests(17, burst=False)
     assert first == generate_requests(17, burst=False)
-    trace = _offered_gpu_trace(first)
-    _, forecast = _forecast_series(trace, alpha=0.3)
-    changed_future = list(trace)
-    changed_future[500:] = [999] * (len(changed_future) - 500)
-    _, forecast_after_change = _forecast_series(changed_future, alpha=0.3)
-    assert forecast[:101] == forecast_after_change[:101]
+    changed_future = [dict(request) for request in first]
+    changed_future.extend({"id": f"future-{i}", "class": "interactive", "arrival": 500,
+                           "gpus": 2, "duration": 5} for i in range(100))
+    forecast = _arrival_rate_forecasts(first, alpha=0.3, generator_prior=False)
+    forecast_after_change = _arrival_rate_forecasts(changed_future, alpha=0.3, generator_prior=False)
+    assert forecast[:100] == forecast_after_change[:100]
+    assert forecast[101] != forecast_after_change[101]
+
+
+def test_adopted_warm_target_uses_active_spare_and_rounds_whole_nodes():
+    reference = _warm_target([78 + 10], active_nodes=8, nodes=12, gpus_per_node=8)
+    assert reference["target_warm_nodes"] == 3
+    assert reference["target_warm_fleet_shortfall_nodes"] == 0
+    assert _warm_target([64], active_nodes=8, nodes=12, gpus_per_node=8)["target_warm_nodes"] == 0
+    assert _warm_target([65], active_nodes=8, nodes=12, gpus_per_node=8)["target_warm_nodes"] == 1
+
+
+def test_warm_target_reports_uncapped_fleet_shortfall():
+    reserve = _warm_target([101], active_nodes=8, nodes=12, gpus_per_node=8)
+    assert reserve["target_warm_nodes"] == 5
+    assert reserve["target_warm_realizable_nodes"] == 4
+    assert reserve["target_warm_fleet_shortfall_nodes"] == 1
+    assert reserve["peak_fleet_shortfall_gpus"] == 5
+
+
+def test_warm_and_cold_readiness_are_distinct_and_pipeline_counts_once():
+    nodes = [Node("active"), Node("warm"), Node("booting", remaining=20), Node("off")]
+    assert _projected_active_capacity(nodes, 4, 8) == 8
+    assert _projected_active_capacity(nodes, 5, 8) == 16
+    assert _projected_active_capacity(nodes, 24, 8) == 16
+    assert _projected_active_capacity(nodes, 25, 8) == 24
+    _ensure_warm_reserve(nodes, target_warm=2)
+    assert [node.state for node in nodes].count("booting") == 1
+    assert [node.state for node in nodes].count("warm") == 1
+    assert [node.state for node in nodes].count("off") == 1
+
+
+def test_forecast_margin_uses_matured_error_then_labeled_assumption_fallback():
+    margin, source = _forecast_margin([], 80, 0.15, 4)
+    assert margin == 12
+    assert source == "manual_assumption_fallback"
+    margin, source = _forecast_margin([0, 2, 10] * 10, 80, 0.15, 4)
+    assert margin == 10
+    assert source == "matured_synthetic_window_q95"
 
 
 def test_warm_node_activation_respects_delay_state_and_fleet_conservation():
@@ -152,7 +194,65 @@ def test_default_flexible_lp_work_is_shared_delivered_and_deadline_safe():
         assert metrics["flexible_gpu_hours_delivered"] == scheduled
         assert metrics["flexible_gpu_hours_unmet"] == 0
         assert metrics["flexible_jobs_deadline_met"] == len(result["flexible_jobs"])
-        assert max(row["forecast_capacity_shortfall_gpus"] for row in policy["state_trace"]) == 0
+        assert all(abs(row["forecast_window_peak_predicted_gpus"]
+                       - row["forecast_window_peak_realtime_gpus"]
+                       - row["forecast_window_peak_flexible_gpus"]) < 0.02
+                   for row in policy["state_trace"])
+
+
+def test_unscheduled_baseline_uses_same_trace_and_reports_actual_savings_and_service():
+    result = run_dynamic_comparison({"nodes": 12, "gpus_per_node": 8, "seed": 2026,
+                                     "bursts": False, "request_trace": []})
+    baseline = result["unscheduled_baseline"]
+    assert baseline["label"] == "Always-on FIFO / ASAP (no energy scheduling)"
+    assert baseline["metrics"]["offered_gpu_minutes"] == 0
+    assert set(result["comparisons"]) == set(result["policies"])
+    for key, comparison in result["comparisons"].items():
+        b = comparison["baseline"]["metrics"]
+        optimized = comparison["optimized"]["metrics"]
+        assert comparison["baseline"]["key"] == "unscheduled"
+        assert comparison["optimized"]["key"] == key
+        assert b["facility_kwh"] == baseline["metrics"]["facility_kwh"]
+        if b["facility_kwh"]:
+            expected = (b["facility_kwh"] - optimized["facility_kwh"]) / b["facility_kwh"] * 100
+            assert abs(comparison["savings"]["electricity_pct"] - expected) < 0.001
+        assert comparison["service_comparable"]
+
+
+def test_savings_comparison_flags_changed_terminal_service_outcomes():
+    trace = [{"id": f"last-minute-{i}", "class": "interactive", "arrival": 1439,
+              "gpus": 8, "duration": 2, "latency": 1} for i in range(5)]
+    result = run_dynamic_comparison({"nodes": 8, "gpus_per_node": 8, "seed": 2026,
+                                     "bursts": False, "request_trace": trace, "flexible_jobs": []})
+    comparison = result["comparisons"]["forecast"]
+    assert not comparison["service_comparable"]
+    assert "Service outcomes differ" in comparison["service_note"]
+    assert comparison["baseline"]["metrics"]["requests_running_at_horizon"] == 5
+    assert comparison["optimized"]["metrics"]["requests_queued_at_horizon"] > 0
+
+
+def test_unscheduled_baseline_runs_same_lp_accepted_flexible_jobs_asap():
+    jobs = [{"id": "same-work", "name": "Same work", "arrival": 0,
+             "deadline": 2, "gpu_hours": 20, "max_gpus": 20, "tier": "pro"}]
+    result = run_dynamic_comparison({"nodes": 12, "gpus_per_node": 8, "seed": 2026,
+                                     "bursts": False, "request_trace": [], "flexible_jobs": jobs})
+    baseline = result["unscheduled_baseline"]
+    assert baseline["accepted_flexible_job_ids"] == ["same-work"]
+    assert baseline["metrics"]["flexible_gpu_hours_scheduled"] == 20
+    assert baseline["metrics"]["flexible_gpu_hours_delivered"] == 20
+    assert baseline["flexible_jobs"][0]["deadline_met"]
+    for item in result["comparisons"].values():
+        assert item["service_comparable"]
+
+
+def test_zero_baseline_denominator_returns_null_with_reason():
+    metrics = {"facility_kwh": 0, "grid_kwh": 0, "cost_cny": 0, "emissions_kg": 0}
+    result = _compare_to_unscheduled_baseline(
+        {"label": "baseline", "metrics": metrics, "request_status_by_id": {}, "flexible_jobs": []},
+        {"label": "controller", "metrics": metrics, "replay": {"requests": []}, "flexible_jobs": []},
+        "forecast")
+    assert all(value is None for value in result["savings"].values())
+    assert all(value and "zero" in value.lower() for value in result["savings_reason"].values())
 
 
 def test_replay_frames_match_energy_accounting_and_request_lifecycle():

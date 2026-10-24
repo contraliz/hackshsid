@@ -12,6 +12,8 @@ const LABELS = {
   p95_wait_minutes: ['P95 queue wait', 'min'], mean_completion_latency_minutes: ['Mean completion latency', 'min'],
   latency_allowance_met: ['Illustrative response allowances met', 'requests'], peak_active_nodes: ['Peak active nodes', ''],
   max_forecast_capacity_shortfall_gpus: ['Peak forecast fleet shortfall', 'GPUs'], forecast_shortfall_minutes: ['Forecast shortfall intervals', '5-min intervals'],
+  max_readiness_capacity_shortfall_gpus: ['Peak readiness shortfall', 'GPUs'], max_pre_warm_active_shortfall_gpus: ['Peak shortfall before warm activation', 'GPUs'],
+  max_target_warm_fleet_shortfall_nodes: ['Peak warm-target fleet gap', 'nodes'], max_target_warm_nodes: ['Peak uncapped warm target', 'nodes'],
   peak_offered_fleet_shortfall_gpus: ['Peak realized demand above fleet', 'GPUs'], offered_fleet_shortfall_minutes: ['Realized fleet overload', 'min'],
   flexible_jobs_admitted: ['Flexible jobs admitted', 'jobs'], flexible_jobs_deadline_met: ['Flexible deadlines met', 'jobs'],
   flexible_gpu_hours_scheduled: ['Flexible work scheduled', 'GPU·h'], flexible_gpu_hours_delivered: ['Flexible work delivered', 'GPU·h'],
@@ -19,7 +21,7 @@ const LABELS = {
 };
 
 export function DynamicSimulation() {
-  const [controls, setControls] = useState({ nodes: 32, gpus_per_node: 8, seed: 2026, forecast_alpha: 0.3, margin_fraction: 0.15, min_active_fraction: 0.25, bursts: true });
+  const [controls, setControls] = useState({ nodes: 32, gpus_per_node: 8, seed: 2026, forecast_alpha: 0.3, margin_fraction: 0.15, margin_floor_gpus: 4, min_active_fraction: 0.25, bursts: true });
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -52,7 +54,7 @@ export function DynamicSimulation() {
     try {
       const response = await fetch('/api/dynamic-simulation', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...controls, nodes: Number(controls.nodes), gpus_per_node: Number(controls.gpus_per_node), seed: Number(controls.seed), forecast_alpha: Number(controls.forecast_alpha), margin_fraction: Number(controls.margin_fraction), min_active_fraction: Number(controls.min_active_fraction) }),
+        body: JSON.stringify({ ...controls, nodes: Number(controls.nodes), gpus_per_node: Number(controls.gpus_per_node), seed: Number(controls.seed), forecast_alpha: Number(controls.forecast_alpha), margin_fraction: Number(controls.margin_fraction), margin_floor_gpus: Number(controls.margin_floor_gpus), min_active_fraction: Number(controls.min_active_fraction) }),
       });
       const body = await response.json();
       if (!response.ok) throw new Error(body.error || `Request failed (${response.status})`);
@@ -78,6 +80,7 @@ export function DynamicSimulation() {
           <div className="dynamic-secondary-controls">
             <label htmlFor="dynamic-alpha">EWMA alpha<input id="dynamic-alpha" type="number" min="0.05" max="0.8" step="0.05" value={controls.forecast_alpha} onChange={(e) => setControls({ ...controls, forecast_alpha: e.target.value })} /></label>
             <label htmlFor="dynamic-margin">Fallback margin<input id="dynamic-margin" type="number" min="0" max="1" step="0.05" value={controls.margin_fraction} onChange={(e) => setControls({ ...controls, margin_fraction: e.target.value })} /></label>
+            <label htmlFor="dynamic-margin-floor">Fallback floor (GPUs)<input id="dynamic-margin-floor" type="number" min="0" max="256" step="1" value={controls.margin_floor_gpus} onChange={(e) => setControls({ ...controls, margin_floor_gpus: e.target.value })} /></label>
             <label htmlFor="dynamic-floor">Minimum active fleet<input id="dynamic-floor" type="number" min="0" max="1" step="0.05" value={controls.min_active_fraction} onChange={(e) => setControls({ ...controls, min_active_fraction: e.target.value })} /></label>
             <label className="dynamic-checkbox"><input type="checkbox" checked={controls.bursts} onChange={(e) => setControls({ ...controls, bursts: e.target.checked })} /> Include seeded burst chance</label>
             <button type="button" className="quiet-button" onClick={() => setControls({ ...controls, nodes: 12, gpus_per_node: 8 })}>96-GPU reference</button>
@@ -122,8 +125,8 @@ export function DynamicSimulation() {
           </tbody></table></div>
         </details>
         <details className="assumptions"><summary>Demand, forecast, hardware, power and pricing assumptions</summary><div className="assumptions-content"><ul>
-          <li>{result.assumptions.demand_model}.</li><li>{result.assumptions.forecast}. {result.assumptions.forecast_calibration_limit}.</li>
-          <li>{result.assumptions.node_control}; warm-to-active {result.assumptions.warm_start_minutes} min and cold-to-warm {result.assumptions.cold_to_warm_minutes} min.</li>
+          <li>{result.assumptions.demand_model}.</li><li>{result.assumptions.forecast}. Class GPU-minutes/request factors: {Object.entries(result.assumptions.forecast_workload_gpu_minutes_per_request).map(([name, value]) => `${name} ${formatNumber(value, 1)}`).join(', ')}. {result.assumptions.forecast_calibration_limit}</li>
+          <li>{result.assumptions.node_control}; warm-to-active {result.assumptions.warm_start_minutes} min, cold-to-warm {result.assumptions.cold_to_warm_minutes} min, cold-to-active total {result.assumptions.cold_to_active_minutes} min. {result.assumptions.warm_reserve_equation}; window {result.assumptions.warm_reserve_window_minutes} min. Queue load uses: {result.assumptions.warm_queue_forecast_approximation}.</li>
           <li>{result.assumptions.minimum_active_floor}.</li>
           <li>Power coefficients (kW IT): {Object.entries(result.assumptions.power_kw_it).map(([k, v]) => `${k} ${v}`).join(', ')}; PUE {result.assumptions.pue}. These are illustrative, not measurements.</li>
           <li>{result.assumptions.renewables}. Tariff: {result.assumptions.tariff} (<a href={result.assumptions.tariff_reference_url} target="_blank" rel="noreferrer">official source</a>). Grid factor: {result.assumptions.grid_emissions} (<a href={result.assumptions.grid_emissions_reference_url} target="_blank" rel="noreferrer">official source</a>).</li>
@@ -131,8 +134,8 @@ export function DynamicSimulation() {
         </ul><p>Five-minute trace snapshots show offered demand and node readiness. Booting/off/warm/active nodes are distinct; cold nodes do not become active instantly.</p></div></details>
         <details className="simulation-data-disclosure">
           <summary>Five-minute forecast trace</summary>
-          <div className="job-table-wrap"><table className="job-table"><thead><tr><th>Minute</th><th>Offered GPUs</th><th>Realtime upper</th><th>Flexible commitments</th><th>Total upper demand</th><th>Target warm nodes</th><th>Running request GPUs</th><th>Running flexible GPUs</th><th>Active</th><th>Warm</th><th>Booting</th><th>Off</th></tr></thead><tbody>
-          {(result.policies.forecast.state_trace || []).filter((_, i) => i % 24 === 0).map((row) => <tr key={row.minute}><td>{Math.floor(row.minute / 60)}:{String(row.minute % 60).padStart(2, '0')}</td><td>{row.offered_gpus}</td><td>{formatNumber(row.forecast_upper_gpus, 1)}</td><td>{formatNumber(row.flexible_commitment_gpus, 1)}</td><td>{formatNumber(row.forecast_total_upper_gpus, 1)}</td><td>{row.target_warm_nodes}</td><td>{row.running_gpus}</td><td>{formatNumber(row.flexible_gpus, 1)}</td><td>{row.active_nodes}</td><td>{row.warm_nodes}</td><td>{row.booting_nodes}</td><td>{row.off_nodes}</td></tr>)}
+          <div className="job-table-wrap"><table className="job-table"><thead><tr><th>Minute</th><th>Offered GPUs</th><th>Realtime upper</th><th>Flexible commitments</th><th>Total upper demand</th><th>Target warm nodes</th><th>Target fleet gap</th><th>Readiness gap</th><th>Margin / source</th><th>Running request GPUs</th><th>Running flexible GPUs</th><th>Active</th><th>Warm</th><th>Booting</th><th>Off</th></tr></thead><tbody>
+          {(result.policies.forecast.state_trace || []).filter((_, i) => i % 24 === 0).map((row) => <tr key={row.minute}><td>{Math.floor(row.minute / 60)}:{String(row.minute % 60).padStart(2, '0')}</td><td>{row.offered_gpus}</td><td>{formatNumber(row.forecast_upper_gpus, 1)}</td><td>{formatNumber(row.flexible_commitment_gpus, 1)}</td><td>{formatNumber(row.forecast_total_upper_gpus, 1)}</td><td>{row.target_warm_nodes}</td><td>{row.target_warm_fleet_shortfall_nodes}</td><td>{formatNumber(row.readiness_capacity_shortfall_gpus, 1)}</td><td>{formatNumber(row.forecast_margin_gpus, 1)} / {row.forecast_margin_source}</td><td>{row.running_gpus}</td><td>{formatNumber(row.flexible_gpus, 1)}</td><td>{row.active_nodes}</td><td>{row.warm_nodes}</td><td>{row.booting_nodes}</td><td>{row.off_nodes}</td></tr>)}
           </tbody></table></div>
         </details>
       </div>}
