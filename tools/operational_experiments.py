@@ -22,6 +22,24 @@ from backend.dynamic_simulation import generate_requests, run_dynamic_comparison
 CONTROLLERS = ("always_on", "reactive", "forecast")
 SCENARIOS = ("normal_day", "demand_burst", "constrained_fleet")
 STATES = ("active", "warm", "warming", "booting", "off")
+SERVICE_METRICS = (
+    "requests_completed", "requests_rejected", "requests_queued_at_horizon",
+    "requests_running_at_horizon", "mean_wait_minutes", "p95_wait_minutes",
+    "mean_completion_latency_minutes", "latency_allowance_met", "latency_allowance_total",
+    "flexible_jobs_admitted", "flexible_jobs_deadline_met", "flexible_gpu_hours_scheduled",
+    "flexible_gpu_hours_delivered", "flexible_gpu_hours_unmet", "flexible_deadline_misses",
+    "flexible_commitment_missed_gpu_minutes",
+)
+CANONICAL_PERCENT_KEYS = {
+    "electricity": "electricity_pct",
+    "grid_import": "grid_import_pct",
+    "cost": "cost_pct",
+    "emissions": "emissions_pct",
+}
+BASELINE_METRICS = (
+    "facility_kwh", "grid_kwh", "renewable_used_kwh", "renewable_curtailed_kwh",
+    "cost_cny", "emissions_kg", *SERVICE_METRICS,
+)
 
 METRIC_FIELDS = (
     "requests_generated", "requests_completed", "requests_queued_at_horizon",
@@ -42,8 +60,15 @@ METRIC_FIELDS = (
 )
 
 CSV_FIELDS = (
-    "scenario", "scenario_description", "seed", "controller", "status", "error",
+    "scenario", "scenario_description", "seed", "record_kind", "controller", "controller_label", "status", "error",
     "nodes", "gpus_per_node", "fleet_gpus", "scenario_config_json", "assumptions_json",
+    "selected_policy", "canonical_comparison_status", "comparison_baseline_label",
+    "canonical_service_comparable", "canonical_service_note",
+    "unscheduled_baseline_flexible_admission_status", "unscheduled_baseline_flexible_admission_reason",
+    *[f"unscheduled_baseline_{field}" for field in BASELINE_METRICS],
+    *[f"{metric}_savings_pct" for metric in CANONICAL_PERCENT_KEYS],
+    *[f"{metric}_pct_reported" for metric in CANONICAL_PERCENT_KEYS],
+    *[f"{metric}_savings_reason" for metric in CANONICAL_PERCENT_KEYS],
     "flexible_admission_status", "flexible_admission_reason",
     *[field for field in METRIC_FIELDS if field != "flexible_admission_status"],
     "cost_change_cny_vs_always_on", "cost_savings_pct_vs_always_on",
@@ -151,8 +176,12 @@ def _flex_outcome(policy: dict[str, Any]) -> tuple[Any, ...] | None:
 
 def same_service_outcome(candidate: dict[str, Any], baseline: dict[str, Any]) -> bool:
     """Require the same completed request set and flexible-work outcome."""
-    candidate_requests = candidate.get("replay", {}).get("requests")
-    baseline_requests = baseline.get("replay", {}).get("requests")
+    candidate_replay = candidate.get("replay")
+    baseline_replay = baseline.get("replay")
+    if not isinstance(candidate_replay, dict) or not isinstance(baseline_replay, dict):
+        return False
+    candidate_requests = candidate_replay.get("requests")
+    baseline_requests = baseline_replay.get("requests")
     if not isinstance(candidate_requests, list) or not isinstance(baseline_requests, list):
         return False
     candidate_status = {item.get("id"): item.get("status") for item in candidate_requests if isinstance(item, dict)}
@@ -200,6 +229,90 @@ def _failed_row(scenario: dict[str, Any], seed: int, controller: str, error: str
     return row
 
 
+def _metric_row(scenario: dict[str, Any], seed: int, result: dict[str, Any], *,
+                record_kind: str, controller: str, label: str,
+                metrics: dict[str, Any], policy: dict[str, Any] | None = None,
+                flexible_summary: dict[str, Any] | None = None) -> dict[str, Any]:
+    row = {field: None for field in CSV_FIELDS}
+    row.update({
+        "scenario": scenario["name"], "scenario_description": scenario["description"],
+        "seed": seed, "record_kind": record_kind, "controller": controller,
+        "controller_label": label, "status": "complete", "error": None,
+        "nodes": result.get("nodes", scenario["config"].get("nodes")),
+        "gpus_per_node": result.get("gpus_per_node", scenario["config"].get("gpus_per_node")),
+        "fleet_gpus": result.get("fleet_gpus"),
+        "scenario_config_json": json.dumps(scenario["config"], sort_keys=True),
+        "assumptions_json": json.dumps(result.get("assumptions"), sort_keys=True),
+        "selected_policy": result.get("selected_policy"),
+        "flexible_admission_status": (policy or {}).get("flexible_admission_status")
+        or (flexible_summary or {}).get("admission_status"),
+        "flexible_admission_reason": (policy or {}).get("flexible_admission_reason")
+        or (flexible_summary or {}).get("admission_reason"),
+    })
+    for field in METRIC_FIELDS:
+        if field.startswith("state_") or field == "state_transition_count":
+            continue
+        if field == "requests_generated":
+            value = result.get("requests_generated")
+        elif field == "flexible_admission_status":
+            value = row["flexible_admission_status"]
+        else:
+            value = metrics.get(field)
+        if field == "flexible_admission_status":
+            row[field] = value if isinstance(value, str) else None
+        else:
+            row[field] = value if value is None or _finite_number(value) else None
+    if policy is not None:
+        row.update(_state_summary(policy))
+    return row
+
+
+def _canonical_comparison_status(baseline: Any, comparison: Any, controller: str) -> str:
+    if not isinstance(baseline, dict) or not isinstance(baseline.get("metrics"), dict):
+        return "legacy_api_no_unscheduled_baseline"
+    if not isinstance(comparison, dict):
+        return "missing_controller_comparison"
+    baseline_ref = comparison.get("baseline")
+    optimized_ref = comparison.get("optimized")
+    if (not isinstance(baseline_ref, dict) or not isinstance(baseline_ref.get("metrics"), dict)
+            or not isinstance(optimized_ref, dict) or not isinstance(optimized_ref.get("metrics"), dict)
+            or not isinstance(comparison.get("savings"), dict)
+            or not isinstance(comparison.get("service_comparable"), bool)):
+        return "incomplete_controller_comparison"
+    if baseline_ref.get("key") != "unscheduled" or optimized_ref.get("key") != controller:
+        return "incomplete_controller_comparison"
+    return "available"
+
+
+def _finite_or_none(value: Any) -> float | None:
+    return float(value) if _finite_number(value) else None
+
+
+def _attach_canonical_comparison(row: dict[str, Any], baseline: Any, comparison: Any,
+                                 controller: str) -> None:
+    status = _canonical_comparison_status(baseline, comparison, controller)
+    row["canonical_comparison_status"] = status
+    if status != "available":
+        return
+    base_ref = comparison["baseline"]
+    row["comparison_baseline_label"] = base_ref.get("label") or baseline.get("label")
+    for field in BASELINE_METRICS:
+        row[f"unscheduled_baseline_{field}"] = _finite_or_none(base_ref["metrics"].get(field))
+    row["unscheduled_baseline_flexible_admission_status"] = baseline.get("flexible_admission_status")
+    row["unscheduled_baseline_flexible_admission_reason"] = baseline.get("flexible_admission_reason")
+    row["canonical_service_comparable"] = comparison["service_comparable"]
+    row["canonical_service_note"] = comparison.get("service_note")
+    savings = comparison["savings"]
+    for field, source_key in CANONICAL_PERCENT_KEYS.items():
+        reported = _finite_or_none(savings.get(source_key))
+        row[f"{field}_pct_reported"] = reported
+        reasons = comparison.get("savings_reason")
+        row[f"{field}_savings_reason"] = reasons.get(source_key) if isinstance(reasons, dict) else None
+        # Keep the backend percentage for transparent analysis, but call it a
+        # saving only when its canonical service-equivalence check passed.
+        row[f"{field}_savings_pct"] = reported if comparison["service_comparable"] else None
+
+
 def run_batch(seeds: list[int], scenario_names: list[str], *, runner: Callable[[dict[str, Any]], dict[str, Any]] = run_dynamic_comparison,
               forecast_alpha: float = 0.3, margin_fraction: float = 0.15,
               min_active_fraction: float = 0.25) -> list[dict[str, Any]]:
@@ -221,6 +334,25 @@ def run_batch(seeds: list[int], scenario_names: list[str], *, runner: Callable[[
             policies = result["policies"]
             raw_policies = {name: policies.get(name) for name in CONTROLLERS}
             baseline = raw_policies.get("always_on")
+            unscheduled = result.get("unscheduled_baseline")
+            if isinstance(unscheduled, dict) and isinstance(unscheduled.get("metrics"), dict):
+                baseline_row = _metric_row(
+                    scenario, seed, result, record_kind="unscheduled_baseline",
+                    controller="unscheduled_baseline",
+                    label=str(unscheduled.get("label") or "Unscheduled baseline"),
+                    metrics=unscheduled["metrics"], policy=unscheduled,
+                    flexible_summary=unscheduled,
+                )
+                comparison_map = result.get("comparisons")
+                if not isinstance(comparison_map, dict):
+                    baseline_row["canonical_comparison_status"] = "missing_controller_comparison"
+                else:
+                    statuses = [_canonical_comparison_status(unscheduled, comparison_map.get(name), name)
+                                for name in CONTROLLERS]
+                    baseline_row["canonical_comparison_status"] = (
+                        "available" if all(status == "available" for status in statuses)
+                        else "incomplete_controller_comparison")
+                rows.append(baseline_row)
             for controller in CONTROLLERS:
                 policy = raw_policies.get(controller)
                 if not isinstance(policy, dict) or not isinstance(policy.get("metrics"), dict):
@@ -228,41 +360,14 @@ def run_batch(seeds: list[int], scenario_names: list[str], *, runner: Callable[[
                                             "ValueError: simulator response is missing controller metrics."))
                     continue
                 metrics = policy["metrics"]
-                flex_summary = result.get("flexible_schedule")
-                row = {field: None for field in CSV_FIELDS}
-                row.update({
-                    "scenario": scenario_name,
-                    "scenario_description": scenario["description"],
-                    "seed": seed, "controller": controller, "status": "complete", "error": None,
-                    "nodes": result.get("nodes", scenario["config"].get("nodes")),
-                    "gpus_per_node": result.get("gpus_per_node", scenario["config"].get("gpus_per_node")),
-                    "fleet_gpus": result.get("fleet_gpus"),
-                    "scenario_config_json": json.dumps(scenario["config"], sort_keys=True),
-                    "assumptions_json": json.dumps(result.get("assumptions"), sort_keys=True),
-                    "flexible_admission_status": (flex_summary.get("admission_status")
-                                                   if isinstance(flex_summary, dict) else None),
-                    "flexible_admission_reason": (flex_summary.get("admission_reason")
-                                                   if isinstance(flex_summary, dict) else None),
-                })
-                for field in METRIC_FIELDS:
-                    if field.startswith("state_") or field == "state_transition_count":
-                        continue
-                    if field == "requests_generated":
-                        value = result.get("requests_generated")
-                    elif field == "flexible_admission_status":
-                        value = row["flexible_admission_status"]
-                    else:
-                        value = metrics.get(field)
-                    if field == "flexible_admission_status":
-                        row[field] = value if isinstance(value, str) else None
-                    else:
-                        row[field] = value if value is None or _finite_number(value) else None
-                row.update(_state_summary(policy))
-                # Policy payloads retain admission details as well as the shared summary.
-                row["flexible_admission_status"] = (
-                    policy.get("flexible_admission_status") or row["flexible_admission_status"])
-                row["flexible_admission_reason"] = (
-                    policy.get("flexible_admission_reason") or row["flexible_admission_reason"])
+                row = _metric_row(
+                    scenario, seed, result, record_kind="scheduled_policy",
+                    controller=controller, label=str(policy.get("label") or controller),
+                    metrics=metrics, policy=policy,
+                    flexible_summary=result.get("flexible_schedule"),
+                )
+                comparison = result.get("comparisons", {}).get(controller) if isinstance(result.get("comparisons"), dict) else None
+                _attach_canonical_comparison(row, unscheduled, comparison, controller)
 
                 comparable = controller == "always_on" or (
                     isinstance(baseline, dict) and same_service_outcome(policy, baseline))
@@ -292,7 +397,9 @@ def write_outputs(rows: list[dict[str, Any]], output_dir: Path | str, *, seeds: 
         f"- Scenarios: {', '.join(scenario_names)}",
         "- Simulation status: synthetic and illustrative; these are not measured infrastructure results or service guarantees.",
         "- Controller comparisons come from one simulator invocation per seed/scenario, which evaluates all supported controllers against the same request trace and flexible schedule.",
-        "- Cost savings are shown only when request terminal statuses and flexible-work outcomes match the always-on baseline. Latency metrics are shown separately.",
+        "- Canonical scheduled-versus-unscheduled percentages are taken from the simulator response. Formula: `(unscheduled baseline − scheduled result) / unscheduled baseline × 100`; negative values mean increases. Percent savings are shown only when the simulator says service outcomes are comparable.",
+        "- The unscheduled baseline is all-nodes-active, immediate FIFO/ASAP work without energy scheduling. The existing `always_on` controller remains flexible-LP scheduled; it is not the unscheduled baseline.",
+        "- The older scheduled-controller cost diagnostic remains separately labeled; its percentage is shown only when request terminal statuses and flexible-work outcomes match. Latency metrics are shown separately.",
         "- Missing metrics are shown as unavailable (—), never as zero. Renewable inputs are the simulator's fixed synthetic profile; no renewable override is supported.", "",
     ]
     successful = next((row for row in rows if row.get("status") == "complete"), None)
@@ -314,35 +421,104 @@ def write_outputs(rows: list[dict[str, Any]], output_dir: Path | str, *, seeds: 
     for (scenario_name, seed), group in grouped.items():
         desc = next((row.get("scenario_description") for row in group if row.get("scenario_description")), "")
         config = next((row.get("scenario_config_json") for row in group if row.get("scenario_config_json")), "{}")
-        lines.extend([f"## {scenario_name} · seed {seed}", "", desc, "", f"Configuration: `{config}`", "",
-                      "| Controller | Status | Completed | Queued at horizon | Rejected | Flex admission | Flex deadlines met | Facility kWh | Grid kWh | Renewable used kWh | Cost CNY | Emissions kg CO₂ | Cost change vs always-on |",
-                      "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"])
-        for row in group:
+        baseline_row = next((row for row in group if row.get("record_kind") == "unscheduled_baseline"), None)
+        policy_rows = [row for row in group if row.get("record_kind") != "unscheduled_baseline"]
+        lines.extend([f"## {scenario_name} · seed {seed}", "", desc, "", f"Configuration: `{config}`", ""])
+        if baseline_row:
+            baseline_label = baseline_row.get("controller_label") or "Unscheduled baseline"
+            selected_name = next((row.get("selected_policy") for row in policy_rows if row.get("selected_policy")), None)
+            selected = next((row for row in policy_rows if row.get("controller") == selected_name), None)
+            if selected is None:
+                selected = next((row for row in policy_rows if row.get("controller") == "forecast"), None)
+            if selected and selected.get("canonical_comparison_status") == "available":
+                lines.append(f"**Selected policy ({selected.get('controller_label')}) vs {baseline_label}:** "
+                             f"facility electricity {_reduction_phrase(selected, 'electricity')} "
+                             f"({_display(baseline_row.get('facility_kwh'))} → {_display(selected.get('facility_kwh'))} kWh); "
+                             f"grid imports {_reduction_phrase(selected, 'grid_import')} "
+                             f"({_display(baseline_row.get('grid_kwh'))} → {_display(selected.get('grid_kwh'))} kWh); "
+                             f"cost {_reduction_phrase(selected, 'cost')} "
+                             f"({_display(baseline_row.get('cost_cny'))} → {_display(selected.get('cost_cny'))} CNY); "
+                             f"operational emissions {_reduction_phrase(selected, 'emissions')} "
+                             f"({_display(baseline_row.get('emissions_kg'))} → {_display(selected.get('emissions_kg'))} kg CO₂).")
+                if selected.get("canonical_service_comparable") is False:
+                    lines.append(f" Service equivalence failed: {_md(selected.get('canonical_service_note') or 'service outcomes differ')}. Reported percentage values are retained in the CSV but withheld from savings claims.")
+            elif not any(row.get("canonical_comparison_status") == "available" for row in policy_rows):
+                lines.append("Canonical per-controller savings are unavailable because the response omitted or incompletely populated `comparisons`.")
+            lines.extend(["", f"Unscheduled baseline: **{baseline_label}** (all nodes active; immediate FIFO/ASAP work; no energy scheduling).", ""])
+        else:
+            if any(row.get("status") != "complete" for row in group):
+                lines.extend(["**No simulator result is available for this scenario.** The baseline and controller metrics could not be produced.", ""])
+            else:
+                lines.extend(["**Canonical unscheduled comparison unavailable.** This older response does not include `unscheduled_baseline` and `comparisons`; the existing `always_on` controller is an LP-scheduled diagnostic, not the naive baseline.", ""])
+
+        lines.extend([
+            "### Energy and cost comparison",
+            "",
+            "Percentages below use the simulator's canonical unscheduled-baseline comparisons. A blank percentage means the API omitted it, the denominator was zero/unavailable, or service equivalence failed.",
+            "",
+            "| Result | Status | Facility electricity kWh | Facility reduction % | Grid import kWh | Grid reduction % | Cost CNY | Cost reduction % | Emissions kg CO₂ | Emissions reduction % | Service comparable |",
+            "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|:---:|",
+        ])
+        ordered = ([baseline_row] if baseline_row else []) + policy_rows
+        for row in ordered:
             if row.get("status") != "complete":
-                lines.append(f"| {row.get('controller')} | FAILED | — | — | — | — | — | — | — | — | — | — | {_md(row.get('error'))} |")
+                lines.append(f"| {_md(row.get('controller_label') or row.get('controller'))} | FAILED | — | — | — | — | — | — | — | — | — |")
+                continue
+            reduction = lambda field: _display(row.get(f"{field}_savings_pct"))
+            service = ("baseline" if row.get("record_kind") == "unscheduled_baseline"
+                       else _display(row.get("canonical_service_comparable")))
+            lines.append("| " + " | ".join((
+                _md(row.get("controller_label") or row.get("controller")), "complete",
+                _display(row.get("facility_kwh")), reduction("electricity"),
+                _display(row.get("grid_kwh")), reduction("grid_import"),
+                _display(row.get("cost_cny")), reduction("cost"),
+                _display(row.get("emissions_kg")), reduction("emissions"), service,
+            )) + " |")
+        lines.extend(["", "### Scheduled-controller diagnostic", "",
+                      "This retains the earlier comparison among LP-scheduled controllers; `always_on` here is not the no-scheduling baseline.",
+                      "",
+                      "| Scheduled controller | Cost CNY | Cost delta vs scheduled always-on | Request terminal outcomes match? |", "|---|---:|---:|:---:|"])
+        for row in policy_rows:
+            if row.get("status") != "complete":
+                lines.append(f"| {_md(row.get('controller_label') or row.get('controller'))} | FAILED | — | — |")
                 continue
             if row.get("cost_savings_pct_vs_always_on") is not None:
-                change = f"{row['cost_change_cny_vs_always_on']:+.3f} CNY ({row['cost_savings_pct_vs_always_on']:+.2f}%)"
+                legacy_change = f"{row['cost_change_cny_vs_always_on']:+.3f} CNY ({row['cost_savings_pct_vs_always_on']:+.2f}%)"
             elif row.get("cost_change_cny_vs_always_on") is not None:
-                change = f"{row['cost_change_cny_vs_always_on']:+.3f} CNY (percentage unavailable)"
+                legacy_change = f"{row['cost_change_cny_vs_always_on']:+.3f} CNY (percentage unavailable)"
             else:
-                change = "—"
-            flex_deadlines = _display(row.get("flexible_jobs_deadline_met"))
+                legacy_change = "—"
+            matched = ("always-on reference" if row.get("controller") == "always_on"
+                       else "yes" if row.get("cost_savings_pct_vs_always_on") is not None
+                       else "no / unavailable")
+            lines.append(f"| {_md(row.get('controller_label') or row.get('controller'))} | {_display(row.get('cost_cny'))} | {legacy_change} | {matched} |")
+        lines.extend(["", "### Service performance", "",
+                      "| Result | Completed | Queued at horizon | Running at horizon | Rejected | Mean / P95 wait min | Mean completion latency min | Flex admission | Flex delivered / unmet GPU-h | Flex deadlines met | Service note |",
+                      "|---|---:|---:|---:|---:|---:|---:|---|---:|---:|---|"])
+        for row in ordered:
+            if row.get("status") != "complete":
+                lines.append(f"| {_md(row.get('controller_label') or row.get('controller'))} | FAILED | — | — | — | — | — | — | — | — | {_md(row.get('error'))} |")
+                continue
+            waits = f"{_display(row.get('mean_wait_minutes'))} / {_display(row.get('p95_wait_minutes'))}"
+            flex = f"{_display(row.get('flexible_gpu_hours_delivered'))} / {_display(row.get('flexible_gpu_hours_unmet'))}"
             admission = _display(row.get("flexible_admission_status"))
             if row.get("flexible_admission_reason"):
                 admission += f": {_md(row['flexible_admission_reason'])}"
+            service_note = row.get("canonical_service_note") or row.get("cost_comparison_note") or "—"
             lines.append("| " + " | ".join((
-                str(row.get("controller")), "complete", _display(row.get("requests_completed")),
-                _display(row.get("requests_queued_at_horizon")), _display(row.get("requests_rejected")),
-                admission, flex_deadlines, _display(row.get("facility_kwh")), _display(row.get("grid_kwh")),
-                _display(row.get("renewable_used_kwh")), _display(row.get("cost_cny")),
-                _display(row.get("emissions_kg")), change,
+                _md(row.get("controller_label") or row.get("controller")),
+                _display(row.get("requests_completed")), _display(row.get("requests_queued_at_horizon")),
+                _display(row.get("requests_running_at_horizon")), _display(row.get("requests_rejected")),
+                waits, _display(row.get("mean_completion_latency_minutes")), admission, flex,
+                f"{_display(row.get('flexible_jobs_deadline_met'))} / {_display(row.get('flexible_jobs_admitted'))}",
+                _md(service_note),
             )) + " |")
-        lines.extend(["", "Queue/wait, flexible delivered/unmet GPU-hours, fleet and forecast shortfalls, and node-state minutes are in `summary.csv`.",
-                      "Cost change is `always_on cost − controller cost`; positive values mean lower modeled cost only when the note says outcomes match.", ""])
-        for row in group:
+        lines.extend(["", "The scheduled `always_on` row uses the existing flexible-job LP and remains separate from the no-scheduling baseline.",
+                      "The legacy `cost_change_cny_vs_always_on` and `cost_savings_pct_vs_always_on` columns in `summary.csv` are diagnostic comparisons among scheduled controllers only.",
+                      "Queue/wait, flexible-work, fleet/forecast shortfalls, node-state minutes and raw simulator-reported canonical percentages are available in `summary.csv`.", ""])
+        for row in policy_rows:
             if row.get("status") == "complete" and row.get("cost_comparison_note"):
-                lines.append(f"- {row['controller']} comparison: {row['cost_comparison_note']}")
+                lines.append(f"- {row['controller']} vs scheduled always-on diagnostic: {row['cost_comparison_note']}")
         lines.append("")
     report_path.write_text("\n".join(lines), encoding="utf-8")
     return csv_path, report_path
@@ -354,6 +530,27 @@ def _display(value: Any) -> str:
     if isinstance(value, float):
         return f"{value:.3f}".rstrip("0").rstrip(".")
     return str(value)
+
+
+def _reduction_phrase(row: dict[str, Any], metric: str) -> str:
+    value = row.get(f"{metric}_savings_pct")
+    if value is not None:
+        if value > 0:
+            return f"{value:.2f}% reduction"
+        if value < 0:
+            return f"{abs(value):.2f}% increase"
+        return "0.00% change"
+    reported = row.get(f"{metric}_pct_reported")
+    if row.get("canonical_service_comparable") is False:
+        if reported is not None:
+            return f"not comparable (raw modeled change {reported:+.2f}%; not a savings claim)"
+        return "not comparable; percentage unavailable"
+    if row.get("canonical_service_comparable") is None and reported is not None:
+        return f"service equivalence unavailable (raw {reported:+.2f}%; not a savings claim)"
+    reason = row.get(f"{metric}_savings_reason")
+    if reason:
+        return f"percentage unavailable ({_md(reason)})"
+    return "percentage unavailable"
 
 
 def _md(value: Any) -> str:
