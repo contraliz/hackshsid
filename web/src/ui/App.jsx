@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ComputeChart, EnergyChart } from './Charts.jsx';
 import { formatNumber, ScenarioControls } from './Controls.jsx';
 import { ComparisonTable, InfeasibleState } from './Results.jsx';
@@ -21,6 +21,10 @@ const SCENARIOS = [
   { id: 'renewables-shortage', label: 'Renewables shortage' },
   { id: 'demand-surge', label: 'Demand surge' },
 ];
+const WORKSPACES = [
+  { id: 'operations', label: 'Operations' },
+  { id: 'schedule', label: 'Hourly schedule' },
+];
 
 async function requestSchedule(controls, signal) {
   const response = await fetch('/api/schedule', {
@@ -40,6 +44,8 @@ function App() {
   const [runControls, setRunControls] = useState(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const [workspace, setWorkspace] = useState('operations');
+  const workspaceTabs = useRef({});
 
   async function runSchedule(nextControls = controls) {
     setBusy(true);
@@ -107,8 +113,21 @@ function App() {
     runSchedule(DEFAULTS);
   }
 
+  function handleWorkspaceKeyDown(event, index) {
+    let nextIndex = index;
+    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') nextIndex = (index + 1) % WORKSPACES.length;
+    else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') nextIndex = (index - 1 + WORKSPACES.length) % WORKSPACES.length;
+    else if (event.key === 'Home') nextIndex = 0;
+    else if (event.key === 'End') nextIndex = WORKSPACES.length - 1;
+    else return;
+    event.preventDefault();
+    const nextWorkspace = WORKSPACES[nextIndex].id;
+    setWorkspace(nextWorkspace);
+    workspaceTabs.current[nextWorkspace]?.focus();
+  }
+
   return (
-    <div className="app-shell">
+    <div className="app-shell" id="top">
       <header className="topbar">
         <a className="brand" href="#top" aria-label="GridShift home">GridShift</a>
         <span className="topbar-divider" aria-hidden="true" />
@@ -116,7 +135,29 @@ function App() {
         <span className="synthetic-label"><span className="synthetic-dot" />Synthetic data</span>
       </header>
 
-      <div className="page-frame" id="top">
+      <div className="dashboard-content">
+        <nav className="dashboard-tabs" role="tablist" aria-label="GridShift workspaces">
+          {WORKSPACES.map((tab, index) => <button
+            key={tab.id}
+            ref={(element) => { workspaceTabs.current[tab.id] = element; }}
+            id={`${tab.id}-tab`}
+            type="button"
+            role="tab"
+            aria-selected={workspace === tab.id}
+            aria-controls={`${tab.id}-panel`}
+            tabIndex={workspace === tab.id ? 0 : -1}
+            className={`dashboard-tab${workspace === tab.id ? ' is-selected' : ''}`}
+            onClick={() => setWorkspace(tab.id)}
+            onKeyDown={(event) => handleWorkspaceKeyDown(event, index)}
+          >{tab.label}</button>)}
+        </nav>
+
+        <section id="operations-panel" className="workspace-panel operations-workspace" role="tabpanel" aria-labelledby="operations-tab" hidden={workspace !== 'operations'}>
+          <DynamicSimulation />
+        </section>
+
+        <section id="schedule-panel" className="workspace-panel schedule-workspace" role="tabpanel" aria-labelledby="schedule-tab" hidden={workspace !== 'schedule'}>
+        <div className="page-frame">
         <aside className="control-rail" aria-label="Schedule controls">
           <div className="control-rail-inner">
             <ScenarioControls
@@ -129,7 +170,7 @@ function App() {
           </div>
         </aside>
 
-        <main className="main-content">
+          <main className="main-content">
           <section className="page-heading" aria-labelledby="page-title">
             <div>
               <h1 id="page-title">{result?.optimizer?.priority_policy_label ?? 'Pro-priority'} scheduling.</h1>
@@ -186,38 +227,49 @@ function App() {
                     <EnergyChart result={result} />
                   </section>
 
-                  <section className="results-section" aria-labelledby="comparison-title">
-                    <div className="section-title-row results-heading">
-                      <div>
-                        <h2 id="comparison-title">Comparison</h2>
-                        <p className="section-unit">Same priority tiers, deadlines, and energy accounting</p>
+                  <details className="schedule-disclosure">
+                    <summary>Comparison results and baseline</summary>
+                    <section className="results-section" aria-labelledby="comparison-title">
+                      <div className="section-title-row results-heading">
+                        <div>
+                          <h2 id="comparison-title">Comparison</h2>
+                          <p className="section-unit">Same priority tiers, deadlines, and energy accounting</p>
+                        </div>
+                        <span className="solver-caption">{result.optimizer.solver}</span>
                       </div>
-                      <span className="solver-caption">{result.optimizer.solver}</span>
-                    </div>
-                    <ComparisonTable result={result} />
-                    {!result.comparison.comparable && (
-                      <p className="comparison-note" role="status">
-                        The ASAP baseline missed one or more deadlines. Percent changes are hidden because the delivered work is not comparable.
-                      </p>
-                    )}
-                  </section>
+                      <ComparisonTable result={result} />
+                      {!result.comparison.comparable && (
+                        <p className="comparison-note" role="status">
+                          The ASAP baseline missed one or more deadlines. Percent changes are hidden because the delivered work is not comparable.
+                        </p>
+                      )}
+                    </section>
+                  </details>
                 </>
               ) : (
                 <InfeasibleState result={result} onRestore={restoreBaseline} />
               )}
 
-              <PolicyDiagnostic result={result} />
+              <details className="schedule-disclosure policy-diagnostic-disclosure">
+                <summary>Same-input policy diagnostic</summary>
+                <PolicyDiagnostic result={result} />
+              </details>
 
-              <RealtimeQueue controls={controls} scheduleResult={result} />
+              <details className="schedule-disclosure">
+                <summary>Request priority queue</summary>
+                <RealtimeQueue controls={controls} scheduleResult={result} />
+              </details>
 
-              <section className="workload-section" aria-labelledby="workload-title">
-                <div className="section-title-row">
-                  <div>
-                    <h2 id="workload-title">Flexible jobs</h2>
-                    <p className="section-unit">Set simulated subscriber tier · release inclusive, deadline exclusive</p>
+              <details className="schedule-disclosure">
+                <summary>Flexible jobs and commitments</summary>
+                <section className="workload-section" aria-labelledby="workload-title">
+                  <div className="section-title-row">
+                    <div>
+                      <h2 id="workload-title">Flexible jobs</h2>
+                      <p className="section-unit">Set simulated subscriber tier · release inclusive, deadline exclusive</p>
+                    </div>
                   </div>
-                </div>
-                <div className="job-table-wrap">
+                  <div className="job-table-wrap">
                   <table className="job-table">
                     <thead>
                       <tr><th>Job</th><th>Tier</th><th>Release</th><th>Deadline</th><th>Demand</th><th>Priority ASAP</th><th>{result.optimizer.priority_policy_label} LP</th><th>Work-weighted avg execution</th></tr>
@@ -245,8 +297,9 @@ function App() {
                       })}
                     </tbody>
                   </table>
-                </div>
-              </section>
+                  </div>
+                </section>
+              </details>
 
               <details className="assumptions" id="assumptions">
                 <summary>
@@ -270,14 +323,14 @@ function App() {
             </>
           )}
 
-          <DynamicSimulation />
-
           <footer className="page-footer">
             <span>GridShift · HackSHSID Track 2 prototype</span>
             <span>Deterministic synthetic workload · seed 2026</span>
           </footer>
         </main>
       </div>
+        </section>
+    </div>
     </div>
   );
 }

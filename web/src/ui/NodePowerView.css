@@ -45,12 +45,36 @@
 .node-power-card-metrics > span { display: grid; gap: 2px; min-width: 0; }
 .node-power-card-metrics strong { overflow: hidden; color: #162643; font-size: 12px; font-variant-numeric: tabular-nums; text-overflow: ellipsis; white-space: nowrap; }
 .node-power-card-metrics small { color: #8190a4; font-size: 9px; }
+.simulation-workspace { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(340px, 1fr); align-items: start; gap: 12px; }
+.node-power-view.is-compact { align-content: start; gap: 8px; min-width: 0; margin-top: 0; padding: 12px; }
+.node-power-view.is-compact .node-power-heading { align-items: center; gap: 8px; }
+.node-power-view.is-compact .node-power-heading h3 { margin-bottom: 3px; font-size: 14px; }
+.node-power-view.is-compact .node-power-heading p { font-size: 9px; }
+.node-power-view.is-compact .node-power-total { min-width: 78px; }
+.node-power-view.is-compact .node-power-total span { font-size: 8px; }
+.node-power-view.is-compact .node-power-total strong { font-size: 14px; }
+.node-power-view-tabs { display: flex; align-items: center; gap: 5px; width: fit-content; padding: 3px; border: 1px solid #e4eaf1; border-radius: 6px; background: #f7f9fc; }
+.node-power-view-tabs button { height: 29px; min-height: 29px; padding: 0 9px; border: 0; border-radius: 4px; color: #65758c; background: transparent; font-size: 9px; font-weight: 600; line-height: 1; cursor: pointer; }
+.node-power-view-tabs button.is-selected { color: #194778; background: #fff; box-shadow: 0 1px 2px rgba(22, 43, 71, .12); }
+.node-power-view.is-compact .node-power-legend { gap: 6px 10px; font-size: 8px; }
+.node-power-view.is-compact .node-state-dot { width: 7px; height: 7px; flex-basis: 7px; }
+.node-power-view.is-compact .node-power-chart-wrap { padding-top: 1px; }
+.node-power-view.is-compact .node-power-chart { min-width: 560px; }
+.node-power-view.is-compact .node-power-row-label { font-size: 8px; }
+.node-power-view.is-compact .node-power-axis-label { font-size: 9px; }
+.node-power-view.is-compact .node-power-summary { gap: 5px 11px; padding: 7px 9px; font-size: 9px; }
+.node-power-view.is-compact .node-power-node-grid { max-height: 270px; overflow: auto; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); padding-right: 3px; }
+.node-power-view.is-compact .node-power-card { padding: 7px; }
+.node-power-view.is-compact .node-power-card-metrics { margin-top: 6px; }
 
 @media (max-width: 600px) {
+  .simulation-workspace { grid-template-columns: minmax(0, 1fr); }
   .node-power-view { gap: 11px; padding: 13px; }
   .node-power-heading { flex-direction: column; }
   .node-power-total { grid-template-columns: auto auto; align-items: baseline; justify-content: start; gap: 8px; text-align: left; }
   .node-power-time-control { grid-template-columns: 1fr auto; gap: 7px 10px; }
   .node-power-time-control input { grid-column: 1 / -1; grid-row: 2; }
   .node-power-node-grid { grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); }
+  .node-power-view.is-compact .node-power-heading { align-items: flex-start; }
+  .node-power-view.is-compact .node-power-chart { min-width: 560px; }
 }

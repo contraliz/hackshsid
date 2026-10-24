@@ -46,7 +46,7 @@ function RequestCard({ request, status }) {
   );
 }
 
-export function LiveTrafficView({ replay, minute }) {
+export function LiveTrafficView({ replay, minute, compact = false }) {
   const frames = Array.isArray(replay?.frames) ? replay.frames : [];
   const requests = Array.isArray(replay?.requests) ? replay.requests : [];
   const currentMinute = Math.min(Math.max(0, Number(minute) || 0), Math.max(0, frames.length - 1));
@@ -75,11 +75,11 @@ export function LiveTrafficView({ replay, minute }) {
   events.sort((a, b) => b.at - a.at || String(a.request.id).localeCompare(String(b.request.id)));
 
   if (!frames.length) {
-    return <section className="live-traffic" aria-labelledby="live-traffic-title"><h3 id="live-traffic-title">Live request replay</h3><p className="live-empty">This policy has no replay frames.</p></section>;
+    return <section className={`live-traffic${compact ? ' is-compact' : ''}`} aria-labelledby="live-traffic-title"><h3 id="live-traffic-title">Live request replay</h3><p className="live-empty">Run a simulation to show incoming requests, the waiting queue, running requests, and cumulative electricity cost.</p></section>;
   }
 
   return (
-    <section className="live-traffic" aria-labelledby="live-traffic-title">
+    <section className={`live-traffic${compact ? ' is-compact' : ''}`} aria-labelledby="live-traffic-title">
       <div className="live-traffic-title-row">
         <div>
           <h3 id="live-traffic-title">Live request replay</h3>
@@ -121,13 +121,13 @@ export function LiveTrafficView({ replay, minute }) {
       <div className="live-detail-grid live-request-lists">
         <div className="live-panel">
           <div className="live-panel-heading"><h4>Waiting queue</h4><span>{waiting.length} total · arrival order</span></div>
-          {waiting.length ? <ul className="live-request-list">{waiting.slice(0, MAX_CARDS).map((request) => <RequestCard key={request.id} request={request} status="waiting" />)}</ul> : <p className="live-empty">The queue is empty at this minute.</p>}
-          {waiting.length > MAX_CARDS && <p className="live-list-more">Showing {MAX_CARDS} of {waiting.length} waiting requests.</p>}
+          {waiting.length ? <ul className="live-request-list">{waiting.slice(0, compact ? 4 : MAX_CARDS).map((request) => <RequestCard key={request.id} request={request} status="waiting" />)}</ul> : <p className="live-empty">The queue is empty at this minute.</p>}
+          {waiting.length > (compact ? 4 : MAX_CARDS) && <p className="live-list-more">Showing {compact ? 4 : MAX_CARDS} of {waiting.length} waiting requests.</p>}
         </div>
         <div className="live-panel">
           <div className="live-panel-heading"><h4>Running requests</h4><span>{running.length} total</span></div>
-          {running.length ? <ul className="live-request-list">{running.slice(0, MAX_CARDS).map((request) => <RequestCard key={request.id} request={request} status="running" />)}</ul> : <p className="live-empty">No requests are running at this minute.</p>}
-          {running.length > MAX_CARDS && <p className="live-list-more">Showing {MAX_CARDS} of {running.length} running requests.</p>}
+          {running.length ? <ul className="live-request-list">{running.slice(0, compact ? 4 : MAX_CARDS).map((request) => <RequestCard key={request.id} request={request} status="running" />)}</ul> : <p className="live-empty">No requests are running at this minute.</p>}
+          {running.length > (compact ? 4 : MAX_CARDS) && <p className="live-list-more">Showing {compact ? 4 : MAX_CARDS} of {running.length} running requests.</p>}
         </div>
       </div>
     </section>

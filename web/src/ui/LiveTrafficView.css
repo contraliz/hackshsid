@@ -40,6 +40,34 @@
 .live-request-heading strong { overflow: hidden; color: #334760; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
 .live-request-card p { margin: 0; color: #61718a; font-size: 9px; font-variant-numeric: tabular-nums; }
 .live-request-card small { color: #8b98a9; font-size: 8px; }
+.live-traffic.is-compact { gap: 8px; align-content: start; min-width: 0; margin: 0; padding: 12px; }
+.live-traffic.is-compact .live-traffic-title-row h3 { font-size: 14px; }
+.live-traffic.is-compact .live-traffic-note { max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.live-traffic.is-compact .live-time-badge { padding: 4px 7px; font-size: 8px; }
+.live-traffic.is-compact .live-metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.live-traffic.is-compact .live-metric { gap: 2px; padding: 6px 8px; }
+.live-traffic.is-compact .live-metric strong { font-size: 13px; }
+.live-traffic.is-compact .live-cost strong { font-size: 16px; }
+.live-traffic.is-compact .live-metric small { overflow: hidden; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.live-traffic.is-compact .live-detail-grid { grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr); gap: 6px; }
+.live-traffic.is-compact .live-panel { padding: 8px; }
+.live-traffic.is-compact .live-panel-heading { align-items: flex-start; flex-direction: column; gap: 3px; margin-bottom: 5px; }
+.live-traffic.is-compact .live-panel-heading h4 { font-size: 10px; }
+.live-traffic.is-compact .live-panel-heading > span { white-space: normal; }
+.live-traffic.is-compact .live-cost-chart { height: 48px; }
+.live-traffic.is-compact .live-chart-axis { font-size: 8px; }
+.live-traffic.is-compact .live-chart-footnote { margin-top: 4px; font-size: 8px; }
+.live-traffic.is-compact .live-event-feed { max-height: 78px; }
+.live-traffic.is-compact .live-event-feed li { grid-template-columns: 30px 7px minmax(0, 1fr); gap: 5px; min-height: 19px; padding: 2px 0; }
+.live-traffic.is-compact .live-event-feed p { font-size: 8px; }
+.live-traffic.is-compact .live-request-lists { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.live-traffic.is-compact .live-request-lists .live-panel-heading { flex-direction: row; align-items: baseline; flex-wrap: wrap; }
+.live-traffic.is-compact .live-request-lists .live-panel-heading > span { font-size: 8px; }
+.live-traffic.is-compact .live-request-list { max-height: 74px; overflow: auto; padding-right: 2px; }
+.live-traffic.is-compact .live-request-card { gap: 2px; padding: 4px 6px; }
+.live-traffic.is-compact .live-request-card p { font-size: 8px; }
+.live-traffic.is-compact .live-request-card small { font-size: 8px; }
+.live-traffic.is-compact .live-empty, .live-traffic.is-compact .live-list-more { margin-top: 5px; font-size: 8px; }
 .simulation-playback { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 11px 12px; border: 1px solid #dce4ed; border-radius: 6px; background: #fbfcfe; color: #65758c; font-size: 10px; }
 .simulation-playback > label { color: #405570; font-weight: 600; }
 .simulation-playback select { min-height: 32px; padding: 4px 8px; border: 1px solid #dce4ed; border-radius: 4px; color: #334760; background: #fff; font-size: 10px; }
@@ -55,4 +83,8 @@
   .live-detail-grid { grid-template-columns: 1fr; }
   .live-metric strong { font-size: 13px; }
   .live-cost strong { font-size: 18px; }
+  .live-traffic.is-compact .live-detail-grid, .live-traffic.is-compact .live-request-lists { grid-template-columns: 1fr; }
+  .live-traffic.is-compact .live-panel-heading { align-items: center; flex-direction: row; flex-wrap: wrap; }
+  .live-traffic.is-compact .live-request-list { max-height: 140px; }
+  .live-traffic.is-compact .live-event-feed { max-height: 140px; }
 }
