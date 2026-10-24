@@ -1,7 +1,7 @@
 GridShift for Windows x64
 ========================
 
-1. Extract the entire GridShift-Windows-x64 folder from the ZIP. Keep the
+1. Extract the entire GridShift-Windows-x64-onedir folder from the ZIP. Keep the
    GridShift.exe and its _internal folder together; do not move the executable.
 2. Double-click GridShift.exe. It opens GridShift in your default browser and
    shows a small status window with the local address and a Stop and exit button.

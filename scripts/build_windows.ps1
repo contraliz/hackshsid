@@ -26,7 +26,7 @@ try {
     & $pythonPath -m pip install -r requirements-packaging.txt
     if ($LASTEXITCODE -ne 0) { throw "Installing the pinned packaging dependencies failed." }
 
-    $releaseDir = Join-Path $projectRoot "releases\GridShift-Windows-x64"
+    $releaseDir = Join-Path $projectRoot "releases\GridShift-Windows-x64-onedir"
     $distDir = Join-Path $projectRoot "build\gridshift-pyinstaller-dist"
     $workDir = Join-Path $projectRoot "build\gridshift-pyinstaller-work"
     New-Item -ItemType Directory -Force -Path $releaseDir | Out-Null
@@ -40,7 +40,7 @@ try {
     }
     Copy-Item -Path (Join-Path $distDir "GridShift\*") -Destination $releaseDir -Recurse -Force
     Copy-Item -LiteralPath "packaging\README-Portable.txt" -Destination (Join-Path $releaseDir "README-Run.txt") -Force
-    $zipPath = Join-Path $projectRoot "releases\GridShift-Windows-x64.zip"
+    $zipPath = Join-Path $projectRoot "releases\GridShift-Windows-x64-onedir.zip"
     Compress-Archive -Path $releaseDir -DestinationPath $zipPath -Force
 
     Write-Output "Windows x64 executable: $releaseDir\GridShift.exe"

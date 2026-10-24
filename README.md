@@ -41,9 +41,9 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The Flask process serves bo
 
 ## Windows executable
 
-The portable Windows x64 build bundles the Python runtime, Flask, SciPy/HiGHS, and the built frontend. The recipient does not need Python or Node.js. Extract the entire `GridShift-Windows-x64.zip` folder and double-click `GridShift.exe`; a small status window provides **Open GridShift**, **Copy address**, and **Stop and exit** controls. The app chooses an unused port and binds only to `127.0.0.1`. The build is unsigned and Windows SmartScreen may warn.
+The portable Windows x64 build bundles the Python runtime, Flask, SciPy/HiGHS, and the built frontend. The recipient does not need Python or Node.js. Extract the entire `GridShift-Windows-x64-onedir.zip` folder and double-click `GridShift.exe`; a small status window provides **Open GridShift**, **Copy address**, and **Stop and exit** controls. The app chooses an unused port and binds only to `127.0.0.1`. The build is unsigned and Windows SmartScreen may warn.
 
-Build it on Windows from the project root with `powershell -ExecutionPolicy Bypass -File scripts/build_windows.ps1`. The script runs `npm ci` if frontend dependencies are absent, builds the frontend, installs the pinned packaging tool, and creates `releases/GridShift-Windows-x64/GridShift.exe` plus `releases/GridShift-Windows-x64.zip`. See [packaging/README-Portable.txt](packaging/README-Portable.txt) for recipient instructions.
+Build it on Windows from the project root with `powershell -ExecutionPolicy Bypass -File scripts/build_windows.ps1`. The script runs `npm ci` if frontend dependencies are absent, builds the frontend, installs the pinned packaging tool, and creates `releases/GridShift-Windows-x64-onedir/GridShift.exe` plus `releases/GridShift-Windows-x64-onedir.zip`. The older one-file release artifacts are retained separately and are not rebuilt by this script. See [packaging/README-Portable.txt](packaging/README-Portable.txt) for recipient instructions.
 
 ## Demo guide
 
