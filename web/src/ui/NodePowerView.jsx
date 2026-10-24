@@ -68,7 +68,7 @@ export function NodePowerView({ replay, minute = 0, onMinuteChange = () => {}, g
   const frame = valid ? frames[minuteIndex] : null;
   const totalPower = frame ? frame.power_kw.reduce((sum, value) => sum + (Number(value) || 0), 0) : 0;
   const totalUsed = frame ? frame.used_gpus.reduce((sum, value) => sum + (Number(value) || 0), 0) : 0;
-  const rowHeight = compact ? 10 : ROW_HEIGHT;
+  const rowHeight = compact ? 12 : ROW_HEIGHT;
   const chartHeight = TOP * 2 + nodeIds.length * rowHeight + 23;
   const plotWidth = CHART_WIDTH - LABEL_WIDTH;
 

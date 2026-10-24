@@ -394,29 +394,29 @@ details[open] > summary .chevron { transform: rotate(180deg); }
 .dynamic-dashboard { display: grid; gap: 8px; }
 .dynamic-dashboard-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .dynamic-dashboard-heading h1 { margin: 0; color: var(--ink); font-size: 21px; line-height: 1.2; letter-spacing: -.45px; }
-.dynamic-dashboard-heading p { margin: 4px 0 0; color: var(--slate); font-size: 10px; }
-.dynamic-synthetic-badge { padding: 5px 9px; border: 1px solid #dce7f3; border-radius: 999px; color: #3a628a; background: #f3f8fe; font-size: 9px; font-weight: 700; white-space: nowrap; }
+.dynamic-dashboard-heading p { margin: 4px 0 0; color: var(--slate); font-size: 11px; }
+.dynamic-synthetic-badge { padding: 5px 9px; border: 1px solid #dce7f3; border-radius: 999px; color: #3a628a; background: #f3f8fe; font-size: 11px; font-weight: 700; white-space: nowrap; }
 .dynamic-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 6px; margin: 0; }
 .dynamic-primary-controls { grid-column: 1; grid-row: 1; }
 .dynamic-primary-controls { display: flex; align-items: end; flex-wrap: wrap; gap: 9px; }
-.dynamic-controls label { display: grid; gap: 4px; color: #536781; font-size: 9px; font-weight: 600; }
-.dynamic-primary-controls input[type="number"], .dynamic-secondary-controls input[type="number"] { width: 100px; min-height: 32px; padding: 5px 8px; border: 1px solid var(--border); border-radius: 5px; background: #fff; color: var(--ink); font-size: 11px; }
-.dynamic-primary-controls .run-button { min-height: 32px; padding: 0 13px; font-size: 10px; }
+.dynamic-controls label { display: grid; gap: 4px; color: #536781; font-size: 12px; font-weight: 600; }
+.dynamic-primary-controls input[type="number"], .dynamic-secondary-controls input[type="number"] { width: 100px; min-height: 34px; padding: 5px 8px; border: 1px solid var(--border); border-radius: 5px; background: #fff; color: var(--ink); font-size: 12px; }
+.dynamic-primary-controls .run-button { min-height: 34px; padding: 0 13px; font-size: 12px; }
 .dynamic-tuning { grid-column: 2; grid-row: 1; align-self: end; width: fit-content; }
-.dynamic-tuning > summary { display: inline-flex; align-items: center; gap: 8px; color: #55708e; font-size: 9px; font-weight: 600; cursor: pointer; }
+.dynamic-tuning > summary { display: inline-flex; align-items: center; gap: 8px; color: #55708e; font-size: 11px; font-weight: 600; cursor: pointer; }
 .dynamic-tuning > summary span { color: #8996a8; font-weight: 400; }
 .dynamic-secondary-controls { display: flex; align-items: end; flex-wrap: wrap; gap: 8px; padding: 8px; border: 1px solid #e5ebf2; border-radius: 5px; background: #fbfcfe; }
 .dynamic-secondary-controls .dynamic-checkbox { display: flex; align-items: center; gap: 6px; min-height: 32px; }
 .dynamic-secondary-controls .quiet-button { min-height: 32px; }
 .dynamic-output { gap: 7px; }
 .dynamic-status-strip { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 15px; }
-.dynamic-run-summary, .dynamic-admission-note { margin: 0; color: #708098; font-size: 9px; line-height: 1.35; }
+.dynamic-run-summary, .dynamic-admission-note { margin: 0; color: #708098; font-size: 11px; line-height: 1.35; }
 .dynamic-run-summary { font-variant-numeric: tabular-nums; }
 .dynamic-run-summary span { padding: 0 3px; color: #b0bac7; }
 .dynamic-admission-note strong { color: #334760; text-transform: capitalize; }
 .simulation-playback { gap: 6px; padding: 7px 9px; }
-.simulation-playback .quiet-button { min-height: 29px; }
-.simulation-playback select { min-height: 29px; }
+.simulation-playback .quiet-button { min-height: 34px; font-size: 12px; }
+.simulation-playback select { min-height: 34px; font-size: 12px; }
 .simulation-playback input[type='range'] { flex-basis: 130px; }
 .simulation-workspace { align-items: stretch; }
 .simulation-data-disclosure > .job-table-wrap { margin: 10px; }
@@ -445,7 +445,7 @@ details[open] > summary .chevron { transform: rotate(180deg); }
   .dynamic-secondary-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .dynamic-secondary-controls input[type="number"] { width: 100%; }
   .dynamic-status-strip { align-items: flex-start; flex-direction: column; gap: 2px; }
-  .dynamic-run-summary, .dynamic-admission-note { font-size: 8px; }
+  .dynamic-run-summary, .dynamic-admission-note { font-size: 11px; }
   .simulation-playback { align-items: center; }
   .simulation-playback input[type='range'] { flex-basis: 100%; order: 1; }
   .simulation-playback .simulation-seek-label { margin-left: auto; }
