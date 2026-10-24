@@ -23,20 +23,6 @@
 .savings-metric p > span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .savings-reason { display: block; margin-top: 4px; color: #77869a; font-size: 11px; line-height: 1.3; }
 .savings-report-empty { margin: 2px 0 0; color: #65758c; font-size: 11px; line-height: 1.4; }
-.pareto-status { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; min-width: 0; padding: 5px 7px; border-radius: 5px; background: #f2f6fb; color: #425570; font-size: 11px; }
-.pareto-status > strong { color: #28568a; font-size: 12px; }
-.pareto-status > span { font-variant-numeric: tabular-nums; }
-.pareto-status > small { color: #74849a; font-size: 11px; }
-.pareto-status.is-dominated { background: #f8f3e9; }
-.pareto-status.is-service_ineligible, .pareto-status.is-no_comparable_candidates { background: #fff4ec; }
-.pareto-details { min-width: 0; max-width: 100%; overflow: hidden; border-top: 1px solid #edf1f5; padding-top: 4px; }
-.pareto-details > summary { width: fit-content; color: #536781; font-size: 11px; font-weight: 650; cursor: pointer; }
-.pareto-note { margin: 6px 0; color: #65758c; font-size: 11px; line-height: 1.4; }
-.pareto-table { width: 100%; min-width: 720px; table-layout: auto; border-collapse: collapse; color: #405570; font-size: 12px; }
-.pareto-table th, .pareto-table td { padding: 6px 8px; border-bottom: 1px solid #edf1f5; text-align: left; white-space: nowrap; }
-.pareto-table thead th { color: #65758c; font-size: 11px; font-weight: 650; }
-.pareto-table tbody th { font-weight: 550; }
-.pareto-table td { font-variant-numeric: tabular-nums; }
 .savings-service-details { min-width: 0; max-width: 100%; overflow: hidden; border-top: 1px solid #edf1f5; padding-top: 4px; }
 .savings-service-details > summary { width: fit-content; color: #536781; font-size: 11px; font-weight: 650; cursor: pointer; }
 .savings-service-note { margin: 7px 0; padding: 7px 9px; border-left: 3px solid #d28a19; background: #fff9ed; color: #775618; font-size: 11px; line-height: 1.4; }

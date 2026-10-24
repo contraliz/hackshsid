@@ -108,7 +108,7 @@ export function DynamicSimulation() {
             <input id="replay-minute" type="range" min="0" max={lastMinute} value={Math.min(minute, lastMinute)} onChange={(event) => { setPlaying(false); setMinute(Number(event.target.value)); }} aria-label="Simulation minute" />
           </> : <span className="control-help">This result does not include minute-by-minute replay data.</span>}
         </div>
-        <SavingsReport comparison={result.comparisons?.[selectedPolicy]} baseline={result.unscheduled_baseline} objectiveAnalysis={result.objective_analysis} selectedPolicy={selectedPolicy} />
+        <SavingsReport comparison={result.comparisons?.[selectedPolicy]} baseline={result.unscheduled_baseline} />
         <div className="simulation-workspace">
           <NodePowerView compact replay={selectedReplay} minute={minute} onMinuteChange={setMinute} gpusPerNode={result.gpus_per_node} />
           <LiveTrafficView compact replay={selectedReplay} minute={minute} />

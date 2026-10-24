@@ -25,11 +25,11 @@ function number(value, digits = 1) {
   return Number(value).toLocaleString(undefined, { maximumFractionDigits: digits, minimumFractionDigits: 0 });
 }
 
-function quantity(metrics, key, unit, digits = 1) {
+function quantity(metrics, key, unit) {
   const value = metrics?.[key];
   return value === null || value === undefined || value === '' || !Number.isFinite(Number(value))
     ? '—'
-    : `${number(value, digits)}${unit ? ` ${unit}` : ''}`;
+    : `${number(value, 1)} ${unit}`;
 }
 
 function metricChange(pct) {
@@ -41,7 +41,7 @@ function metricChange(pct) {
   return { text: `${number(value, 1)}% ${value === 0 ? 'change' : 'lower'}`, kind: value === 0 ? 'neutral' : 'reduction' };
 }
 
-export function SavingsReport({ comparison, baseline, objectiveAnalysis, selectedPolicy }) {
+export function SavingsReport({ comparison, baseline }) {
   if (!comparison) {
     return <section className="savings-report" aria-label="Unscheduled baseline comparison">
       <div className="savings-report-heading"><h2>Vs. unscheduled baseline</h2><span>Full simulated day</span></div>
@@ -56,33 +56,11 @@ export function SavingsReport({ comparison, baseline, objectiveAnalysis, selecte
   const optimizedLabel = optimized?.label ?? 'Selected controller';
   const comparable = comparison.service_comparable;
   const hasServiceComparison = comparable === true || comparable === false;
-  const selectedCandidate = objectiveAnalysis?.candidates?.[selectedPolicy];
-  const candidateKeys = objectiveAnalysis?.candidate_order || [];
-  const candidateLabels = objectiveAnalysis?.candidates || {};
-  const objectiveDefinitions = [
-    ['facility_kwh', 'Facility electricity', 'kWh'],
-    ['cost_cny', 'Grid cost', 'CNY'],
-    ['emissions_kg', 'Operational grid emissions', 'kg CO₂'],
-  ];
-  const paretoLabel = selectedCandidate?.status === 'pareto_frontier'
-    ? 'Pareto candidate · frontier of these simulated alternatives'
-    : selectedCandidate?.status === 'dominated'
-      ? 'Dominated among service-comparable simulated alternatives'
-      : selectedCandidate?.status === 'service_ineligible'
-        ? 'Excluded from frontier · service outcomes differ'
-        : objectiveAnalysis?.status === 'no_comparable_candidates'
-          ? 'No service-comparable candidates for a frontier'
-          : 'Three-objective frontier unavailable';
 
   return <section className="savings-report" aria-labelledby="savings-report-title">
     <div className="savings-report-heading">
       <h2 id="savings-report-title">Savings vs. {baselineLabel}</h2>
       <span>{optimizedLabel} · full-day totals · synthetic estimates</span>
-    </div>
-    <div className={`pareto-status is-${selectedCandidate?.status || objectiveAnalysis?.status || 'unavailable'}`} role="status">
-      <strong>{paretoLabel}</strong>
-      {selectedCandidate?.individual_minima && <span>{objectiveDefinitions.filter(([key]) => selectedCandidate.individual_minima[key]).map(([, label]) => `lowest ${label}`).join(' · ') || 'No individual minimum'}</span>}
-      <small>Objectives: facility kWh, cost CNY, and grid kg CO₂; no cross-unit weights.</small>
     </div>
 
     <div className="savings-metric-row">
@@ -97,31 +75,6 @@ export function SavingsReport({ comparison, baseline, objectiveAnalysis, selecte
         </article>;
       })}
     </div>
-
-    <details className="pareto-details">
-      <summary>Compare simulated objective candidates · {objectiveAnalysis?.status === 'available' ? 'frontier available' : objectiveAnalysis?.status || 'unavailable'}</summary>
-      {!objectiveAnalysis?.candidates && <p className="savings-report-empty" role="status">Pareto analysis is unavailable from this API response.</p>}
-      {objectiveAnalysis?.candidates && <>
-        <p className="pareto-note">{objectiveAnalysis.scope === 'simulated_candidates_same_trace_not_global_optimum' ? 'This is the non-dominated frontier among this run’s identical-trace candidates, not a global solver optimum.' : 'Candidate analysis is limited to the candidates returned by this API.'} Facility electricity includes site overhead/PUE; grid imports are a separate quantity. The API tolerance is {objectiveAnalysis.tolerance?.absolute ?? '—'} absolute and {objectiveAnalysis.tolerance?.relative ?? '—'} relative.</p>
-        <div className="savings-service-table-wrap">
-          <table className="pareto-table">
-            <thead><tr><th scope="col">Candidate</th><th scope="col">Eligibility / status</th>{objectiveDefinitions.map(([, label, unit]) => <th key={label} scope="col">{label} ({unit})</th>)}<th scope="col">Individual minimum</th></tr></thead>
-            <tbody>{candidateKeys.map((key) => {
-              const candidate = candidateLabels[key];
-              if (!candidate) return null;
-              const minima = candidate.individual_minima || {};
-              return <tr key={key}>
-                <th scope="row">{candidate.label}</th>
-                <td>{candidate.status === 'pareto_frontier' ? 'Pareto frontier' : candidate.status === 'dominated' ? 'Dominated' : 'Service-ineligible'}</td>
-                {objectiveDefinitions.map(([metric]) => <td key={metric}>{quantity(candidate.metrics, metric, '', 3)}</td>)}
-                <td>{objectiveDefinitions.filter(([metric]) => minima[metric]).map(([, label]) => label).join(', ') || '—'}</td>
-              </tr>;
-            })}</tbody>
-          </table>
-        </div>
-        {objectiveAnalysis.service_ineligible_candidates?.length > 0 && <p className="pareto-note">Excluded for service outcome differences: {objectiveAnalysis.service_ineligible_candidates.map((key) => candidateLabels[key]?.label || key).join(', ')}.</p>}
-      </>}
-    </details>
 
     <details className="savings-service-details">
       <summary>{comparable ? 'Service outcomes match · inspect latency and delivery differences' : 'Service outcomes differ · review before comparing savings'}</summary>
