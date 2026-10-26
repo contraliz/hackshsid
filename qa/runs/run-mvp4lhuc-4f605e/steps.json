@@ -1,0 +1,94 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "#dynamic-title",
+    "ms": 55
+  },
+  {
+    "index": 1,
+    "action": "fill",
+    "ok": true,
+    "target": "#dynamic-nodes",
+    "ms": 14
+  },
+  {
+    "index": 2,
+    "action": "select",
+    "ok": true,
+    "target": "#dynamic-traffic-profile",
+    "ms": 17
+  },
+  {
+    "index": 3,
+    "action": "select",
+    "ok": true,
+    "target": "#dynamic-headroom",
+    "ms": 5
+  },
+  {
+    "index": 4,
+    "action": "click",
+    "ok": true,
+    "target": "summary",
+    "ms": 49
+  },
+  {
+    "index": 5,
+    "action": "fill",
+    "ok": true,
+    "target": "#dynamic-warm-overhead",
+    "ms": 6
+  },
+  {
+    "index": 6,
+    "action": "click",
+    "ok": true,
+    "target": "label.dynamic-checkbox",
+    "ms": 18
+  },
+  {
+    "index": 7,
+    "action": "click",
+    "ok": true,
+    "target": ".run-button",
+    "ms": 52
+  },
+  {
+    "index": 8,
+    "action": "wait_for",
+    "ok": true,
+    "target": "At the realized offered-load peak",
+    "ms": 2844
+  },
+  {
+    "index": 9,
+    "action": "fill",
+    "ok": true,
+    "target": "#replay-minute",
+    "ms": 17
+  },
+  {
+    "index": 10,
+    "action": "click",
+    "ok": true,
+    "target": ".node-power-view-tabs button:nth-child(2)",
+    "ms": 39
+  },
+  {
+    "index": 11,
+    "action": "scroll",
+    "ok": true,
+    "target": ".node-power-view",
+    "ms": 23
+  },
+  {
+    "index": 12,
+    "action": "capture",
+    "ok": true,
+    "target": "peak-node-details",
+    "ms": 84,
+    "capture": "peak-node-details"
+  }
+]

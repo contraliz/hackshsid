@@ -1,0 +1,111 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Data center operations",
+    "ms": 74
+  },
+  {
+    "index": 1,
+    "action": "capture",
+    "ok": true,
+    "target": "mobile-default",
+    "ms": 35,
+    "capture": "mobile-default"
+  },
+  {
+    "index": 2,
+    "action": "click",
+    "ok": true,
+    "target": "More controls",
+    "ms": 40
+  },
+  {
+    "index": 3,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Warm standby target (nodes)",
+    "ms": 7
+  },
+  {
+    "index": 4,
+    "action": "capture",
+    "ok": true,
+    "target": "mobile-warm-stock-control",
+    "ms": 30,
+    "capture": "mobile-warm-stock-control"
+  },
+  {
+    "index": 5,
+    "action": "click",
+    "ok": true,
+    "target": "More controls",
+    "ms": 21
+  },
+  {
+    "index": 6,
+    "action": "click",
+    "ok": true,
+    "target": "Run simulation",
+    "ms": 32
+  },
+  {
+    "index": 7,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Warm standby (ready to promote now)",
+    "ms": 2891
+  },
+  {
+    "index": 8,
+    "action": "wait_for",
+    "ok": true,
+    "target": "40 minutes",
+    "ms": 14
+  },
+  {
+    "index": 9,
+    "action": "fill",
+    "ok": true,
+    "target": "#replay-minute",
+    "ms": 21
+  },
+  {
+    "index": 10,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Forecast readiness at 01:10",
+    "ms": 25
+  },
+  {
+    "index": 11,
+    "action": "scroll",
+    "ok": true,
+    "target": ".node-power-view",
+    "ms": 25
+  },
+  {
+    "index": 12,
+    "action": "capture",
+    "ok": true,
+    "target": "mobile-full-width-state-timeline",
+    "ms": 33,
+    "capture": "mobile-full-width-state-timeline"
+  },
+  {
+    "index": 13,
+    "action": "click",
+    "ok": true,
+    "target": "Node details",
+    "ms": 74
+  },
+  {
+    "index": 14,
+    "action": "capture",
+    "ok": true,
+    "target": "mobile-0110-node-labels-reserve",
+    "ms": 34,
+    "capture": "mobile-0110-node-labels-reserve"
+  }
+]

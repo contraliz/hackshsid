@@ -1,0 +1,16 @@
+{
+  "run_id": "run-mvp81kyi-58a6be",
+  "verdict": "Baseline reproduction: chart invisible in the first compact view.",
+  "findings": [
+    {
+      "id": "fnd-mvp8g162-b1ca5e",
+      "recorded_at": "2026-10-26T12:28:21.867Z",
+      "claim": "QA-01 (medium, unresolved at baseline): The State timeline chart was not visible in the initial compact panel because reserve cards/diagnostics came first and the SVG had collapsed. The user could not find the requested colored per-node history.",
+      "evidence": [
+        "captures/before-compact-node-panel.png",
+        "steps.json",
+        "measurements.json"
+      ]
+    }
+  ]
+}

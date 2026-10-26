@@ -1,0 +1,18 @@
+{
+  "run_id": "run-mvp8ch2w-9efd0b",
+  "verdict": "Desktop final UI pass; no confirmed open product issues.",
+  "findings": [
+    {
+      "id": "fnd-mvp8g19g-746a7b",
+      "recorded_at": "2026-10-26T12:28:21.988Z",
+      "claim": "QA-01 (medium, resolved and retested): State timeline visibly renders in the main panel; the 01:10 seek remains functional. Node details tab preserves workload labels and per-node cards.",
+      "evidence": [
+        "captures/state-timeline-default-visible.png",
+        "captures/state-timeline-0110-reserve-context.png",
+        "captures/node-details-work-labels.png",
+        "steps.json",
+        "measurements.json"
+      ]
+    }
+  ]
+}

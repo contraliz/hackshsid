@@ -1,0 +1,163 @@
+{
+  "url": "http://127.0.0.1:8001/",
+  "title": "GridShift — Compute & energy scheduler",
+  "viewport": {
+    "w": 390,
+    "h": 844,
+    "dpr": 1
+  },
+  "document": {
+    "scroll_width": 390,
+    "scroll_height": 2920
+  },
+  "measurements": [
+    {
+      "rule": "horizontal_overflow",
+      "definition": "document scrollWidth exceeds the viewport width",
+      "threshold": "scrollWidth - innerWidth > 0",
+      "count": 0,
+      "truncated": false,
+      "items": []
+    },
+    {
+      "rule": "broken_images",
+      "definition": "img elements whose bytes failed to load",
+      "threshold": "complete && naturalWidth === 0",
+      "count": 0,
+      "truncated": false,
+      "items": []
+    },
+    {
+      "rule": "images_missing_alt",
+      "definition": "img elements with no alt attribute (empty alt is treated as decorative and allowed)",
+      "threshold": "!img.hasAttribute('alt')",
+      "count": 0,
+      "truncated": false,
+      "items": []
+    },
+    {
+      "rule": "small_targets",
+      "definition": "visible interactive controls smaller than 24x24 CSS px",
+      "threshold": "width < 24 || height < 24",
+      "count": 5,
+      "truncated": false,
+      "items": [
+        {
+          "selector": "#top > header > a",
+          "tag": "a",
+          "box": {
+            "x": 16,
+            "y": 19,
+            "w": 82,
+            "h": 20
+          },
+          "text": "GridShift",
+          "width": 82,
+          "height": 20
+        },
+        {
+          "selector": "section > form > details > div > label:nth-of-type(6) > input",
+          "tag": "input",
+          "box": {
+            "x": 203,
+            "y": 582,
+            "w": 13,
+            "h": 13
+          },
+          "text": "on",
+          "width": 13,
+          "height": 13
+        },
+        {
+          "selector": "#replay-minute",
+          "tag": "input",
+          "box": {
+            "x": 24,
+            "y": 931,
+            "w": 342,
+            "h": 16
+          },
+          "text": "0",
+          "width": 342,
+          "height": 16
+        },
+        {
+          "selector": "div:nth-of-type(2) > details:nth-of-type(3) > div > ul > li:nth-of-type(6) > a:nth-of-type(1)",
+          "tag": "a",
+          "box": {
+            "x": 223,
+            "y": 3328,
+            "w": 61,
+            "h": 14
+          },
+          "text": "",
+          "width": 61,
+          "height": 14
+        },
+        {
+          "selector": "div:nth-of-type(2) > details:nth-of-type(3) > div > ul > li:nth-of-type(6) > a:nth-of-type(2)",
+          "tag": "a",
+          "box": {
+            "x": 62,
+            "y": 3360,
+            "w": 61,
+            "h": 14
+          },
+          "text": "",
+          "width": 61,
+          "height": 14
+        }
+      ]
+    },
+    {
+      "rule": "clipped_text",
+      "definition": "elements hiding their own overflow whose content does not fit",
+      "threshold": "overflow hidden/clip and scrollWidth/scrollHeight exceed client box by >1px",
+      "count": 3,
+      "truncated": false,
+      "items": [
+        {
+          "selector": "div:nth-of-type(2) > section > div:nth-of-type(2) > article:nth-of-type(3) > div > span",
+          "tag": "span",
+          "box": {
+            "x": 33,
+            "y": 1074,
+            "w": 92,
+            "h": 15
+          },
+          "text": "Illustrative grid cost",
+          "hidden_px_x": 3,
+          "hidden_px_y": 0
+        },
+        {
+          "selector": "div:nth-of-type(2) > div:nth-of-type(3) > section:nth-of-type(2) > div:nth-of-type(1) > div > p",
+          "tag": "p",
+          "box": {
+            "x": 25,
+            "y": 1876,
+            "w": 260,
+            "h": 16
+          },
+          "text": "Deterministic synthetic traffic · simulation time 00:00 · no live hardware or cu",
+          "hidden_px_x": 175,
+          "hidden_px_y": 0
+        },
+        {
+          "selector": "div:nth-of-type(2) > div:nth-of-type(3) > section:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(4) > small",
+          "tag": "small",
+          "box": {
+            "x": 207,
+            "y": 2018,
+            "w": 149,
+            "h": 15
+          },
+          "text": "0 completed · 0 rejected by now",
+          "hidden_px_x": 7,
+          "hidden_px_y": 0
+        }
+      ]
+    }
+  ],
+  "measured_at": "2026-10-26T10:39:48.001Z",
+  "runtime": []
+}

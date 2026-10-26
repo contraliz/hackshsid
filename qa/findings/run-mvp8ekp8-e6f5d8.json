@@ -1,0 +1,18 @@
+{
+  "run_id": "run-mvp8ekp8-e6f5d8",
+  "verdict": "Latest desktop final run; chart issue resolved.",
+  "findings": [
+    {
+      "id": "fnd-mvp8g1ae-e3d199",
+      "recorded_at": "2026-10-26T12:28:22.022Z",
+      "claim": "QA-01 (medium, resolved and retested on latest build): The colored state history is visible directly under the State timeline legend at desktop 1366 × 768; seek to 01:10 works and Node details shows workload labels and per-node cards.",
+      "evidence": [
+        "captures/state-timeline-default-visible.png",
+        "captures/state-timeline-0110-reserve-context.png",
+        "captures/node-details-work-labels.png",
+        "steps.json",
+        "measurements.json"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Data center operations",
+    "ms": 96
+  },
+  {
+    "index": 1,
+    "action": "wait_for",
+    "ok": false,
+    "target": "Warm standby target (nodes)",
+    "ms": 10008,
+    "error": "condition not met within 10008ms"
+  }
+]

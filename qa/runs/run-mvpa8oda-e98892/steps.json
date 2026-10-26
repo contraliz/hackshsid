@@ -1,0 +1,69 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Data center operations",
+    "ms": 134
+  },
+  {
+    "index": 1,
+    "action": "capture",
+    "ok": true,
+    "target": "initial-default-controls",
+    "ms": 68,
+    "capture": "initial-default-controls"
+  },
+  {
+    "index": 2,
+    "action": "click",
+    "ok": true,
+    "target": "Run simulation",
+    "ms": 50
+  },
+  {
+    "index": 3,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Node power states",
+    "ms": 3493
+  },
+  {
+    "index": 4,
+    "action": "capture",
+    "ok": true,
+    "target": "default-node-state-timeline",
+    "ms": 46,
+    "capture": "default-node-state-timeline"
+  },
+  {
+    "index": 5,
+    "action": "fill",
+    "ok": true,
+    "target": "#replay-minute",
+    "ms": 16
+  },
+  {
+    "index": 6,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Forecast readiness at 01:10",
+    "ms": 14
+  },
+  {
+    "index": 7,
+    "action": "capture",
+    "ok": true,
+    "target": "forecast-0110-ready-capacity",
+    "ms": 35,
+    "capture": "forecast-0110-ready-capacity"
+  },
+  {
+    "index": 8,
+    "action": "click",
+    "ok": false,
+    "target": "Grid cost by hour",
+    "ms": 5004,
+    "error": "locator.click: Timeout 5000ms exceeded."
+  }
+]

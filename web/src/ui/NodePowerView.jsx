@@ -2,11 +2,11 @@ import { useMemo, useState } from 'react';
 import './NodePowerView.css';
 
 const STATES = [
-  { id: 'active', label: 'Active', color: '#1677f2' },
-  { id: 'warm', label: 'Warm standby', color: '#45a87a' },
-  { id: 'warming', label: 'Warming', color: '#e0a12e' },
-  { id: 'booting', label: 'Booting', color: '#b184d3' },
-  { id: 'off', label: 'Powered off', color: '#d8dee8' },
+  { id: 'active', label: 'Active', legendLabel: 'Active (busy or idle)', color: '#1677f2' },
+  { id: 'warm', label: 'Warm standby', legendLabel: 'Warm standby (ready to promote now)', color: '#45a87a' },
+  { id: 'warming', label: 'Warming', legendLabel: 'Warming (not ready)', color: '#e0a12e' },
+  { id: 'booting', label: 'Booting', legendLabel: 'Booting (not ready)', color: '#b184d3' },
+  { id: 'off', label: 'Powered off', legendLabel: 'Off (not ready)', color: '#d8dee8' },
 ];
 const STATE_COLORS = Object.fromEntries(STATES.map(({ id, color }) => [id, color]));
 const CHART_WIDTH = 1200;
@@ -83,6 +83,26 @@ export function NodePowerView({ replay, minute = 0, onMinuteChange = () => {}, g
   const frame = valid ? frames[minuteIndex] : null;
   const totalPower = frame ? frame.power_kw.reduce((sum, value) => sum + (Number(value) || 0), 0) : 0;
   const totalUsed = frame ? frame.used_gpus.reduce((sum, value) => sum + (Number(value) || 0), 0) : 0;
+  const hasWorkloadBreakdown = Array.isArray(frame?.realtime_used_gpus) && Array.isArray(frame?.flexible_used_gpus)
+    && frame.realtime_used_gpus.length === nodeIds.length && frame.flexible_used_gpus.length === nodeIds.length;
+  const totalRealtimeUsed = hasWorkloadBreakdown ? frame.realtime_used_gpus.reduce((sum, value) => sum + (Number(value) || 0), 0) : 0;
+  const totalFlexibleUsed = hasWorkloadBreakdown ? frame.flexible_used_gpus.reduce((sum, value) => sum + (Number(value) || 0), 0) : 0;
+  const stateCount = (state) => frame ? frame.states.filter((value) => value === state).length : 0;
+  const activeNodeCount = stateCount('active');
+  const warmNodeCount = stateCount('warm');
+  const warmingNodeCount = stateCount('warming');
+  const bootingNodeCount = stateCount('booting');
+  const offNodeCount = stateCount('off');
+  const activeCapacity = frame && Number.isFinite(frame.active_capacity_gpus)
+    ? frame.active_capacity_gpus
+    : gpusPerNode > 0 ? activeNodeCount * gpusPerNode : null;
+  const activeSpare = frame && Number.isFinite(frame.active_spare_gpus)
+    ? frame.active_spare_gpus
+    : activeCapacity === null ? null : Math.max(0, activeCapacity - totalUsed);
+  const hasRequestTimeline = Array.isArray(replay?.requests) && replay.requests.every((request) => Number.isFinite(request.arrival_minute));
+  const waitingNow = hasRequestTimeline ? replay.requests.filter((request) => request.arrival_minute <= frame.minute
+    && (request.started_at_minute == null || request.started_at_minute > frame.minute)
+    && (request.rejected_at_minute == null || request.rejected_at_minute > frame.minute)).length : null;
   const rowHeight = compact ? 12 : ROW_HEIGHT;
   const chartHeight = TOP * 2 + nodeIds.length * rowHeight + 23;
   const plotWidth = CHART_WIDTH - LABEL_WIDTH;
@@ -115,7 +135,7 @@ export function NodePowerView({ replay, minute = 0, onMinuteChange = () => {}, g
 
   return <section className={`node-power-view${compact ? ' is-compact' : ''}`} aria-labelledby="node-power-title" tabIndex={compact ? 0 : undefined} onKeyDown={scrollPanelWithKeyboard}>
     <div className="node-power-heading">
-      <div><h3 id="node-power-title">Node power states</h3><p>{compact ? `All ${nodeIds.length} nodes · click the timeline to inspect any minute.` : 'Observed node states across the simulation; select a minute to inspect power and GPU occupancy.'}</p></div>
+      <div><h3 id="node-power-title">Node power states</h3><p>{compact ? `Full-day state timeline for all ${nodeIds.length} nodes · click the graph to inspect a minute.` : 'Observed node states across the simulation; select a minute to inspect power and GPU occupancy.'}</p></div>
       <div className="node-power-total" aria-live="polite"><span>Node IT draw</span><strong>{number(totalPower)} kW</strong></div>
     </div>
 
@@ -125,13 +145,13 @@ export function NodePowerView({ replay, minute = 0, onMinuteChange = () => {}, g
     </div>}
 
     {(!compact || compactView === 'timeline') && <div className="node-power-legend" aria-label="Node state legend">
-      {STATES.map((state) => <span key={state.id}><i className={`node-state-dot state-${state.id}`} aria-hidden="true" />{state.label}</span>)}
+      {STATES.map((state) => <span key={state.id}><i className={`node-state-dot state-${state.id}`} aria-hidden="true" />{state.legendLabel}</span>)}
     </div>}
 
-    {(!compact || compactView === 'timeline') && <div className="node-power-chart-wrap">
-      <svg className="node-power-chart" viewBox={`0 0 ${CHART_WIDTH} ${chartHeight}`} role="img" aria-labelledby="node-power-chart-title node-power-chart-description" onClick={selectChartPosition}>
+    {(!compact || compactView === 'timeline') && <div className="node-power-chart-wrap" aria-label="Full-day node state timeline" style={compact ? { height: `${chartHeight}px` } : undefined}>
+      <svg className="node-power-chart" width={CHART_WIDTH} height={chartHeight} style={{ height: `${chartHeight}px` }} viewBox={`0 0 ${CHART_WIDTH} ${chartHeight}`} preserveAspectRatio="none" role="img" aria-labelledby="node-power-chart-title node-power-chart-description" onClick={selectChartPosition}>
         <title id="node-power-chart-title">Power state history for {nodeIds.length} nodes over {frames.length} minutes</title>
-        <desc id="node-power-chart-description">Each row represents one node. Blue is active, green is warm standby, amber is warming, purple is booting, and gray is powered off. Use the minute slider below to select a time.</desc>
+        <desc id="node-power-chart-description">Each row represents one node's power state. Blue means active and includes both busy and idle capacity; the selected-minute summary shows idle active GPUs. Green is warm standby and can be promoted immediately in this model. Purple booting and gray off cannot run work yet. Use the replay minute control to inspect ready capacity and work.</desc>
         {nodeIds.map((nodeId, index) => <g key={nodeId}>
           <text className="node-power-row-label" x={LABEL_WIDTH - 9} y={TOP + index * rowHeight + (compact ? 7 : 10)} textAnchor="end">{nodeId}</text>
           <rect x={LABEL_WIDTH} y={TOP + index * rowHeight} width={plotWidth} height={rowHeight - 1} rx="2" fill="#f1f4f8" />
@@ -154,6 +174,71 @@ export function NodePowerView({ replay, minute = 0, onMinuteChange = () => {}, g
       </svg>
     </div>}
 
+    {(!compact || compactView === 'nodes') && <>
+      <div className="node-workload-legend" aria-label="Executing workload legend">
+        <span><b aria-hidden="true">R</b> Real-time</span><span><b aria-hidden="true">F</b> Flexible</span><span><b aria-hidden="true">R+F</b> Mixed</span><span><b aria-hidden="true">—</b> Idle</span>
+      </div>
+      <div className="node-power-node-grid" aria-label={`Node details at ${clockLabel(frame.minute)}`}>
+      {nodeIds.map((nodeId, index) => {
+        const state = frame.states[index];
+        const label = STATES.find((entry) => entry.id === state)?.label || state || 'Unknown';
+        const realtimeUsed = hasWorkloadBreakdown ? Number(frame.realtime_used_gpus[index]) || 0 : null;
+        const flexibleUsed = hasWorkloadBreakdown ? Number(frame.flexible_used_gpus[index]) || 0 : null;
+        const nodeUsed = Number(frame.used_gpus[index]) || 0;
+        const idleActiveGpus = state === 'active' && gpusPerNode > 0 ? Math.max(0, gpusPerNode - nodeUsed) : null;
+        const workloadKind = !hasWorkloadBreakdown ? 'Unavailable'
+          : realtimeUsed > 0 && flexibleUsed > 0 ? 'Mixed'
+            : realtimeUsed > 0 ? 'Real-time' : flexibleUsed > 0 ? 'Flexible' : 'Idle';
+        const workMark = workloadKind === 'Mixed' ? 'R+F' : workloadKind === 'Real-time' ? 'R' : workloadKind === 'Flexible' ? 'F' : workloadKind === 'Idle' ? '—' : '?';
+        return <article className={`node-power-card state-card-${state}`} key={nodeId}>
+          <div className="node-power-card-top"><strong>{nodeId}</strong><span><i className={`node-state-dot state-${state}`} aria-hidden="true" />{label}</span></div>
+          <div className={`node-workload-badge workload-${workloadKind.toLowerCase().replace(/[^a-z]+/g, '-')}`} title={hasWorkloadBreakdown ? `Real-time ${number(realtimeUsed, 0)} GPUs; flexible ${number(flexibleUsed, 0)} GPUs` : 'This replay does not include per-type workload allocation'}><b aria-hidden="true">{workMark}</b><span>{workloadKind}</span></div>
+          <div className="node-power-card-metrics">
+            <span><strong>{number(frame.power_kw[index])}</strong><small>kW IT power</small></span>
+            <span><strong>{number(frame.used_gpus[index], 0)}{gpusPerNode ? ` / ${gpusPerNode}` : ''}</strong><small>GPUs in use</small></span>
+            {hasWorkloadBreakdown && <span><strong>{number(realtimeUsed, 0)} / {number(flexibleUsed, 0)}</strong><small>real-time / flexible GPUs</small></span>}
+            {state === 'active' && idleActiveGpus !== null && <span><strong>{number(idleActiveGpus, 0)}</strong><small>idle active GPUs now</small></span>}
+            {state === 'warm' && gpusPerNode > 0 && <span><strong>{number(gpusPerNode, 0)}</strong><small>warm GPUs · ready now</small></span>}
+          </div>
+        </article>;
+      })}
+      </div>
+    </>}
+
+    <section className="ready-capacity-now" aria-label={`GPU capacity at ${clockLabel(frame.minute)}`}>
+      <div className="ready-capacity-card ready-capacity-primary">
+        <span>Idle active GPUs now</span>
+        <strong>{activeSpare === null ? '—' : number(activeSpare, 1)}</strong>
+        <small>Ready immediately; excludes current real-time and flexible work.</small>
+      </div>
+      <div className="ready-capacity-card">
+        <span>Active capacity</span>
+        <strong>{activeCapacity === null ? '—' : number(activeCapacity, 0)} GPUs</strong>
+        <small>{hasWorkloadBreakdown
+          ? `${number(totalRealtimeUsed, 1)} real-time + ${number(totalFlexibleUsed, 1)} flexible in use.`
+          : `${number(totalUsed, 1)} GPUs in use.`} Real-time requests dispatch first; flexible work uses remaining active capacity.</small>
+      </div>
+      <div className="ready-capacity-card">
+        <span>Ready now including standby</span>
+        <strong>{number(frame.dispatchable_capacity_gpus ?? (activeSpare + warmNodeCount * gpusPerNode), 0)} GPUs</strong>
+        <small>Idle active GPUs plus warm-ready GPUs; warm nodes promote with zero modeled minutes.</small>
+      </div>
+      <div className="ready-capacity-card">
+        <span>Warm standby</span>
+        <strong>{warmNodeCount} nodes · {gpusPerNode > 0 ? number(warmNodeCount * gpusPerNode, 0) : '—'} GPUs</strong>
+        <small>Can be promoted to active immediately; only cold booting has a modeled delay.</small>
+      </div>
+      <div className="ready-capacity-card">
+        <span>Not ready yet</span>
+        <strong>{warmingNodeCount} warming · {bootingNodeCount} booting · {offNodeCount} off</strong>
+        <small>These nodes do not count as immediate reserve.</small>
+      </div>
+      {hasRequestTimeline && <div className="ready-capacity-queue" role="status">
+        <strong>{waitingNow === 0 ? 'No requests waiting now' : `${waitingNow} request${waitingNow === 1 ? '' : 's'} waiting now`}</strong>
+        <span>Observed queue at {clockLabel(frame.minute)}; the forecast gap below is a prediction, not an observed wait.</span>
+      </div>}
+    </section>
+
     {!compact && <div className="node-power-time-control">
       <label htmlFor="node-power-minute">Selected minute <strong>{clockLabel(frame.minute)}</strong></label>
       <input id="node-power-minute" type="range" min="0" max={frames.length - 1} step="1" value={minuteIndex} onChange={(event) => selectIndex(Number(event.target.value))} aria-valuetext={`${clockLabel(frame.minute)}, minute ${frame.minute}`} />
@@ -162,22 +247,36 @@ export function NodePowerView({ replay, minute = 0, onMinuteChange = () => {}, g
 
     <div className="node-power-summary" aria-live="polite">
       <span><strong>{number(totalUsed, 0)}</strong> GPUs in use{gpusPerNode ? ` / ${nodeIds.length * gpusPerNode} installed` : ''}</span>
+      {hasWorkloadBreakdown ? <span><strong>{number(totalRealtimeUsed, 0)}</strong> real-time <small>·</small> <strong>{number(totalFlexibleUsed, 0)}</strong> flexible GPUs</span> : <span>Workload split unavailable in this replay</span>}
       <span><strong>{number(totalPower)} kW</strong> node IT draw</span>
       {Number.isFinite(frame.facility_kw) && <span><strong>{number(frame.facility_kw)} kW</strong> facility draw (includes fixed load and PUE)</span>}
     </div>
 
-    {(!compact || compactView === 'nodes') && <div className="node-power-node-grid" aria-label={`Node details at ${clockLabel(frame.minute)}`}>
-      {nodeIds.map((nodeId, index) => {
-        const state = frame.states[index];
-        const label = STATES.find((entry) => entry.id === state)?.label || state || 'Unknown';
-        return <article className={`node-power-card state-card-${state}`} key={nodeId}>
-          <div className="node-power-card-top"><strong>{nodeId}</strong><span><i className={`node-state-dot state-${state}`} aria-hidden="true" />{label}</span></div>
-          <div className="node-power-card-metrics">
-            <span><strong>{number(frame.power_kw[index])}</strong><small>kW IT power</small></span>
-            <span><strong>{number(frame.used_gpus[index], 0)}{gpusPerNode ? ` / ${gpusPerNode}` : ''}</strong><small>GPUs in use</small></span>
-          </div>
-        </article>;
-      })}
-    </div>}
+    {Number.isFinite(frame.target_warm_nodes) && <section className="warm-reserve-readout" aria-label={`Forecast readiness plan at ${clockLabel(frame.minute)}`}>
+      <div className="warm-reserve-readout-heading"><strong>Forecast readiness at {clockLabel(frame.minute)}</strong><span>Forecasted active capacity plus a separate warm-stock target that expands for queued work.</span></div>
+      <div className="warm-reserve-readout-metrics">
+        <span><strong>{frame.forecast_target_active_nodes}</strong> peak active target in next 40 min</span>
+        <span><strong>{frame.forecast_warm_nodes_started}</strong> warm nodes starting activation</span>
+        <span><strong>{frame.forecast_cold_nodes_started}</strong> cold nodes starting boot</span>
+        <span><strong>{frame.warm_stock_target_nodes}</strong> warm stock target (base {frame.warm_overhead_nodes})</span>
+        <span><strong>{frame.target_warm_nodes}</strong> legacy scalar target (diagnostic)</span>
+        <span><strong>{frame.warm_reserve_ready_nodes}</strong> warm and ready</span>
+        <span><strong>{frame.warm_reserve_pipeline_nodes}</strong> warm or booting toward warm stock (<strong>{frame.warm_reserve_booting_nodes}</strong> booting · <strong>{frame.warm_reserve_warming_nodes}</strong> activating)</span>
+        {frame.queued_reserve_demand_nodes > 0 && <span><strong>{frame.queued_reserve_demand_nodes}</strong> node-equivalents of requests still queued</span>}
+        <span><strong>{frame.warm_stock_shortfall_nodes}</strong> stock nodes beyond inactive fleet</span>
+        <span><strong>{frame.warm_ready_deficit_nodes}</strong> stock nodes not ready yet</span>
+        <span><strong>{number(frame.active_spare_gpus, 1)}</strong> idle active GPUs now</span>
+        <span><strong>{number(frame.pre_warm_active_shortfall_gpus, 1)}</strong> forecast gap before cold boot capacity is ready</span>
+      </div>
+      {(frame.warm_stock_shortfall_nodes > 0 || frame.warm_reserve_pipeline_gap_nodes > 0 || frame.readiness_capacity_shortfall_gpus > 0 || frame.forecast_capacity_shortfall_gpus > 0 || frame.warm_stock_shortfall_reason) && <p className="warm-reserve-warning" role="status">
+        {frame.warm_stock_shortfall_nodes > 0 && `Desired stock exceeds inactive fleet by ${frame.warm_stock_shortfall_nodes} node(s). `}
+        {frame.warm_reserve_pipeline_gap_nodes > 0 && `${frame.warm_reserve_pipeline_gap_nodes} desired stock node(s) have not entered the startup pipeline. `}
+        {frame.readiness_capacity_shortfall_gpus > 0 && `Forecast-only readiness gap within startup lead times: ${number(frame.readiness_capacity_shortfall_gpus, 1)} GPUs. This is not an observed request wait. `}
+        {frame.forecast_capacity_shortfall_gpus > 0 && `Protected demand exceeds installed fleet by ${number(frame.forecast_capacity_shortfall_gpus, 1)} GPUs. `}
+        {frame.warm_stock_shortfall_reason}
+      </p>}
+      <p className="warm-reserve-readout-note">After dispatch, any real-time requests still queued raise the warm-stock target to cover their total GPU demand, up to the fleet size; when the queue clears, it returns to your configured reserve. OFF nodes take 20 minutes to join warm stock. The planner also promotes ready warm nodes immediately and starts cold boots ahead of forecast demand. The protected demand peak is {number(frame.forecast_window_peak_upper_gpus, 1)} GPUs; margin {number(frame.forecast_margin_gpus, 1)} GPUs ({frame.forecast_margin_source === 'matured_synthetic_window_q95' ? 'replayed synthetic errors' : 'fallback assumption'}). A forecast gap does not say that actual work waited; check the observed queue above. Legacy scalar target {frame.target_warm_nodes} is shown for context only.</p>
+    </section>}
+
   </section>;
 }

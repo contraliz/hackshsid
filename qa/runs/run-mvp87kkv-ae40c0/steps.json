@@ -1,0 +1,68 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "#dynamic-title",
+    "ms": 72
+  },
+  {
+    "index": 1,
+    "action": "click",
+    "ok": true,
+    "target": ".run-button",
+    "ms": 54
+  },
+  {
+    "index": 2,
+    "action": "wait_for",
+    "ok": true,
+    "target": "svg.node-power-chart",
+    "ms": 2856
+  },
+  {
+    "index": 3,
+    "action": "capture",
+    "ok": true,
+    "target": "forecast-default-state-timeline-visible",
+    "ms": 44,
+    "capture": "forecast-default-state-timeline-visible"
+  },
+  {
+    "index": 4,
+    "action": "fill",
+    "ok": true,
+    "target": "#replay-minute",
+    "ms": 17
+  },
+  {
+    "index": 5,
+    "action": "capture",
+    "ok": true,
+    "target": "timeline-ready-reserve-0110",
+    "ms": 54,
+    "capture": "timeline-ready-reserve-0110"
+  },
+  {
+    "index": 6,
+    "action": "click",
+    "ok": true,
+    "target": "Node details",
+    "ms": 49
+  },
+  {
+    "index": 7,
+    "action": "wait_for",
+    "ok": true,
+    "target": ".node-workload-badge",
+    "ms": 6
+  },
+  {
+    "index": 8,
+    "action": "capture",
+    "ok": true,
+    "target": "node-details-workload-labels",
+    "ms": 42,
+    "capture": "node-details-workload-labels"
+  }
+]

@@ -1,0 +1,45 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "#dynamic-title",
+    "ms": 61
+  },
+  {
+    "index": 1,
+    "action": "click",
+    "ok": true,
+    "target": ".run-button",
+    "ms": 36
+  },
+  {
+    "index": 2,
+    "action": "wait_for",
+    "ok": true,
+    "target": "svg.node-power-chart",
+    "ms": 2852
+  },
+  {
+    "index": 3,
+    "action": "click",
+    "ok": true,
+    "target": "Node details",
+    "ms": 53
+  },
+  {
+    "index": 4,
+    "action": "wait_for",
+    "ok": true,
+    "target": ".node-workload-badge",
+    "ms": 4
+  },
+  {
+    "index": 5,
+    "action": "hover",
+    "ok": false,
+    "target": ".node-power-node-grid",
+    "ms": 10004,
+    "error": "locator.hover: Timeout 10000ms exceeded."
+  }
+]

@@ -1,0 +1,16 @@
+{
+  "run_id": "run-mvp83579-a3a801",
+  "verdict": "Intermediate implementation check; issue remains open.",
+  "findings": [
+    {
+      "id": "fnd-mvp8g16l-8c37df",
+      "recorded_at": "2026-10-26T12:28:21.886Z",
+      "claim": "QA-01 (medium, still unresolved in this intermediate build): Moving the chart ahead of reserve cards alone did not render visible colored rows in the panel.",
+      "evidence": [
+        "captures/default-timeline-visible.png",
+        "steps.json",
+        "measurements.json"
+      ]
+    }
+  ]
+}

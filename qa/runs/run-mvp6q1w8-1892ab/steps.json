@@ -1,0 +1,161 @@
+[
+  {
+    "index": 0,
+    "action": "goto",
+    "ok": true,
+    "target": "",
+    "ms": 54
+  },
+  {
+    "index": 1,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Data center operations",
+    "ms": 92
+  },
+  {
+    "index": 2,
+    "action": "capture",
+    "ok": true,
+    "target": "initial-controls",
+    "ms": 57,
+    "capture": "initial-controls"
+  },
+  {
+    "index": 3,
+    "action": "fill",
+    "ok": true,
+    "target": "#dynamic-nodes",
+    "ms": 20
+  },
+  {
+    "index": 4,
+    "action": "select",
+    "ok": true,
+    "target": "#dynamic-traffic-profile",
+    "ms": 12
+  },
+  {
+    "index": 5,
+    "action": "select",
+    "ok": true,
+    "target": "#dynamic-headroom",
+    "ms": 4
+  },
+  {
+    "index": 6,
+    "action": "click",
+    "ok": true,
+    "target": ".dynamic-tuning summary",
+    "ms": 22
+  },
+  {
+    "index": 7,
+    "action": "fill",
+    "ok": true,
+    "target": "#dynamic-warm-overhead",
+    "ms": 7
+  },
+  {
+    "index": 8,
+    "action": "fill",
+    "ok": true,
+    "target": "#dynamic-floor",
+    "ms": 8
+  },
+  {
+    "index": 9,
+    "action": "click",
+    "ok": true,
+    "target": ".dynamic-checkbox input",
+    "ms": 17
+  },
+  {
+    "index": 10,
+    "action": "click",
+    "ok": true,
+    "target": "Run simulation",
+    "ms": 21
+  },
+  {
+    "index": 11,
+    "action": "wait_for",
+    "ok": true,
+    "target": "generated requests",
+    "ms": 4901
+  },
+  {
+    "index": 12,
+    "action": "capture",
+    "ok": true,
+    "target": "high-ample-result",
+    "ms": 38,
+    "capture": "high-ample-result"
+  },
+  {
+    "index": 13,
+    "action": "fill",
+    "ok": true,
+    "target": "#replay-minute",
+    "ms": 20
+  },
+  {
+    "index": 14,
+    "action": "wait_for",
+    "ok": true,
+    "target": "19:03",
+    "ms": 12
+  },
+  {
+    "index": 15,
+    "action": "capture",
+    "ok": true,
+    "target": "peak-node-state",
+    "ms": 41,
+    "capture": "peak-node-state"
+  },
+  {
+    "index": 16,
+    "action": "select",
+    "ok": true,
+    "target": "#replay-policy",
+    "ms": 14
+  },
+  {
+    "index": 17,
+    "action": "capture",
+    "ok": true,
+    "target": "reactive-controller",
+    "ms": 43,
+    "capture": "reactive-controller"
+  },
+  {
+    "index": 18,
+    "action": "select",
+    "ok": true,
+    "target": "#replay-policy",
+    "ms": 11
+  },
+  {
+    "index": 19,
+    "action": "click",
+    "ok": true,
+    "target": "Demand, forecast, hardware, power and pricing assumptions",
+    "ms": 30
+  },
+  {
+    "index": 20,
+    "action": "scroll",
+    "ok": true,
+    "target": "",
+    "ms": 10
+  },
+  {
+    "index": 21,
+    "action": "capture",
+    "ok": true,
+    "target": "forecast-equations-and-assumptions",
+    "ms": 42,
+    "capture": "forecast-equations-and-assumptions"
+  }
+]

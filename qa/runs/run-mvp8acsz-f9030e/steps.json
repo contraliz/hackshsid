@@ -1,0 +1,52 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "#dynamic-title",
+    "ms": 61
+  },
+  {
+    "index": 1,
+    "action": "click",
+    "ok": true,
+    "target": ".run-button",
+    "ms": 45
+  },
+  {
+    "index": 2,
+    "action": "wait_for",
+    "ok": true,
+    "target": "svg.node-power-chart",
+    "ms": 2862
+  },
+  {
+    "index": 3,
+    "action": "click",
+    "ok": true,
+    "target": "Node details",
+    "ms": 52
+  },
+  {
+    "index": 4,
+    "action": "wait_for",
+    "ok": true,
+    "target": ".node-workload-badge",
+    "ms": 3
+  },
+  {
+    "index": 5,
+    "action": "scroll",
+    "ok": true,
+    "target": ".node-power-view.is-compact",
+    "ms": 20
+  },
+  {
+    "index": 6,
+    "action": "capture",
+    "ok": true,
+    "target": "node-details-work-labels-visible",
+    "ms": 49,
+    "capture": "node-details-work-labels-visible"
+  }
+]

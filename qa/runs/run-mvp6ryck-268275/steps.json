@@ -1,0 +1,103 @@
+[
+  {
+    "index": 0,
+    "action": "goto",
+    "ok": true,
+    "target": "",
+    "ms": 31
+  },
+  {
+    "index": 1,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Data center operations",
+    "ms": 45
+  },
+  {
+    "index": 2,
+    "action": "capture",
+    "ok": true,
+    "target": "mobile-initial-controls",
+    "ms": 55,
+    "capture": "mobile-initial-controls"
+  },
+  {
+    "index": 3,
+    "action": "fill",
+    "ok": true,
+    "target": "#dynamic-nodes",
+    "ms": 13
+  },
+  {
+    "index": 4,
+    "action": "select",
+    "ok": true,
+    "target": "#dynamic-traffic-profile",
+    "ms": 6
+  },
+  {
+    "index": 5,
+    "action": "click",
+    "ok": true,
+    "target": ".dynamic-tuning summary",
+    "ms": 20
+  },
+  {
+    "index": 6,
+    "action": "fill",
+    "ok": true,
+    "target": "#dynamic-warm-overhead",
+    "ms": 5
+  },
+  {
+    "index": 7,
+    "action": "click",
+    "ok": true,
+    "target": "Run simulation",
+    "ms": 22
+  },
+  {
+    "index": 8,
+    "action": "wait_for",
+    "ok": true,
+    "target": "generated requests",
+    "ms": 2872
+  },
+  {
+    "index": 9,
+    "action": "capture",
+    "ok": true,
+    "target": "mobile-constrained-results",
+    "ms": 31,
+    "capture": "mobile-constrained-results"
+  },
+  {
+    "index": 10,
+    "action": "fill",
+    "ok": true,
+    "target": "#replay-minute",
+    "ms": 16
+  },
+  {
+    "index": 11,
+    "action": "wait_for",
+    "ok": true,
+    "target": "17:24",
+    "ms": 21
+  },
+  {
+    "index": 12,
+    "action": "click",
+    "ok": true,
+    "target": "Node details",
+    "ms": 35
+  },
+  {
+    "index": 13,
+    "action": "capture",
+    "ok": true,
+    "target": "mobile-peak-readiness-and-work",
+    "ms": 25,
+    "capture": "mobile-peak-readiness-and-work"
+  }
+]

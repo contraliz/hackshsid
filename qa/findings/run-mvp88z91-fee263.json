@@ -1,0 +1,17 @@
+{
+  "run_id": "run-mvp88z91-fee263",
+  "verdict": "Chart visibility repair visually verified at desktop.",
+  "findings": [
+    {
+      "id": "fnd-mvp8g17l-79f23f",
+      "recorded_at": "2026-10-26T12:28:21.921Z",
+      "claim": "QA-01 (medium, resolved in this iteration): After explicit chart container height, the colored per-node state history rendered under the legend before reserve cards.",
+      "evidence": [
+        "captures/forecast-default-state-timeline-visible.png",
+        "captures/timeline-ready-reserve-0110.png",
+        "steps.json",
+        "measurements.json"
+      ]
+    }
+  ]
+}

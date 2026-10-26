@@ -1,0 +1,137 @@
+{
+  "url": "http://127.0.0.1:8001/",
+  "title": "GridShift — Compute & energy scheduler",
+  "viewport": {
+    "w": 1366,
+    "h": 768,
+    "dpr": 1
+  },
+  "document": {
+    "scroll_width": 1366,
+    "scroll_height": 1313
+  },
+  "measurements": [
+    {
+      "rule": "horizontal_overflow",
+      "definition": "document scrollWidth exceeds the viewport width",
+      "threshold": "scrollWidth - innerWidth > 0",
+      "count": 0,
+      "truncated": false,
+      "items": []
+    },
+    {
+      "rule": "broken_images",
+      "definition": "img elements whose bytes failed to load",
+      "threshold": "complete && naturalWidth === 0",
+      "count": 0,
+      "truncated": false,
+      "items": []
+    },
+    {
+      "rule": "images_missing_alt",
+      "definition": "img elements with no alt attribute (empty alt is treated as decorative and allowed)",
+      "threshold": "!img.hasAttribute('alt')",
+      "count": 0,
+      "truncated": false,
+      "items": []
+    },
+    {
+      "rule": "small_targets",
+      "definition": "visible interactive controls smaller than 24x24 CSS px",
+      "threshold": "width < 24 || height < 24",
+      "count": 5,
+      "truncated": false,
+      "items": [
+        {
+          "selector": "#top > header > a",
+          "tag": "a",
+          "box": {
+            "x": 32,
+            "y": 16,
+            "w": 95,
+            "h": 23
+          },
+          "text": "GridShift",
+          "width": 95,
+          "height": 23
+        },
+        {
+          "selector": "section > form > details > div > label:nth-of-type(6) > input",
+          "tag": "input",
+          "box": {
+            "x": 1046,
+            "y": 250,
+            "w": 13,
+            "h": 13
+          },
+          "text": "on",
+          "width": 13,
+          "height": 13
+        },
+        {
+          "selector": "#replay-minute",
+          "tag": "input",
+          "box": {
+            "x": 498,
+            "y": 403,
+            "w": 834,
+            "h": 16
+          },
+          "text": "1143",
+          "width": 834,
+          "height": 16
+        },
+        {
+          "selector": "div:nth-of-type(2) > details:nth-of-type(3) > div > ul > li:nth-of-type(6) > a:nth-of-type(1)",
+          "tag": "a",
+          "box": {
+            "x": 110,
+            "y": 1466,
+            "w": 67,
+            "h": 15
+          },
+          "text": "",
+          "width": 67,
+          "height": 15
+        },
+        {
+          "selector": "div:nth-of-type(2) > details:nth-of-type(3) > div > ul > li:nth-of-type(6) > a:nth-of-type(2)",
+          "tag": "a",
+          "box": {
+            "x": 691,
+            "y": 1466,
+            "w": 67,
+            "h": 15
+          },
+          "text": "",
+          "width": 67,
+          "height": 15
+        }
+      ]
+    },
+    {
+      "rule": "clipped_text",
+      "definition": "elements hiding their own overflow whose content does not fit",
+      "threshold": "overflow hidden/clip and scrollWidth/scrollHeight exceed client box by >1px",
+      "count": 1,
+      "truncated": false,
+      "items": [
+        {
+          "selector": "div:nth-of-type(2) > div:nth-of-type(3) > section:nth-of-type(2) > div:nth-of-type(1) > div > p",
+          "tag": "p",
+          "box": {
+            "x": 872,
+            "y": 595,
+            "w": 260,
+            "h": 16
+          },
+          "text": "Deterministic synthetic traffic · simulation time 19:03 · no live hardware or cu",
+          "hidden_px_x": 175,
+          "hidden_px_y": 0
+        }
+      ]
+    }
+  ],
+  "measured_at": "2026-10-26T10:40:23.613Z",
+  "runtime": []
+}

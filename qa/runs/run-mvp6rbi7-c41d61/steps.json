@@ -1,0 +1,146 @@
+[
+  {
+    "index": 0,
+    "action": "goto",
+    "ok": true,
+    "target": "",
+    "ms": 35
+  },
+  {
+    "index": 1,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Data center operations",
+    "ms": 52
+  },
+  {
+    "index": 2,
+    "action": "fill",
+    "ok": true,
+    "target": "#dynamic-nodes",
+    "ms": 15
+  },
+  {
+    "index": 3,
+    "action": "select",
+    "ok": true,
+    "target": "#dynamic-traffic-profile",
+    "ms": 19
+  },
+  {
+    "index": 4,
+    "action": "select",
+    "ok": true,
+    "target": "#dynamic-headroom",
+    "ms": 4
+  },
+  {
+    "index": 5,
+    "action": "click",
+    "ok": true,
+    "target": ".dynamic-tuning summary",
+    "ms": 11
+  },
+  {
+    "index": 6,
+    "action": "fill",
+    "ok": true,
+    "target": "#dynamic-warm-overhead",
+    "ms": 7
+  },
+  {
+    "index": 7,
+    "action": "click",
+    "ok": true,
+    "target": ".dynamic-checkbox input",
+    "ms": 30
+  },
+  {
+    "index": 8,
+    "action": "click",
+    "ok": true,
+    "target": "Run simulation",
+    "ms": 18
+  },
+  {
+    "index": 9,
+    "action": "wait_for",
+    "ok": true,
+    "target": "generated requests",
+    "ms": 4408
+  },
+  {
+    "index": 10,
+    "action": "capture",
+    "ok": true,
+    "target": "high-headroom-results",
+    "ms": 43,
+    "capture": "high-headroom-results"
+  },
+  {
+    "index": 11,
+    "action": "fill",
+    "ok": true,
+    "target": "#replay-minute",
+    "ms": 16
+  },
+  {
+    "index": 12,
+    "action": "wait_for",
+    "ok": true,
+    "target": "19:03",
+    "ms": 15
+  },
+  {
+    "index": 13,
+    "action": "click",
+    "ok": true,
+    "target": "Node details",
+    "ms": 48
+  },
+  {
+    "index": 14,
+    "action": "capture",
+    "ok": true,
+    "target": "peak-node-work-labels",
+    "ms": 39,
+    "capture": "peak-node-work-labels"
+  },
+  {
+    "index": 15,
+    "action": "scroll",
+    "ok": true,
+    "target": "",
+    "ms": 2
+  },
+  {
+    "index": 16,
+    "action": "capture",
+    "ok": true,
+    "target": "peak-readiness-and-stock",
+    "ms": 33,
+    "capture": "peak-readiness-and-stock"
+  },
+  {
+    "index": 17,
+    "action": "click",
+    "ok": true,
+    "target": "Demand, forecast, hardware, power and pricing assumptions",
+    "ms": 27
+  },
+  {
+    "index": 18,
+    "action": "scroll",
+    "ok": true,
+    "target": "",
+    "ms": 2
+  },
+  {
+    "index": 19,
+    "action": "capture",
+    "ok": true,
+    "target": "wait-aware-equation-and-assumptions",
+    "ms": 37,
+    "capture": "wait-aware-equation-and-assumptions"
+  }
+]

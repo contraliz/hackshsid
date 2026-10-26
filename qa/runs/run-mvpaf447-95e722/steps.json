@@ -1,0 +1,105 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Data center operations",
+    "ms": 75
+  },
+  {
+    "index": 1,
+    "action": "capture",
+    "ok": true,
+    "target": "initial-default",
+    "ms": 36,
+    "capture": "initial-default"
+  },
+  {
+    "index": 2,
+    "action": "click",
+    "ok": true,
+    "target": "More controls",
+    "ms": 40
+  },
+  {
+    "index": 3,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Warm standby target (nodes)",
+    "ms": 4
+  },
+  {
+    "index": 4,
+    "action": "capture",
+    "ok": true,
+    "target": "controls-and-standby-default",
+    "ms": 39,
+    "capture": "controls-and-standby-default"
+  },
+  {
+    "index": 5,
+    "action": "click",
+    "ok": true,
+    "target": "Run simulation",
+    "ms": 23
+  },
+  {
+    "index": 6,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Warm standby (ready to promote now)",
+    "ms": 3933
+  },
+  {
+    "index": 7,
+    "action": "scroll",
+    "ok": true,
+    "target": "body",
+    "ms": 28
+  },
+  {
+    "index": 8,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Node power states",
+    "ms": 17
+  },
+  {
+    "index": 9,
+    "action": "capture",
+    "ok": true,
+    "target": "full-width-node-state-timeline",
+    "ms": 53,
+    "capture": "full-width-node-state-timeline"
+  },
+  {
+    "index": 10,
+    "action": "fill",
+    "ok": true,
+    "target": "#replay-minute",
+    "ms": 23
+  },
+  {
+    "index": 11,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Forecast readiness at 01:10",
+    "ms": 24
+  },
+  {
+    "index": 12,
+    "action": "capture",
+    "ok": true,
+    "target": "forecast-ready-at-0110",
+    "ms": 46,
+    "capture": "forecast-ready-at-0110"
+  },
+  {
+    "index": 13,
+    "action": "click",
+    "ok": false,
+    "target": ".grid-cost-disclosure summary",
+    "ms": 5004,
+    "error": "locator.click: Timeout 5000ms exceeded."
+  }
+]

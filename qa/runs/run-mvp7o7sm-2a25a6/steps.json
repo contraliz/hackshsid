@@ -1,0 +1,170 @@
+[
+  {
+    "index": 0,
+    "action": "goto",
+    "ok": true,
+    "target": "",
+    "ms": 117
+  },
+  {
+    "index": 1,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Data center operations",
+    "ms": 49
+  },
+  {
+    "index": 2,
+    "action": "capture",
+    "ok": true,
+    "target": "initial-default-controls",
+    "ms": 55,
+    "capture": "initial-default-controls"
+  },
+  {
+    "index": 3,
+    "action": "click",
+    "ok": true,
+    "target": ".dynamic-tuning summary",
+    "ms": 35
+  },
+  {
+    "index": 4,
+    "action": "capture",
+    "ok": true,
+    "target": "default-reserve-settings",
+    "ms": 28,
+    "capture": "default-reserve-settings"
+  },
+  {
+    "index": 5,
+    "action": "click",
+    "ok": true,
+    "target": "Run simulation",
+    "ms": 25
+  },
+  {
+    "index": 6,
+    "action": "wait_for",
+    "ok": true,
+    "target": "2109 generated requests",
+    "ms": 2893
+  },
+  {
+    "index": 7,
+    "action": "select",
+    "ok": true,
+    "target": "#replay-policy",
+    "ms": 17
+  },
+  {
+    "index": 8,
+    "action": "fill",
+    "ok": true,
+    "target": "#replay-minute",
+    "ms": 33
+  },
+  {
+    "index": 9,
+    "action": "wait_for",
+    "ok": true,
+    "target": "01:00 / 23:59",
+    "ms": 30
+  },
+  {
+    "index": 10,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Idle active GPUs now",
+    "ms": 20
+  },
+  {
+    "index": 11,
+    "action": "capture",
+    "ok": true,
+    "target": "minute-0100-ready-active-vs-warm",
+    "ms": 56,
+    "capture": "minute-0100-ready-active-vs-warm"
+  },
+  {
+    "index": 12,
+    "action": "fill",
+    "ok": true,
+    "target": "#replay-minute",
+    "ms": 15
+  },
+  {
+    "index": 13,
+    "action": "wait_for",
+    "ok": true,
+    "target": "01:10 / 23:59",
+    "ms": 21
+  },
+  {
+    "index": 14,
+    "action": "capture",
+    "ok": true,
+    "target": "minute-0110-zero-warm-active-spare",
+    "ms": 41,
+    "capture": "minute-0110-zero-warm-active-spare"
+  },
+  {
+    "index": 15,
+    "action": "fill",
+    "ok": true,
+    "target": "#replay-minute",
+    "ms": 13
+  },
+  {
+    "index": 16,
+    "action": "wait_for",
+    "ok": true,
+    "target": "01:15 / 23:59",
+    "ms": 20
+  },
+  {
+    "index": 17,
+    "action": "capture",
+    "ok": true,
+    "target": "minute-0115-warm-restored",
+    "ms": 48,
+    "capture": "minute-0115-warm-restored"
+  },
+  {
+    "index": 18,
+    "action": "fill",
+    "ok": true,
+    "target": "#replay-minute",
+    "ms": 17
+  },
+  {
+    "index": 19,
+    "action": "wait_for",
+    "ok": true,
+    "target": "02:00 / 23:59",
+    "ms": 23
+  },
+  {
+    "index": 20,
+    "action": "capture",
+    "ok": true,
+    "target": "minute-0200-flexible-shift",
+    "ms": 48,
+    "capture": "minute-0200-flexible-shift"
+  },
+  {
+    "index": 21,
+    "action": "click",
+    "ok": true,
+    "target": "Node details",
+    "ms": 47
+  },
+  {
+    "index": 22,
+    "action": "capture",
+    "ok": true,
+    "target": "minute-0200-per-node-ready-vs-used",
+    "ms": 45,
+    "capture": "minute-0200-per-node-ready-vs-used"
+  }
+]

@@ -1,0 +1,82 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Hourly schedule",
+    "ms": 62
+  },
+  {
+    "index": 1,
+    "action": "click",
+    "ok": true,
+    "target": "Hourly schedule",
+    "ms": 74
+  },
+  {
+    "index": 2,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Hourly node-controller comparison",
+    "ms": 10
+  },
+  {
+    "index": 3,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Grid cost by hour",
+    "ms": 1843
+  },
+  {
+    "index": 4,
+    "action": "capture",
+    "ok": true,
+    "target": "hourly-policy-energy-mix",
+    "ms": 63,
+    "capture": "hourly-policy-energy-mix"
+  },
+  {
+    "index": 5,
+    "action": "scroll",
+    "ok": true,
+    "target": "",
+    "ms": 2
+  },
+  {
+    "index": 6,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Grid cost by hour",
+    "ms": 12
+  },
+  {
+    "index": 7,
+    "action": "capture",
+    "ok": true,
+    "target": "hourly-policy-emissions-cost",
+    "ms": 49,
+    "capture": "hourly-policy-emissions-cost"
+  },
+  {
+    "index": 8,
+    "action": "scroll",
+    "ok": true,
+    "target": "",
+    "ms": 3
+  },
+  {
+    "index": 9,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Peak real-time queue by hour",
+    "ms": 12
+  },
+  {
+    "index": 10,
+    "action": "capture",
+    "ok": true,
+    "target": "hourly-policy-queue",
+    "ms": 43,
+    "capture": "hourly-policy-queue"
+  }
+]

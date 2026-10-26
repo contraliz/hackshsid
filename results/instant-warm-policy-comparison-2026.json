@@ -1,0 +1,4337 @@
+{
+  "captured_at_utc": "2026-10-26T13:27:53.231646+00:00",
+  "source": "Direct run_dynamic_comparison calls against saved pre-change summary; same seeds, request traces, fleet and bursts; Forecast warm-stock target changed from 1 to 2 by default.",
+  "baseline_file": "results\\instant-warm-policy-baseline-2026.json",
+  "policy": {
+    "warm_to_active_minutes": 0,
+    "cold_to_warm_minutes": 20,
+    "default_warm_stock_target_nodes": 2,
+    "runtime_priority": "real-time first; accepted flexible work uses remaining active capacity and reports deadline shortfall"
+  },
+  "cases": [
+    {
+      "case": "normal_default",
+      "nodes": 32,
+      "traffic_profile": "normal",
+      "before": {
+        "case": "normal_default",
+        "nodes": 32,
+        "traffic_profile": "normal",
+        "requests_generated": 2109,
+        "offered_peak_gpus": 109,
+        "request_trace_sha256": "3a7b1ccb10e97361338b1b163c1a3ef223b597394fc2c0f5afd4ca3d626d9d30",
+        "policies": {
+          "forecast": {
+            "label": "Forecast",
+            "metrics": {
+              "active_capacity_shortfall_gpu_minutes": 0,
+              "completion_fraction": 0.9967,
+              "cost_cny": 1401.48,
+              "emissions_kg": 1328.369,
+              "energy_accounted_gpu_minutes": 218304.0,
+              "facility_kwh": 2927.217,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0,
+              "flexible_gpu_hours_delivered": 3060.0,
+              "flexible_gpu_hours_scheduled": 3060.0,
+              "flexible_gpu_hours_unmet": 0.0,
+              "flexible_jobs_admitted": 6,
+              "flexible_jobs_deadline_met": 6,
+              "forecast_shortfall_minutes": 95,
+              "grid_kwh": 2415.217,
+              "latency_allowance_met": 486,
+              "latency_allowance_total": 2102,
+              "max_forecast_capacity_shortfall_gpus": 15.13,
+              "max_pre_warm_active_shortfall_gpus": 17.41,
+              "max_readiness_capacity_shortfall_gpus": 17.41,
+              "max_target_warm_fleet_shortfall_nodes": 2,
+              "max_target_warm_nodes": 3,
+              "max_warm_ready_deficit_nodes": 1,
+              "max_warm_stock_shortfall_nodes": 1,
+              "mean_completion_latency_minutes": 7.42,
+              "mean_wait_minutes": 0.0,
+              "mean_wait_minutes_by_class": {
+                "batch": 0.0,
+                "interactive": 0.0
+              },
+              "offered_fleet_shortfall_minutes": 0,
+              "offered_gpu_minutes": 34704,
+              "p95_wait_minutes": 0,
+              "p95_wait_minutes_by_class": {
+                "batch": 0,
+                "interactive": 0
+              },
+              "peak_active_nodes": 32,
+              "peak_offered_fleet_shortfall_gpus": 0,
+              "peak_offered_gpu_demand": 109,
+              "readiness_shortfall_intervals": 33,
+              "renewable_curtailed_kwh": 0.0,
+              "renewable_used_kwh": 512.0,
+              "requests_completed": 2102,
+              "requests_queued_at_horizon": 0,
+              "requests_rejected": 0,
+              "requests_running_at_horizon": 7,
+              "requests_waited": 0,
+              "requests_waited_by_class": {
+                "batch": 0,
+                "interactive": 0
+              },
+              "served_gpu_minutes": 34704
+            },
+            "requests_by_terminal_state": {
+              "completed": 2102,
+              "queued": 0,
+              "rejected": 0,
+              "running": 7
+            }
+          },
+          "always_on": {
+            "label": "Always On",
+            "metrics": {
+              "active_capacity_shortfall_gpu_minutes": 0,
+              "completion_fraction": 0.9967,
+              "cost_cny": 1518.927,
+              "emissions_kg": 1418.89,
+              "energy_accounted_gpu_minutes": 218304.0,
+              "facility_kwh": 3091.8,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0,
+              "flexible_gpu_hours_delivered": 3060.0,
+              "flexible_gpu_hours_scheduled": 3060.0,
+              "flexible_gpu_hours_unmet": 0.0,
+              "flexible_jobs_admitted": 6,
+              "flexible_jobs_deadline_met": 6,
+              "forecast_shortfall_minutes": 0,
+              "grid_kwh": 2579.8,
+              "latency_allowance_met": 486,
+              "latency_allowance_total": 2102,
+              "max_forecast_capacity_shortfall_gpus": 0.0,
+              "max_pre_warm_active_shortfall_gpus": 0.0,
+              "max_readiness_capacity_shortfall_gpus": 0.0,
+              "max_target_warm_fleet_shortfall_nodes": 0,
+              "max_target_warm_nodes": 0,
+              "max_warm_ready_deficit_nodes": 0,
+              "max_warm_stock_shortfall_nodes": 0,
+              "mean_completion_latency_minutes": 7.42,
+              "mean_wait_minutes": 0.0,
+              "mean_wait_minutes_by_class": {
+                "batch": 0.0,
+                "interactive": 0.0
+              },
+              "offered_fleet_shortfall_minutes": 0,
+              "offered_gpu_minutes": 34704,
+              "p95_wait_minutes": 0,
+              "p95_wait_minutes_by_class": {
+                "batch": 0,
+                "interactive": 0
+              },
+              "peak_active_nodes": 32,
+              "peak_offered_fleet_shortfall_gpus": 0,
+              "peak_offered_gpu_demand": 109,
+              "readiness_shortfall_intervals": 0,
+              "renewable_curtailed_kwh": 0.0,
+              "renewable_used_kwh": 512.0,
+              "requests_completed": 2102,
+              "requests_queued_at_horizon": 0,
+              "requests_rejected": 0,
+              "requests_running_at_horizon": 7,
+              "requests_waited": 0,
+              "requests_waited_by_class": {
+                "batch": 0,
+                "interactive": 0
+              },
+              "served_gpu_minutes": 34704
+            },
+            "requests_by_terminal_state": {
+              "completed": 2102,
+              "queued": 0,
+              "rejected": 0,
+              "running": 7
+            }
+          },
+          "reactive": {
+            "label": "Reactive",
+            "metrics": {
+              "active_capacity_shortfall_gpu_minutes": 25,
+              "completion_fraction": 0.9967,
+              "cost_cny": 1384.728,
+              "emissions_kg": 1311.878,
+              "energy_accounted_gpu_minutes": 218304.0,
+              "facility_kwh": 2897.232,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0,
+              "flexible_gpu_hours_delivered": 3060.0,
+              "flexible_gpu_hours_scheduled": 3060.0,
+              "flexible_gpu_hours_unmet": 0.0,
+              "flexible_jobs_admitted": 6,
+              "flexible_jobs_deadline_met": 6,
+              "forecast_shortfall_minutes": 0,
+              "grid_kwh": 2385.232,
+              "latency_allowance_met": 485,
+              "latency_allowance_total": 2102,
+              "max_forecast_capacity_shortfall_gpus": 0.0,
+              "max_pre_warm_active_shortfall_gpus": 0.0,
+              "max_readiness_capacity_shortfall_gpus": 0.0,
+              "max_target_warm_fleet_shortfall_nodes": 0,
+              "max_target_warm_nodes": 0,
+              "max_warm_ready_deficit_nodes": 0,
+              "max_warm_stock_shortfall_nodes": 0,
+              "mean_completion_latency_minutes": 7.43,
+              "mean_wait_minutes": 0.01,
+              "mean_wait_minutes_by_class": {
+                "batch": 0.02,
+                "interactive": 0.0
+              },
+              "offered_fleet_shortfall_minutes": 0,
+              "offered_gpu_minutes": 34704,
+              "p95_wait_minutes": 0,
+              "p95_wait_minutes_by_class": {
+                "batch": 0,
+                "interactive": 0
+              },
+              "peak_active_nodes": 32,
+              "peak_offered_fleet_shortfall_gpus": 0,
+              "peak_offered_gpu_demand": 109,
+              "readiness_shortfall_intervals": 0,
+              "renewable_curtailed_kwh": 0.0,
+              "renewable_used_kwh": 512.0,
+              "requests_completed": 2102,
+              "requests_queued_at_horizon": 0,
+              "requests_rejected": 0,
+              "requests_running_at_horizon": 7,
+              "requests_waited": 10,
+              "requests_waited_by_class": {
+                "batch": 4,
+                "interactive": 6
+              },
+              "served_gpu_minutes": 34704
+            },
+            "requests_by_terminal_state": {
+              "completed": 2102,
+              "queued": 0,
+              "rejected": 0,
+              "running": 7
+            }
+          }
+        },
+        "forecast_zero_warm_ready_minute_count": 739,
+        "forecast_zero_warm_ready_sample_minutes": [
+          70,
+          71,
+          72,
+          73,
+          74,
+          250,
+          251,
+          252,
+          253,
+          254,
+          275,
+          276,
+          277,
+          278,
+          279,
+          280,
+          281,
+          282,
+          283,
+          284
+        ],
+        "forecast_min_active_spare_gpus": 4.0,
+        "forecast_interval60_119_min_active_spare_gpus": 22.0,
+        "forecast_samples": [
+          {
+            "minute": 0,
+            "active": 16,
+            "warm": 2,
+            "warming": 0,
+            "booting": 0,
+            "off": 14,
+            "active_spare_gpus": 45.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 60,
+            "active": 15,
+            "warm": 1,
+            "warming": 0,
+            "booting": 0,
+            "off": 16,
+            "active_spare_gpus": 23.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 70,
+            "active": 15,
+            "warm": 0,
+            "warming": 1,
+            "booting": 12,
+            "off": 4,
+            "active_spare_gpus": 28.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 75,
+            "active": 15,
+            "warm": 1,
+            "warming": 0,
+            "booting": 12,
+            "off": 4,
+            "active_spare_gpus": 32.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 120,
+            "active": 27,
+            "warm": 1,
+            "warming": 0,
+            "booting": 1,
+            "off": 3,
+            "active_spare_gpus": 36.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 360,
+            "active": 31,
+            "warm": 1,
+            "warming": 0,
+            "booting": 0,
+            "off": 0,
+            "active_spare_gpus": 41.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 720,
+            "active": 32,
+            "warm": 0,
+            "warming": 0,
+            "booting": 0,
+            "off": 0,
+            "active_spare_gpus": 44.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 1020,
+            "active": 27,
+            "warm": 5,
+            "warming": 0,
+            "booting": 0,
+            "off": 0,
+            "active_spare_gpus": 188.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 1439,
+            "active": 32,
+            "warm": 0,
+            "warming": 0,
+            "booting": 0,
+            "off": 0,
+            "active_spare_gpus": 27.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          }
+        ]
+      },
+      "after": {
+        "requests_generated": 2109,
+        "request_trace_sha256": "3a7b1ccb10e97361338b1b163c1a3ef223b597394fc2c0f5afd4ca3d626d9d30",
+        "offered_peak_gpus": 109,
+        "realized_peak_snapshot": {
+          "minute": 1044,
+          "offered_gpus": 109,
+          "active_nodes": 17,
+          "warm_ready_nodes": 14,
+          "booting_nodes": 0,
+          "warming_nodes": 0,
+          "off_nodes": 1,
+          "active_spare_gpus": 0.0,
+          "formula_target_warm_nodes": 0,
+          "warm_ready_deficit_nodes": 0,
+          "warm_stock_target_nodes": 2,
+          "warm_stock_shortfall_nodes": 0,
+          "readiness_capacity_shortfall_gpus": 0.0
+        },
+        "policies": {
+          "always_on": {
+            "metrics": {
+              "facility_kwh": 3091.8,
+              "grid_kwh": 2579.8,
+              "renewable_used_kwh": 512.0,
+              "renewable_curtailed_kwh": 0.0,
+              "cost_cny": 1518.878,
+              "emissions_kg": 1418.89,
+              "requests_completed": 2102,
+              "requests_queued_at_horizon": 0,
+              "requests_running_at_horizon": 7,
+              "requests_rejected": 0,
+              "completion_fraction": 0.9967,
+              "mean_wait_minutes": 0.0,
+              "p95_wait_minutes": 0,
+              "requests_waited": 0,
+              "mean_wait_minutes_by_class": {
+                "interactive": 0.0,
+                "batch": 0.0
+              },
+              "p95_wait_minutes_by_class": {
+                "interactive": 0,
+                "batch": 0
+              },
+              "requests_waited_by_class": {
+                "interactive": 0,
+                "batch": 0
+              },
+              "mean_completion_latency_minutes": 7.42,
+              "latency_allowance_met": 486,
+              "latency_allowance_total": 2102,
+              "offered_gpu_minutes": 34704,
+              "served_gpu_minutes": 34704,
+              "energy_accounted_gpu_minutes": 218304.0,
+              "peak_active_nodes": 32,
+              "peak_offered_gpu_demand": 109,
+              "max_forecast_capacity_shortfall_gpus": 0.0,
+              "forecast_shortfall_minutes": 0,
+              "max_readiness_capacity_shortfall_gpus": 0.0,
+              "readiness_shortfall_intervals": 0,
+              "max_pre_warm_active_shortfall_gpus": 0.0,
+              "max_target_warm_fleet_shortfall_nodes": 0,
+              "max_target_warm_nodes": 0,
+              "max_warm_stock_shortfall_nodes": 0,
+              "max_warm_ready_deficit_nodes": 0,
+              "peak_offered_fleet_shortfall_gpus": 0,
+              "offered_fleet_shortfall_minutes": 0,
+              "active_capacity_shortfall_gpu_minutes": 0,
+              "flexible_jobs_admitted": 6,
+              "flexible_jobs_deadline_met": 6,
+              "flexible_gpu_hours_scheduled": 3060.0,
+              "flexible_gpu_hours_delivered": 3060.0,
+              "flexible_gpu_hours_unmet": 0.0,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0
+            },
+            "warm_ready_zero_minutes": 1440,
+            "warm_ready_min_nodes": 0,
+            "warm_ready_max_nodes": 0,
+            "active_spare_01_02_min_gpus": 158.0,
+            "requests_arrived_01_02": 30,
+            "requests_waited_01_02": 0,
+            "at_0110": {
+              "active_nodes": 32,
+              "warm_ready_nodes": 0,
+              "booting_nodes": 0,
+              "off_nodes": 0,
+              "active_spare_gpus": 164.0,
+              "dispatchable_capacity_gpus": 164.0,
+              "queued_requests": null
+            },
+            "hourly_grid_costs": [
+              {
+                "hour": 0,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 102.283333,
+                "cost_cny": 39.530584
+              },
+              {
+                "hour": 1,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 102.626042,
+                "cost_cny": 39.663035
+              },
+              {
+                "hour": 2,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 142.292708,
+                "cost_cny": 54.993455
+              },
+              {
+                "hour": 3,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 142.095833,
+                "cost_cny": 54.917367
+              },
+              {
+                "hour": 4,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 140.498958,
+                "cost_cny": 54.300205
+              },
+              {
+                "hour": 5,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 174.5,
+                "cost_cny": 67.440968
+              },
+              {
+                "hour": 6,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 149.932292,
+                "cost_cny": 57.946011
+              },
+              {
+                "hour": 7,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 144.377083,
+                "cost_cny": 55.799027
+              },
+              {
+                "hour": 8,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 139.634375,
+                "cost_cny": 86.832579
+              },
+              {
+                "hour": 9,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 125.021875,
+                "cost_cny": 77.745697
+              },
+              {
+                "hour": 10,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 126.5,
+                "cost_cny": 106.076791
+              },
+              {
+                "hour": 11,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 82.976042,
+                "cost_cny": 69.579702
+              },
+              {
+                "hour": 12,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 102.171875,
+                "cost_cny": 63.53627
+              },
+              {
+                "hour": 13,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 98.427083,
+                "cost_cny": 61.207546
+              },
+              {
+                "hour": 14,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 74.925,
+                "cost_cny": 46.592617
+              },
+              {
+                "hour": 15,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 80.204167,
+                "cost_cny": 67.255341
+              },
+              {
+                "hour": 16,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 87.871875,
+                "cost_cny": 73.685111
+              },
+              {
+                "hour": 17,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 97.005208,
+                "cost_cny": 81.343883
+              },
+              {
+                "hour": 18,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 86.014583,
+                "cost_cny": 72.127676
+              },
+              {
+                "hour": 19,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 76.023958,
+                "cost_cny": 63.75002
+              },
+              {
+                "hour": 20,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 80.517708,
+                "cost_cny": 67.518262
+              },
+              {
+                "hour": 21,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 82.151042,
+                "cost_cny": 68.887896
+              },
+              {
+                "hour": 22,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 71.235417,
+                "cost_cny": 44.298225
+              },
+              {
+                "hour": 23,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 70.513542,
+                "cost_cny": 43.849322
+              }
+            ]
+          },
+          "reactive": {
+            "metrics": {
+              "facility_kwh": 2892.972,
+              "grid_kwh": 2380.972,
+              "renewable_used_kwh": 512.0,
+              "renewable_curtailed_kwh": 0.0,
+              "cost_cny": 1382.154,
+              "emissions_kg": 1309.535,
+              "requests_completed": 2102,
+              "requests_queued_at_horizon": 0,
+              "requests_running_at_horizon": 7,
+              "requests_rejected": 0,
+              "completion_fraction": 0.9967,
+              "mean_wait_minutes": 0.01,
+              "p95_wait_minutes": 0,
+              "requests_waited": 10,
+              "mean_wait_minutes_by_class": {
+                "interactive": 0.0,
+                "batch": 0.02
+              },
+              "p95_wait_minutes_by_class": {
+                "interactive": 0,
+                "batch": 0
+              },
+              "requests_waited_by_class": {
+                "interactive": 6,
+                "batch": 4
+              },
+              "mean_completion_latency_minutes": 7.43,
+              "latency_allowance_met": 485,
+              "latency_allowance_total": 2102,
+              "offered_gpu_minutes": 34704,
+              "served_gpu_minutes": 34704,
+              "energy_accounted_gpu_minutes": 218304.0,
+              "peak_active_nodes": 32,
+              "peak_offered_gpu_demand": 109,
+              "max_forecast_capacity_shortfall_gpus": 0.0,
+              "forecast_shortfall_minutes": 0,
+              "max_readiness_capacity_shortfall_gpus": 0.0,
+              "readiness_shortfall_intervals": 0,
+              "max_pre_warm_active_shortfall_gpus": 0.0,
+              "max_target_warm_fleet_shortfall_nodes": 0,
+              "max_target_warm_nodes": 0,
+              "max_warm_stock_shortfall_nodes": 0,
+              "max_warm_ready_deficit_nodes": 0,
+              "peak_offered_fleet_shortfall_gpus": 0,
+              "offered_fleet_shortfall_minutes": 0,
+              "active_capacity_shortfall_gpu_minutes": 25,
+              "flexible_jobs_admitted": 6,
+              "flexible_jobs_deadline_met": 6,
+              "flexible_gpu_hours_scheduled": 3060.0,
+              "flexible_gpu_hours_delivered": 3060.0,
+              "flexible_gpu_hours_unmet": 0.0,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0
+            },
+            "warm_ready_zero_minutes": 1200,
+            "warm_ready_min_nodes": 0,
+            "warm_ready_max_nodes": 17,
+            "active_spare_01_02_min_gpus": 22.0,
+            "requests_arrived_01_02": 30,
+            "requests_waited_01_02": 0,
+            "at_0110": {
+              "active_nodes": 15,
+              "warm_ready_nodes": 0,
+              "booting_nodes": 0,
+              "off_nodes": 17,
+              "active_spare_gpus": 28.0,
+              "dispatchable_capacity_gpus": 28.0,
+              "queued_requests": null
+            },
+            "hourly_grid_costs": [
+              {
+                "hour": 0,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 82.090625,
+                "cost_cny": 31.726482
+              },
+              {
+                "hour": 1,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 86.876042,
+                "cost_cny": 33.575956
+              },
+              {
+                "hour": 2,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 134.792708,
+                "cost_cny": 52.094846
+              },
+              {
+                "hour": 3,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 134.595833,
+                "cost_cny": 52.018758
+              },
+              {
+                "hour": 4,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 135.998958,
+                "cost_cny": 52.561039
+              },
+              {
+                "hour": 5,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 174.5,
+                "cost_cny": 67.440968
+              },
+              {
+                "hour": 6,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 149.265625,
+                "cost_cny": 57.688356
+              },
+              {
+                "hour": 7,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 143.127083,
+                "cost_cny": 55.315925
+              },
+              {
+                "hour": 8,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 138.067708,
+                "cost_cny": 85.858336
+              },
+              {
+                "hour": 9,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 125.021875,
+                "cost_cny": 77.745697
+              },
+              {
+                "hour": 10,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 126.5,
+                "cost_cny": 106.076791
+              },
+              {
+                "hour": 11,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 82.976042,
+                "cost_cny": 69.579702
+              },
+              {
+                "hour": 12,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 102.171875,
+                "cost_cny": 63.53627
+              },
+              {
+                "hour": 13,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 98.427083,
+                "cost_cny": 61.207546
+              },
+              {
+                "hour": 14,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 75.442708,
+                "cost_cny": 46.914557
+              },
+              {
+                "hour": 15,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 80.204167,
+                "cost_cny": 67.255341
+              },
+              {
+                "hour": 16,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 87.871875,
+                "cost_cny": 73.685111
+              },
+              {
+                "hour": 17,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 74.901042,
+                "cost_cny": 62.808397
+              },
+              {
+                "hour": 18,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 69.547917,
+                "cost_cny": 58.319524
+              },
+              {
+                "hour": 19,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 49.320833,
+                "cost_cny": 41.358069
+              },
+              {
+                "hour": 20,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 51.91875,
+                "cost_cny": 43.536557
+              },
+              {
+                "hour": 21,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 53.35625,
+                "cost_cny": 44.741975
+              },
+              {
+                "hour": 22,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 53.483333,
+                "cost_cny": 33.258972
+              },
+              {
+                "hour": 23,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 70.513542,
+                "cost_cny": 43.849322
+              }
+            ]
+          },
+          "forecast": {
+            "metrics": {
+              "facility_kwh": 2906.758,
+              "grid_kwh": 2394.758,
+              "renewable_used_kwh": 512.0,
+              "renewable_curtailed_kwh": 0.0,
+              "cost_cny": 1394.018,
+              "emissions_kg": 1317.117,
+              "requests_completed": 2102,
+              "requests_queued_at_horizon": 0,
+              "requests_running_at_horizon": 7,
+              "requests_rejected": 0,
+              "completion_fraction": 0.9967,
+              "mean_wait_minutes": 0.0,
+              "p95_wait_minutes": 0,
+              "requests_waited": 0,
+              "mean_wait_minutes_by_class": {
+                "interactive": 0.0,
+                "batch": 0.0
+              },
+              "p95_wait_minutes_by_class": {
+                "interactive": 0,
+                "batch": 0
+              },
+              "requests_waited_by_class": {
+                "interactive": 0,
+                "batch": 0
+              },
+              "mean_completion_latency_minutes": 7.42,
+              "latency_allowance_met": 486,
+              "latency_allowance_total": 2102,
+              "offered_gpu_minutes": 34704,
+              "served_gpu_minutes": 34704,
+              "energy_accounted_gpu_minutes": 218304.0,
+              "peak_active_nodes": 31,
+              "peak_offered_gpu_demand": 109,
+              "max_forecast_capacity_shortfall_gpus": 11.4,
+              "forecast_shortfall_minutes": 70,
+              "max_readiness_capacity_shortfall_gpus": 195.84,
+              "readiness_shortfall_intervals": 34,
+              "max_pre_warm_active_shortfall_gpus": 35.4,
+              "max_target_warm_fleet_shortfall_nodes": 2,
+              "max_target_warm_nodes": 26,
+              "max_warm_stock_shortfall_nodes": 1,
+              "max_warm_ready_deficit_nodes": 1,
+              "peak_offered_fleet_shortfall_gpus": 0,
+              "offered_fleet_shortfall_minutes": 0,
+              "active_capacity_shortfall_gpu_minutes": 0,
+              "flexible_jobs_admitted": 6,
+              "flexible_jobs_deadline_met": 6,
+              "flexible_gpu_hours_scheduled": 3060.0,
+              "flexible_gpu_hours_delivered": 3060.0,
+              "flexible_gpu_hours_unmet": 0.0,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0
+            },
+            "warm_ready_zero_minutes": 0,
+            "warm_ready_min_nodes": 1,
+            "warm_ready_max_nodes": 24,
+            "active_spare_01_02_min_gpus": 22.0,
+            "requests_arrived_01_02": 30,
+            "requests_waited_01_02": 0,
+            "at_0110": {
+              "active_nodes": 15,
+              "warm_ready_nodes": 2,
+              "booting_nodes": 0,
+              "off_nodes": 15,
+              "active_spare_gpus": 28.0,
+              "dispatchable_capacity_gpus": 44.0,
+              "queued_requests": null
+            },
+            "hourly_grid_costs": [
+              {
+                "hour": 0,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 82.2625,
+                "cost_cny": 31.792909
+              },
+              {
+                "hour": 1,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 92.860417,
+                "cost_cny": 35.888804
+              },
+              {
+                "hour": 2,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 136.75625,
+                "cost_cny": 52.853718
+              },
+              {
+                "hour": 3,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 135.220833,
+                "cost_cny": 52.260309
+              },
+              {
+                "hour": 4,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 137.285417,
+                "cost_cny": 53.058231
+              },
+              {
+                "hour": 5,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 165.822917,
+                "cost_cny": 64.087438
+              },
+              {
+                "hour": 6,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 148.510417,
+                "cost_cny": 57.396483
+              },
+              {
+                "hour": 7,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 142.502083,
+                "cost_cny": 55.074375
+              },
+              {
+                "hour": 8,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 138.663542,
+                "cost_cny": 86.228859
+              },
+              {
+                "hour": 9,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 123.225,
+                "cost_cny": 76.628298
+              },
+              {
+                "hour": 10,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 122.0625,
+                "cost_cny": 102.355718
+              },
+              {
+                "hour": 11,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 82.038542,
+                "cost_cny": 68.793559
+              },
+              {
+                "hour": 12,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 98.055208,
+                "cost_cny": 60.976293
+              },
+              {
+                "hour": 13,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 94.0625,
+                "cost_cny": 58.493401
+              },
+              {
+                "hour": 14,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 76.955208,
+                "cost_cny": 47.855116
+              },
+              {
+                "hour": 15,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 79.266667,
+                "cost_cny": 66.469199
+              },
+              {
+                "hour": 16,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 90.419792,
+                "cost_cny": 75.821671
+              },
+              {
+                "hour": 17,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 79.903125,
+                "cost_cny": 67.002902
+              },
+              {
+                "hour": 18,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 77.610417,
+                "cost_cny": 65.080348
+              },
+              {
+                "hour": 19,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 51.1125,
+                "cost_cny": 42.860474
+              },
+              {
+                "hour": 20,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 53.017708,
+                "cost_cny": 44.45809
+              },
+              {
+                "hour": 21,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 56.322917,
+                "cost_cny": 47.229678
+              },
+              {
+                "hour": 22,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 61.204167,
+                "cost_cny": 38.060224
+              },
+              {
+                "hour": 23,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 69.617708,
+                "cost_cny": 43.292242
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "case": "low_default",
+      "nodes": 32,
+      "traffic_profile": "low",
+      "before": {
+        "case": "low_default",
+        "nodes": 32,
+        "traffic_profile": "low",
+        "requests_generated": 989,
+        "offered_peak_gpus": 51,
+        "request_trace_sha256": "ffa406a40a0ba02f41f5fc779c35c3457c2854c8c74203eb2356a35a57d2a2e6",
+        "policies": {
+          "forecast": {
+            "label": "Forecast",
+            "metrics": {
+              "active_capacity_shortfall_gpu_minutes": 0,
+              "completion_fraction": 0.9949,
+              "cost_cny": 1300.456,
+              "emissions_kg": 1249.516,
+              "energy_accounted_gpu_minutes": 200572.0,
+              "facility_kwh": 2783.848,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0,
+              "flexible_gpu_hours_delivered": 3060.0,
+              "flexible_gpu_hours_scheduled": 3060.0,
+              "flexible_gpu_hours_unmet": 0.0,
+              "flexible_jobs_admitted": 6,
+              "flexible_jobs_deadline_met": 6,
+              "forecast_shortfall_minutes": 5,
+              "grid_kwh": 2271.848,
+              "latency_allowance_met": 244,
+              "latency_allowance_total": 984,
+              "max_forecast_capacity_shortfall_gpus": 6.32,
+              "max_pre_warm_active_shortfall_gpus": 0.33,
+              "max_readiness_capacity_shortfall_gpus": 6.32,
+              "max_target_warm_fleet_shortfall_nodes": 1,
+              "max_target_warm_nodes": 1,
+              "max_warm_ready_deficit_nodes": 1,
+              "max_warm_stock_shortfall_nodes": 1,
+              "mean_completion_latency_minutes": 7.6,
+              "mean_wait_minutes": 0.0,
+              "mean_wait_minutes_by_class": {
+                "batch": 0.0,
+                "interactive": 0.0
+              },
+              "offered_fleet_shortfall_minutes": 0,
+              "offered_gpu_minutes": 16972,
+              "p95_wait_minutes": 0,
+              "p95_wait_minutes_by_class": {
+                "batch": 0,
+                "interactive": 0
+              },
+              "peak_active_nodes": 32,
+              "peak_offered_fleet_shortfall_gpus": 0,
+              "peak_offered_gpu_demand": 51,
+              "readiness_shortfall_intervals": 2,
+              "renewable_curtailed_kwh": 0.0,
+              "renewable_used_kwh": 512.0,
+              "requests_completed": 984,
+              "requests_queued_at_horizon": 0,
+              "requests_rejected": 0,
+              "requests_running_at_horizon": 5,
+              "requests_waited": 0,
+              "requests_waited_by_class": {
+                "batch": 0,
+                "interactive": 0
+              },
+              "served_gpu_minutes": 16972
+            },
+            "requests_by_terminal_state": {
+              "completed": 984,
+              "queued": 0,
+              "rejected": 0,
+              "running": 5
+            }
+          },
+          "always_on": {
+            "label": "Always On",
+            "metrics": {
+              "active_capacity_shortfall_gpu_minutes": 0,
+              "completion_fraction": 0.9949,
+              "cost_cny": 1427.803,
+              "emissions_kg": 1347.777,
+              "energy_accounted_gpu_minutes": 200572.0,
+              "facility_kwh": 2962.504,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0,
+              "flexible_gpu_hours_delivered": 3060.0,
+              "flexible_gpu_hours_scheduled": 3060.0,
+              "flexible_gpu_hours_unmet": 0.0,
+              "flexible_jobs_admitted": 6,
+              "flexible_jobs_deadline_met": 6,
+              "forecast_shortfall_minutes": 0,
+              "grid_kwh": 2450.504,
+              "latency_allowance_met": 244,
+              "latency_allowance_total": 984,
+              "max_forecast_capacity_shortfall_gpus": 0.0,
+              "max_pre_warm_active_shortfall_gpus": 0.0,
+              "max_readiness_capacity_shortfall_gpus": 0.0,
+              "max_target_warm_fleet_shortfall_nodes": 0,
+              "max_target_warm_nodes": 0,
+              "max_warm_ready_deficit_nodes": 0,
+              "max_warm_stock_shortfall_nodes": 0,
+              "mean_completion_latency_minutes": 7.6,
+              "mean_wait_minutes": 0.0,
+              "mean_wait_minutes_by_class": {
+                "batch": 0.0,
+                "interactive": 0.0
+              },
+              "offered_fleet_shortfall_minutes": 0,
+              "offered_gpu_minutes": 16972,
+              "p95_wait_minutes": 0,
+              "p95_wait_minutes_by_class": {
+                "batch": 0,
+                "interactive": 0
+              },
+              "peak_active_nodes": 32,
+              "peak_offered_fleet_shortfall_gpus": 0,
+              "peak_offered_gpu_demand": 51,
+              "readiness_shortfall_intervals": 0,
+              "renewable_curtailed_kwh": 0.0,
+              "renewable_used_kwh": 512.0,
+              "requests_completed": 984,
+              "requests_queued_at_horizon": 0,
+              "requests_rejected": 0,
+              "requests_running_at_horizon": 5,
+              "requests_waited": 0,
+              "requests_waited_by_class": {
+                "batch": 0,
+                "interactive": 0
+              },
+              "served_gpu_minutes": 16972
+            },
+            "requests_by_terminal_state": {
+              "completed": 984,
+              "queued": 0,
+              "rejected": 0,
+              "running": 5
+            }
+          },
+          "reactive": {
+            "label": "Reactive",
+            "metrics": {
+              "active_capacity_shortfall_gpu_minutes": 0,
+              "completion_fraction": 0.9949,
+              "cost_cny": 1288.307,
+              "emissions_kg": 1237.001,
+              "energy_accounted_gpu_minutes": 200572.0,
+              "facility_kwh": 2761.093,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0,
+              "flexible_gpu_hours_delivered": 3060.0,
+              "flexible_gpu_hours_scheduled": 3060.0,
+              "flexible_gpu_hours_unmet": 0.0,
+              "flexible_jobs_admitted": 6,
+              "flexible_jobs_deadline_met": 6,
+              "forecast_shortfall_minutes": 0,
+              "grid_kwh": 2249.093,
+              "latency_allowance_met": 244,
+              "latency_allowance_total": 984,
+              "max_forecast_capacity_shortfall_gpus": 0.0,
+              "max_pre_warm_active_shortfall_gpus": 0.0,
+              "max_readiness_capacity_shortfall_gpus": 0.0,
+              "max_target_warm_fleet_shortfall_nodes": 0,
+              "max_target_warm_nodes": 0,
+              "max_warm_ready_deficit_nodes": 0,
+              "max_warm_stock_shortfall_nodes": 0,
+              "mean_completion_latency_minutes": 7.6,
+              "mean_wait_minutes": 0.0,
+              "mean_wait_minutes_by_class": {
+                "batch": 0.0,
+                "interactive": 0.0
+              },
+              "offered_fleet_shortfall_minutes": 0,
+              "offered_gpu_minutes": 16972,
+              "p95_wait_minutes": 0,
+              "p95_wait_minutes_by_class": {
+                "batch": 0,
+                "interactive": 0
+              },
+              "peak_active_nodes": 32,
+              "peak_offered_fleet_shortfall_gpus": 0,
+              "peak_offered_gpu_demand": 51,
+              "readiness_shortfall_intervals": 0,
+              "renewable_curtailed_kwh": 0.0,
+              "renewable_used_kwh": 512.0,
+              "requests_completed": 984,
+              "requests_queued_at_horizon": 0,
+              "requests_rejected": 0,
+              "requests_running_at_horizon": 5,
+              "requests_waited": 0,
+              "requests_waited_by_class": {
+                "batch": 0,
+                "interactive": 0
+              },
+              "served_gpu_minutes": 16972
+            },
+            "requests_by_terminal_state": {
+              "completed": 984,
+              "queued": 0,
+              "rejected": 0,
+              "running": 5
+            }
+          }
+        },
+        "forecast_zero_warm_ready_minute_count": 715,
+        "forecast_zero_warm_ready_sample_minutes": [
+          70,
+          71,
+          72,
+          73,
+          74,
+          250,
+          251,
+          252,
+          253,
+          254,
+          275,
+          276,
+          277,
+          278,
+          279,
+          280,
+          281,
+          282,
+          283,
+          284
+        ],
+        "forecast_min_active_spare_gpus": 18.0,
+        "forecast_interval60_119_min_active_spare_gpus": 28.0,
+        "forecast_samples": [
+          {
+            "minute": 0,
+            "active": 16,
+            "warm": 2,
+            "warming": 0,
+            "booting": 0,
+            "off": 14,
+            "active_spare_gpus": 47.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 60,
+            "active": 15,
+            "warm": 1,
+            "warming": 0,
+            "booting": 0,
+            "off": 16,
+            "active_spare_gpus": 36.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 70,
+            "active": 15,
+            "warm": 0,
+            "warming": 1,
+            "booting": 11,
+            "off": 5,
+            "active_spare_gpus": 28.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 75,
+            "active": 15,
+            "warm": 1,
+            "warming": 0,
+            "booting": 11,
+            "off": 5,
+            "active_spare_gpus": 32.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 120,
+            "active": 26,
+            "warm": 1,
+            "warming": 0,
+            "booting": 0,
+            "off": 5,
+            "active_spare_gpus": 31.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 360,
+            "active": 30,
+            "warm": 2,
+            "warming": 0,
+            "booting": 0,
+            "off": 0,
+            "active_spare_gpus": 48.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 720,
+            "active": 32,
+            "warm": 0,
+            "warming": 0,
+            "booting": 0,
+            "off": 0,
+            "active_spare_gpus": 62.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 1020,
+            "active": 25,
+            "warm": 7,
+            "warming": 0,
+            "booting": 0,
+            "off": 0,
+            "active_spare_gpus": 190.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 1439,
+            "active": 32,
+            "warm": 0,
+            "warming": 0,
+            "booting": 0,
+            "off": 0,
+            "active_spare_gpus": 34.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          }
+        ]
+      },
+      "after": {
+        "requests_generated": 989,
+        "request_trace_sha256": "ffa406a40a0ba02f41f5fc779c35c3457c2854c8c74203eb2356a35a57d2a2e6",
+        "offered_peak_gpus": 51,
+        "realized_peak_snapshot": {
+          "minute": 1049,
+          "offered_gpus": 51,
+          "active_nodes": 12,
+          "warm_ready_nodes": 2,
+          "booting_nodes": 0,
+          "warming_nodes": 0,
+          "off_nodes": 18,
+          "active_spare_gpus": 0.0,
+          "formula_target_warm_nodes": 0,
+          "warm_ready_deficit_nodes": 0,
+          "warm_stock_target_nodes": 2,
+          "warm_stock_shortfall_nodes": 0,
+          "readiness_capacity_shortfall_gpus": 0.0
+        },
+        "policies": {
+          "always_on": {
+            "metrics": {
+              "facility_kwh": 2962.504,
+              "grid_kwh": 2450.504,
+              "renewable_used_kwh": 512.0,
+              "renewable_curtailed_kwh": 0.0,
+              "cost_cny": 1425.427,
+              "emissions_kg": 1347.777,
+              "requests_completed": 984,
+              "requests_queued_at_horizon": 0,
+              "requests_running_at_horizon": 5,
+              "requests_rejected": 0,
+              "completion_fraction": 0.9949,
+              "mean_wait_minutes": 0.0,
+              "p95_wait_minutes": 0,
+              "requests_waited": 0,
+              "mean_wait_minutes_by_class": {
+                "interactive": 0.0,
+                "batch": 0.0
+              },
+              "p95_wait_minutes_by_class": {
+                "interactive": 0,
+                "batch": 0
+              },
+              "requests_waited_by_class": {
+                "interactive": 0,
+                "batch": 0
+              },
+              "mean_completion_latency_minutes": 7.6,
+              "latency_allowance_met": 244,
+              "latency_allowance_total": 984,
+              "offered_gpu_minutes": 16972,
+              "served_gpu_minutes": 16972,
+              "energy_accounted_gpu_minutes": 200572.0,
+              "peak_active_nodes": 32,
+              "peak_offered_gpu_demand": 51,
+              "max_forecast_capacity_shortfall_gpus": 0.0,
+              "forecast_shortfall_minutes": 0,
+              "max_readiness_capacity_shortfall_gpus": 0.0,
+              "readiness_shortfall_intervals": 0,
+              "max_pre_warm_active_shortfall_gpus": 0.0,
+              "max_target_warm_fleet_shortfall_nodes": 0,
+              "max_target_warm_nodes": 0,
+              "max_warm_stock_shortfall_nodes": 0,
+              "max_warm_ready_deficit_nodes": 0,
+              "peak_offered_fleet_shortfall_gpus": 0,
+              "offered_fleet_shortfall_minutes": 0,
+              "active_capacity_shortfall_gpu_minutes": 0,
+              "flexible_jobs_admitted": 6,
+              "flexible_jobs_deadline_met": 6,
+              "flexible_gpu_hours_scheduled": 3060.0,
+              "flexible_gpu_hours_delivered": 3060.0,
+              "flexible_gpu_hours_unmet": 0.0,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0
+            },
+            "warm_ready_zero_minutes": 1440,
+            "warm_ready_min_nodes": 0,
+            "warm_ready_max_nodes": 0,
+            "active_spare_01_02_min_gpus": 164.0,
+            "requests_arrived_01_02": 20,
+            "requests_waited_01_02": 0,
+            "at_0110": {
+              "active_nodes": 32,
+              "warm_ready_nodes": 0,
+              "booting_nodes": 0,
+              "off_nodes": 0,
+              "active_spare_gpus": 164.0,
+              "dispatchable_capacity_gpus": 164.0,
+              "queued_requests": null
+            },
+            "hourly_grid_costs": [
+              {
+                "hour": 0,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 99.723958,
+                "cost_cny": 38.541434
+              },
+              {
+                "hour": 1,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 99.767708,
+                "cost_cny": 38.558343
+              },
+              {
+                "hour": 2,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 138.865625,
+                "cost_cny": 53.668952
+              },
+              {
+                "hour": 3,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 137.983333,
+                "cost_cny": 53.327963
+              },
+              {
+                "hour": 4,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 139.616667,
+                "cost_cny": 53.959215
+              },
+              {
+                "hour": 5,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 174.5,
+                "cost_cny": 67.440968
+              },
+              {
+                "hour": 6,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 147.423958,
+                "cost_cny": 56.976587
+              },
+              {
+                "hour": 7,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 140.20625,
+                "cost_cny": 54.187078
+              },
+              {
+                "hour": 8,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 137.490625,
+                "cost_cny": 85.499473
+              },
+              {
+                "hour": 9,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 120.654167,
+                "cost_cny": 75.029608
+              },
+              {
+                "hour": 10,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 126.5,
+                "cost_cny": 106.076791
+              },
+              {
+                "hour": 11,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 77.835417,
+                "cost_cny": 65.269022
+              },
+              {
+                "hour": 12,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 101.129167,
+                "cost_cny": 62.887855
+              },
+              {
+                "hour": 13,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 96.502083,
+                "cost_cny": 60.010472
+              },
+              {
+                "hour": 14,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 66.291667,
+                "cost_cny": 41.22392
+              },
+              {
+                "hour": 15,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 78.089583,
+                "cost_cny": 65.482154
+              },
+              {
+                "hour": 16,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 72.420833,
+                "cost_cny": 60.728614
+              },
+              {
+                "hour": 17,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 84.310417,
+                "cost_cny": 70.698644
+              },
+              {
+                "hour": 18,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 63.796875,
+                "cost_cny": 53.496979
+              },
+              {
+                "hour": 19,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 69.308333,
+                "cost_cny": 58.118621
+              },
+              {
+                "hour": 20,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 72.154167,
+                "cost_cny": 60.505
+              },
+              {
+                "hour": 21,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 72.351042,
+                "cost_cny": 60.67009
+              },
+              {
+                "hour": 22,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 66.35,
+                "cost_cny": 41.260195
+              },
+              {
+                "hour": 23,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 67.232292,
+                "cost_cny": 41.808854
+              }
+            ]
+          },
+          "reactive": {
+            "metrics": {
+              "facility_kwh": 2753.186,
+              "grid_kwh": 2241.186,
+              "renewable_used_kwh": 512.0,
+              "renewable_curtailed_kwh": 0.0,
+              "cost_cny": 1279.897,
+              "emissions_kg": 1232.653,
+              "requests_completed": 984,
+              "requests_queued_at_horizon": 0,
+              "requests_running_at_horizon": 5,
+              "requests_rejected": 0,
+              "completion_fraction": 0.9949,
+              "mean_wait_minutes": 0.0,
+              "p95_wait_minutes": 0,
+              "requests_waited": 0,
+              "mean_wait_minutes_by_class": {
+                "interactive": 0.0,
+                "batch": 0.0
+              },
+              "p95_wait_minutes_by_class": {
+                "interactive": 0,
+                "batch": 0
+              },
+              "requests_waited_by_class": {
+                "interactive": 0,
+                "batch": 0
+              },
+              "mean_completion_latency_minutes": 7.6,
+              "latency_allowance_met": 244,
+              "latency_allowance_total": 984,
+              "offered_gpu_minutes": 16972,
+              "served_gpu_minutes": 16972,
+              "energy_accounted_gpu_minutes": 200572.0,
+              "peak_active_nodes": 32,
+              "peak_offered_gpu_demand": 51,
+              "max_forecast_capacity_shortfall_gpus": 0.0,
+              "forecast_shortfall_minutes": 0,
+              "max_readiness_capacity_shortfall_gpus": 0.0,
+              "readiness_shortfall_intervals": 0,
+              "max_pre_warm_active_shortfall_gpus": 0.0,
+              "max_target_warm_fleet_shortfall_nodes": 0,
+              "max_target_warm_nodes": 0,
+              "max_warm_stock_shortfall_nodes": 0,
+              "max_warm_ready_deficit_nodes": 0,
+              "peak_offered_fleet_shortfall_gpus": 0,
+              "offered_fleet_shortfall_minutes": 0,
+              "active_capacity_shortfall_gpu_minutes": 0,
+              "flexible_jobs_admitted": 6,
+              "flexible_jobs_deadline_met": 6,
+              "flexible_gpu_hours_scheduled": 3060.0,
+              "flexible_gpu_hours_delivered": 3060.0,
+              "flexible_gpu_hours_unmet": 0.0,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0
+            },
+            "warm_ready_zero_minutes": 1209,
+            "warm_ready_min_nodes": 0,
+            "warm_ready_max_nodes": 20,
+            "active_spare_01_02_min_gpus": 28.0,
+            "requests_arrived_01_02": 20,
+            "requests_waited_01_02": 0,
+            "at_0110": {
+              "active_nodes": 15,
+              "warm_ready_nodes": 0,
+              "booting_nodes": 0,
+              "off_nodes": 17,
+              "active_spare_gpus": 28.0,
+              "dispatchable_capacity_gpus": 28.0,
+              "queued_requests": null
+            },
+            "hourly_grid_costs": [
+              {
+                "hour": 0,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 79.53125,
+                "cost_cny": 30.737332
+              },
+              {
+                "hour": 1,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 84.017708,
+                "cost_cny": 32.471264
+              },
+              {
+                "hour": 2,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 131.365625,
+                "cost_cny": 50.770343
+              },
+              {
+                "hour": 3,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 130.483333,
+                "cost_cny": 50.429354
+              },
+              {
+                "hour": 4,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 135.116667,
+                "cost_cny": 52.22005
+              },
+              {
+                "hour": 5,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 174.5,
+                "cost_cny": 67.440968
+              },
+              {
+                "hour": 6,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 146.757292,
+                "cost_cny": 56.718933
+              },
+              {
+                "hour": 7,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 138.95625,
+                "cost_cny": 53.703977
+              },
+              {
+                "hour": 8,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 135.923958,
+                "cost_cny": 84.525231
+              },
+              {
+                "hour": 9,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 120.654167,
+                "cost_cny": 75.029608
+              },
+              {
+                "hour": 10,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 126.5,
+                "cost_cny": 106.076791
+              },
+              {
+                "hour": 11,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 77.835417,
+                "cost_cny": 65.269022
+              },
+              {
+                "hour": 12,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 101.129167,
+                "cost_cny": 62.887855
+              },
+              {
+                "hour": 13,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 96.502083,
+                "cost_cny": 60.010472
+              },
+              {
+                "hour": 14,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 67.108333,
+                "cost_cny": 41.73177
+              },
+              {
+                "hour": 15,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 78.089583,
+                "cost_cny": 65.482154
+              },
+              {
+                "hour": 16,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 72.420833,
+                "cost_cny": 60.728614
+              },
+              {
+                "hour": 17,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 59.939583,
+                "cost_cny": 50.26244
+              },
+              {
+                "hour": 18,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 40.751042,
+                "cost_cny": 34.171856
+              },
+              {
+                "hour": 19,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 41.964583,
+                "cost_cny": 35.189473
+              },
+              {
+                "hour": 20,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 43.555208,
+                "cost_cny": 36.523294
+              },
+              {
+                "hour": 21,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 42.502083,
+                "cost_cny": 35.640195
+              },
+              {
+                "hour": 22,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 48.35,
+                "cost_cny": 30.066774
+              },
+              {
+                "hour": 23,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 67.232292,
+                "cost_cny": 41.808854
+              }
+            ]
+          },
+          "forecast": {
+            "metrics": {
+              "facility_kwh": 2749.884,
+              "grid_kwh": 2237.884,
+              "renewable_used_kwh": 512.0,
+              "renewable_curtailed_kwh": 0.0,
+              "cost_cny": 1280.465,
+              "emissions_kg": 1230.836,
+              "requests_completed": 984,
+              "requests_queued_at_horizon": 0,
+              "requests_running_at_horizon": 5,
+              "requests_rejected": 0,
+              "completion_fraction": 0.9949,
+              "mean_wait_minutes": 0.0,
+              "p95_wait_minutes": 0,
+              "requests_waited": 0,
+              "mean_wait_minutes_by_class": {
+                "interactive": 0.0,
+                "batch": 0.0
+              },
+              "p95_wait_minutes_by_class": {
+                "interactive": 0,
+                "batch": 0
+              },
+              "requests_waited_by_class": {
+                "interactive": 0,
+                "batch": 0
+              },
+              "mean_completion_latency_minutes": 7.6,
+              "latency_allowance_met": 244,
+              "latency_allowance_total": 984,
+              "offered_gpu_minutes": 16972,
+              "served_gpu_minutes": 16972,
+              "energy_accounted_gpu_minutes": 200572.0,
+              "peak_active_nodes": 31,
+              "peak_offered_gpu_demand": 51,
+              "max_forecast_capacity_shortfall_gpus": 3.03,
+              "forecast_shortfall_minutes": 5,
+              "max_readiness_capacity_shortfall_gpus": 170.82,
+              "readiness_shortfall_intervals": 16,
+              "max_pre_warm_active_shortfall_gpus": 11.03,
+              "max_target_warm_fleet_shortfall_nodes": 1,
+              "max_target_warm_nodes": 22,
+              "max_warm_stock_shortfall_nodes": 1,
+              "max_warm_ready_deficit_nodes": 1,
+              "peak_offered_fleet_shortfall_gpus": 0,
+              "offered_fleet_shortfall_minutes": 0,
+              "active_capacity_shortfall_gpu_minutes": 0,
+              "flexible_jobs_admitted": 6,
+              "flexible_jobs_deadline_met": 6,
+              "flexible_gpu_hours_scheduled": 3060.0,
+              "flexible_gpu_hours_delivered": 3060.0,
+              "flexible_gpu_hours_unmet": 0.0,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0
+            },
+            "warm_ready_zero_minutes": 0,
+            "warm_ready_min_nodes": 1,
+            "warm_ready_max_nodes": 22,
+            "active_spare_01_02_min_gpus": 28.0,
+            "requests_arrived_01_02": 20,
+            "requests_waited_01_02": 0,
+            "at_0110": {
+              "active_nodes": 15,
+              "warm_ready_nodes": 2,
+              "booting_nodes": 0,
+              "off_nodes": 15,
+              "active_spare_gpus": 28.0,
+              "dispatchable_capacity_gpus": 44.0,
+              "queued_requests": null
+            },
+            "hourly_grid_costs": [
+              {
+                "hour": 0,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 79.703125,
+                "cost_cny": 30.803759
+              },
+              {
+                "hour": 1,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 89.142708,
+                "cost_cny": 34.45198
+              },
+              {
+                "hour": 2,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 132.292708,
+                "cost_cny": 51.128643
+              },
+              {
+                "hour": 3,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 131.108333,
+                "cost_cny": 50.670905
+              },
+              {
+                "hour": 4,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 136.064583,
+                "cost_cny": 52.586402
+              },
+              {
+                "hour": 5,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 163.203125,
+                "cost_cny": 63.074938
+              },
+              {
+                "hour": 6,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 145.548958,
+                "cost_cny": 56.251935
+              },
+              {
+                "hour": 7,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 138.33125,
+                "cost_cny": 53.462426
+              },
+              {
+                "hour": 8,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 138.313542,
+                "cost_cny": 86.01121
+              },
+              {
+                "hour": 9,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 118.779167,
+                "cost_cny": 73.863627
+              },
+              {
+                "hour": 10,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 117.625,
+                "cost_cny": 98.634645
+              },
+              {
+                "hour": 11,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 75.960417,
+                "cost_cny": 63.696737
+              },
+              {
+                "hour": 12,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 93.625,
+                "cost_cny": 58.221338
+              },
+              {
+                "hour": 13,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 89.625,
+                "cost_cny": 55.733911
+              },
+              {
+                "hour": 14,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 70.29375,
+                "cost_cny": 43.712643
+              },
+              {
+                "hour": 15,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 76.214583,
+                "cost_cny": 63.909869
+              },
+              {
+                "hour": 16,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 77.545833,
+                "cost_cny": 65.026191
+              },
+              {
+                "hour": 17,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 59.960417,
+                "cost_cny": 50.27991
+              },
+              {
+                "hour": 18,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 53.119792,
+                "cost_cny": 44.543692
+              },
+              {
+                "hour": 19,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 42.433333,
+                "cost_cny": 35.582544
+              },
+              {
+                "hour": 20,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 44.029167,
+                "cost_cny": 36.920733
+              },
+              {
+                "hour": 21,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 42.976042,
+                "cost_cny": 36.037633
+              },
+              {
+                "hour": 22,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 55.730208,
+                "cost_cny": 34.656206
+              },
+              {
+                "hour": 23,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 66.258333,
+                "cost_cny": 41.203192
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "case": "high_default",
+      "nodes": 32,
+      "traffic_profile": "high",
+      "before": {
+        "case": "high_default",
+        "nodes": 32,
+        "traffic_profile": "high",
+        "requests_generated": 4052,
+        "offered_peak_gpus": 267,
+        "request_trace_sha256": "454fb128f108940ddfe7ba9a77e7004d3d8a541f151e66ae047b95d36cc5186f",
+        "policies": {
+          "forecast": {
+            "label": "Forecast",
+            "metrics": {
+              "active_capacity_shortfall_gpu_minutes": 0,
+              "completion_fraction": 0.9961,
+              "cost_cny": 1640.261,
+              "emissions_kg": 1510.228,
+              "energy_accounted_gpu_minutes": 255035.0,
+              "facility_kwh": 3257.87,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0,
+              "flexible_gpu_hours_delivered": 3060.0,
+              "flexible_gpu_hours_scheduled": 3060.0,
+              "flexible_gpu_hours_unmet": 0.0,
+              "flexible_jobs_admitted": 6,
+              "flexible_jobs_deadline_met": 6,
+              "forecast_shortfall_minutes": 695,
+              "grid_kwh": 2745.87,
+              "latency_allowance_met": 1028,
+              "latency_allowance_total": 4036,
+              "max_forecast_capacity_shortfall_gpus": 55.04,
+              "max_pre_warm_active_shortfall_gpus": 40.3,
+              "max_readiness_capacity_shortfall_gpus": 55.04,
+              "max_target_warm_fleet_shortfall_nodes": 6,
+              "max_target_warm_nodes": 6,
+              "max_warm_ready_deficit_nodes": 1,
+              "max_warm_stock_shortfall_nodes": 1,
+              "mean_completion_latency_minutes": 7.82,
+              "mean_wait_minutes": 0.04,
+              "mean_wait_minutes_by_class": {
+                "batch": 0.13,
+                "interactive": 0.02
+              },
+              "offered_fleet_shortfall_minutes": 2,
+              "offered_gpu_minutes": 71489,
+              "p95_wait_minutes": 0,
+              "p95_wait_minutes_by_class": {
+                "batch": 0,
+                "interactive": 0
+              },
+              "peak_active_nodes": 32,
+              "peak_offered_fleet_shortfall_gpus": 11,
+              "peak_offered_gpu_demand": 267,
+              "readiness_shortfall_intervals": 168,
+              "renewable_curtailed_kwh": 0.0,
+              "renewable_used_kwh": 512.0,
+              "requests_completed": 4036,
+              "requests_queued_at_horizon": 0,
+              "requests_rejected": 0,
+              "requests_running_at_horizon": 16,
+              "requests_waited": 89,
+              "requests_waited_by_class": {
+                "batch": 48,
+                "interactive": 41
+              },
+              "served_gpu_minutes": 71435
+            },
+            "requests_by_terminal_state": {
+              "completed": 4036,
+              "queued": 0,
+              "rejected": 0,
+              "running": 16
+            }
+          },
+          "always_on": {
+            "label": "Always On",
+            "metrics": {
+              "active_capacity_shortfall_gpu_minutes": 0,
+              "completion_fraction": 0.9961,
+              "cost_cny": 1709.612,
+              "emissions_kg": 1566.197,
+              "energy_accounted_gpu_minutes": 255035.0,
+              "facility_kwh": 3359.63,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0,
+              "flexible_gpu_hours_delivered": 3060.0,
+              "flexible_gpu_hours_scheduled": 3060.0,
+              "flexible_gpu_hours_unmet": 0.0,
+              "flexible_jobs_admitted": 6,
+              "flexible_jobs_deadline_met": 6,
+              "forecast_shortfall_minutes": 0,
+              "grid_kwh": 2847.63,
+              "latency_allowance_met": 1029,
+              "latency_allowance_total": 4036,
+              "max_forecast_capacity_shortfall_gpus": 0.0,
+              "max_pre_warm_active_shortfall_gpus": 0.0,
+              "max_readiness_capacity_shortfall_gpus": 0.0,
+              "max_target_warm_fleet_shortfall_nodes": 0,
+              "max_target_warm_nodes": 0,
+              "max_warm_ready_deficit_nodes": 0,
+              "max_warm_stock_shortfall_nodes": 0,
+              "mean_completion_latency_minutes": 7.82,
+              "mean_wait_minutes": 0.04,
+              "mean_wait_minutes_by_class": {
+                "batch": 0.12,
+                "interactive": 0.01
+              },
+              "offered_fleet_shortfall_minutes": 2,
+              "offered_gpu_minutes": 71489,
+              "p95_wait_minutes": 0,
+              "p95_wait_minutes_by_class": {
+                "batch": 0,
+                "interactive": 0
+              },
+              "peak_active_nodes": 32,
+              "peak_offered_fleet_shortfall_gpus": 11,
+              "peak_offered_gpu_demand": 267,
+              "readiness_shortfall_intervals": 0,
+              "renewable_curtailed_kwh": 0.0,
+              "renewable_used_kwh": 512.0,
+              "requests_completed": 4036,
+              "requests_queued_at_horizon": 0,
+              "requests_rejected": 0,
+              "requests_running_at_horizon": 16,
+              "requests_waited": 79,
+              "requests_waited_by_class": {
+                "batch": 45,
+                "interactive": 34
+              },
+              "served_gpu_minutes": 71435
+            },
+            "requests_by_terminal_state": {
+              "completed": 4036,
+              "queued": 0,
+              "rejected": 0,
+              "running": 16
+            }
+          },
+          "reactive": {
+            "label": "Reactive",
+            "metrics": {
+              "active_capacity_shortfall_gpu_minutes": 100,
+              "completion_fraction": 0.9961,
+              "cost_cny": 1608.944,
+              "emissions_kg": 1481.806,
+              "energy_accounted_gpu_minutes": 255035.0,
+              "facility_kwh": 3206.193,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0,
+              "flexible_gpu_hours_delivered": 3060.0,
+              "flexible_gpu_hours_scheduled": 3060.0,
+              "flexible_gpu_hours_unmet": 0.0,
+              "flexible_jobs_admitted": 6,
+              "flexible_jobs_deadline_met": 6,
+              "forecast_shortfall_minutes": 0,
+              "grid_kwh": 2694.193,
+              "latency_allowance_met": 1028,
+              "latency_allowance_total": 4036,
+              "max_forecast_capacity_shortfall_gpus": 0.0,
+              "max_pre_warm_active_shortfall_gpus": 0.0,
+              "max_readiness_capacity_shortfall_gpus": 0.0,
+              "max_target_warm_fleet_shortfall_nodes": 0,
+              "max_target_warm_nodes": 0,
+              "max_warm_ready_deficit_nodes": 0,
+              "max_warm_stock_shortfall_nodes": 0,
+              "mean_completion_latency_minutes": 7.84,
+              "mean_wait_minutes": 0.06,
+              "mean_wait_minutes_by_class": {
+                "batch": 0.17,
+                "interactive": 0.02
+              },
+              "offered_fleet_shortfall_minutes": 2,
+              "offered_gpu_minutes": 71489,
+              "p95_wait_minutes": 0,
+              "p95_wait_minutes_by_class": {
+                "batch": 1,
+                "interactive": 0
+              },
+              "peak_active_nodes": 32,
+              "peak_offered_fleet_shortfall_gpus": 11,
+              "peak_offered_gpu_demand": 267,
+              "readiness_shortfall_intervals": 0,
+              "renewable_curtailed_kwh": 0.0,
+              "renewable_used_kwh": 512.0,
+              "requests_completed": 4036,
+              "requests_queued_at_horizon": 0,
+              "requests_rejected": 0,
+              "requests_running_at_horizon": 16,
+              "requests_waited": 117,
+              "requests_waited_by_class": {
+                "batch": 71,
+                "interactive": 46
+              },
+              "served_gpu_minutes": 71435
+            },
+            "requests_by_terminal_state": {
+              "completed": 4036,
+              "queued": 0,
+              "rejected": 0,
+              "running": 16
+            }
+          }
+        },
+        "forecast_zero_warm_ready_minute_count": 871,
+        "forecast_zero_warm_ready_sample_minutes": [
+          70,
+          71,
+          72,
+          73,
+          74,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94
+        ],
+        "forecast_min_active_spare_gpus": 0.0,
+        "forecast_interval60_119_min_active_spare_gpus": 15.0,
+        "forecast_samples": [
+          {
+            "minute": 0,
+            "active": 16,
+            "warm": 2,
+            "warming": 0,
+            "booting": 0,
+            "off": 14,
+            "active_spare_gpus": 44.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 60,
+            "active": 15,
+            "warm": 1,
+            "warming": 0,
+            "booting": 0,
+            "off": 16,
+            "active_spare_gpus": 31.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 70,
+            "active": 15,
+            "warm": 0,
+            "warming": 1,
+            "booting": 12,
+            "off": 4,
+            "active_spare_gpus": 23.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 75,
+            "active": 15,
+            "warm": 1,
+            "warming": 0,
+            "booting": 12,
+            "off": 4,
+            "active_spare_gpus": 20.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 120,
+            "active": 29,
+            "warm": 1,
+            "warming": 0,
+            "booting": 0,
+            "off": 2,
+            "active_spare_gpus": 53.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 360,
+            "active": 31,
+            "warm": 1,
+            "warming": 0,
+            "booting": 0,
+            "off": 0,
+            "active_spare_gpus": 47.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 720,
+            "active": 32,
+            "warm": 0,
+            "warming": 0,
+            "booting": 0,
+            "off": 0,
+            "active_spare_gpus": 30.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 1020,
+            "active": 31,
+            "warm": 1,
+            "warming": 0,
+            "booting": 0,
+            "off": 0,
+            "active_spare_gpus": 203.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 1439,
+            "active": 32,
+            "warm": 0,
+            "warming": 0,
+            "booting": 0,
+            "off": 0,
+            "active_spare_gpus": 1.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          }
+        ]
+      },
+      "after": {
+        "requests_generated": 4052,
+        "request_trace_sha256": "454fb128f108940ddfe7ba9a77e7004d3d8a541f151e66ae047b95d36cc5186f",
+        "offered_peak_gpus": 267,
+        "realized_peak_snapshot": {
+          "minute": 1044,
+          "offered_gpus": 267,
+          "active_nodes": 31,
+          "warm_ready_nodes": 0,
+          "booting_nodes": 1,
+          "warming_nodes": 0,
+          "off_nodes": 0,
+          "active_spare_gpus": 0.0,
+          "formula_target_warm_nodes": 4,
+          "warm_ready_deficit_nodes": 2,
+          "warm_stock_target_nodes": 2,
+          "warm_stock_shortfall_nodes": 0,
+          "readiness_capacity_shortfall_gpus": 13.26
+        },
+        "policies": {
+          "always_on": {
+            "metrics": {
+              "facility_kwh": 3360.024,
+              "grid_kwh": 2848.024,
+              "renewable_used_kwh": 512.0,
+              "renewable_curtailed_kwh": 0.0,
+              "cost_cny": 1715.56,
+              "emissions_kg": 1566.413,
+              "requests_completed": 4039,
+              "requests_queued_at_horizon": 0,
+              "requests_running_at_horizon": 13,
+              "requests_rejected": 0,
+              "completion_fraction": 0.9968,
+              "mean_wait_minutes": 0.0,
+              "p95_wait_minutes": 0,
+              "requests_waited": 5,
+              "mean_wait_minutes_by_class": {
+                "interactive": 0.0,
+                "batch": 0.01
+              },
+              "p95_wait_minutes_by_class": {
+                "interactive": 0,
+                "batch": 0
+              },
+              "requests_waited_by_class": {
+                "interactive": 0,
+                "batch": 5
+              },
+              "mean_completion_latency_minutes": 7.8,
+              "latency_allowance_met": 1032,
+              "latency_allowance_total": 4039,
+              "offered_gpu_minutes": 71489,
+              "served_gpu_minutes": 71489,
+              "energy_accounted_gpu_minutes": 255089.0,
+              "peak_active_nodes": 32,
+              "peak_offered_gpu_demand": 267,
+              "max_forecast_capacity_shortfall_gpus": 0.0,
+              "forecast_shortfall_minutes": 0,
+              "max_readiness_capacity_shortfall_gpus": 0.0,
+              "readiness_shortfall_intervals": 0,
+              "max_pre_warm_active_shortfall_gpus": 0.0,
+              "max_target_warm_fleet_shortfall_nodes": 0,
+              "max_target_warm_nodes": 0,
+              "max_warm_stock_shortfall_nodes": 0,
+              "max_warm_ready_deficit_nodes": 0,
+              "peak_offered_fleet_shortfall_gpus": 11,
+              "offered_fleet_shortfall_minutes": 2,
+              "active_capacity_shortfall_gpu_minutes": 0,
+              "flexible_jobs_admitted": 6,
+              "flexible_jobs_deadline_met": 6,
+              "flexible_gpu_hours_scheduled": 3060.0,
+              "flexible_gpu_hours_delivered": 3060.0,
+              "flexible_gpu_hours_unmet": 0.0,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0
+            },
+            "warm_ready_zero_minutes": 1440,
+            "warm_ready_min_nodes": 0,
+            "warm_ready_max_nodes": 0,
+            "active_spare_01_02_min_gpus": 130.0,
+            "requests_arrived_01_02": 79,
+            "requests_waited_01_02": 0,
+            "at_0110": {
+              "active_nodes": 32,
+              "warm_ready_nodes": 0,
+              "booting_nodes": 0,
+              "off_nodes": 0,
+              "active_spare_gpus": 159.0,
+              "dispatchable_capacity_gpus": 159.0,
+              "queued_requests": null
+            },
+            "hourly_grid_costs": [
+              {
+                "hour": 0,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 106.184375,
+                "cost_cny": 41.038264
+              },
+              {
+                "hour": 1,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 108.408333,
+                "cost_cny": 41.897782
+              },
+              {
+                "hour": 2,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 144.283333,
+                "cost_cny": 55.762794
+              },
+              {
+                "hour": 3,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 146.682292,
+                "cost_cny": 56.689947
+              },
+              {
+                "hour": 4,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 145.245833,
+                "cost_cny": 56.134783
+              },
+              {
+                "hour": 5,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 174.5,
+                "cost_cny": 67.440968
+              },
+              {
+                "hour": 6,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 157.880208,
+                "cost_cny": 61.017731
+              },
+              {
+                "hour": 7,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 151.048958,
+                "cost_cny": 58.377581
+              },
+              {
+                "hour": 8,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 147.494792,
+                "cost_cny": 91.720632
+              },
+              {
+                "hour": 9,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 136.389583,
+                "cost_cny": 84.814783
+              },
+              {
+                "hour": 10,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 126.5,
+                "cost_cny": 106.076791
+              },
+              {
+                "hour": 11,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 99.15625,
+                "cost_cny": 83.147643
+              },
+              {
+                "hour": 12,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 102.5,
+                "cost_cny": 63.740317
+              },
+              {
+                "hour": 13,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 98.5,
+                "cost_cny": 61.25289
+              },
+              {
+                "hour": 14,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 89.442708,
+                "cost_cny": 55.620552
+              },
+              {
+                "hour": 15,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 93.825,
+                "cost_cny": 78.677114
+              },
+              {
+                "hour": 16,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 109.178125,
+                "cost_cny": 91.551503
+              },
+              {
+                "hour": 17,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 121.55625,
+                "cost_cny": 101.931201
+              },
+              {
+                "hour": 18,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 121.036458,
+                "cost_cny": 101.495329
+              },
+              {
+                "hour": 19,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 99.882292,
+                "cost_cny": 83.756466
+              },
+              {
+                "hour": 20,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 101.517708,
+                "cost_cny": 85.127848
+              },
+              {
+                "hour": 21,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 103.223958,
+                "cost_cny": 86.558627
+              },
+              {
+                "hour": 22,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 82.31875,
+                "cost_cny": 51.19047
+              },
+              {
+                "hour": 23,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 81.26875,
+                "cost_cny": 50.537521
+              }
+            ]
+          },
+          "reactive": {
+            "metrics": {
+              "facility_kwh": 3216.732,
+              "grid_kwh": 2704.732,
+              "renewable_used_kwh": 512.0,
+              "renewable_curtailed_kwh": 0.0,
+              "cost_cny": 1624.468,
+              "emissions_kg": 1487.603,
+              "requests_completed": 4039,
+              "requests_queued_at_horizon": 0,
+              "requests_running_at_horizon": 13,
+              "requests_rejected": 0,
+              "completion_fraction": 0.9968,
+              "mean_wait_minutes": 0.0,
+              "p95_wait_minutes": 0,
+              "requests_waited": 12,
+              "mean_wait_minutes_by_class": {
+                "interactive": 0.0,
+                "batch": 0.02
+              },
+              "p95_wait_minutes_by_class": {
+                "interactive": 0,
+                "batch": 0
+              },
+              "requests_waited_by_class": {
+                "interactive": 1,
+                "batch": 11
+              },
+              "mean_completion_latency_minutes": 7.8,
+              "latency_allowance_met": 1032,
+              "latency_allowance_total": 4039,
+              "offered_gpu_minutes": 71489,
+              "served_gpu_minutes": 71489,
+              "energy_accounted_gpu_minutes": 255089.0,
+              "peak_active_nodes": 32,
+              "peak_offered_gpu_demand": 267,
+              "max_forecast_capacity_shortfall_gpus": 0.0,
+              "forecast_shortfall_minutes": 0,
+              "max_readiness_capacity_shortfall_gpus": 0.0,
+              "readiness_shortfall_intervals": 0,
+              "max_pre_warm_active_shortfall_gpus": 0.0,
+              "max_target_warm_fleet_shortfall_nodes": 0,
+              "max_target_warm_nodes": 0,
+              "max_warm_stock_shortfall_nodes": 0,
+              "max_warm_ready_deficit_nodes": 0,
+              "peak_offered_fleet_shortfall_gpus": 11,
+              "offered_fleet_shortfall_minutes": 2,
+              "active_capacity_shortfall_gpu_minutes": 35,
+              "flexible_jobs_admitted": 6,
+              "flexible_jobs_deadline_met": 6,
+              "flexible_gpu_hours_scheduled": 3060.0,
+              "flexible_gpu_hours_delivered": 3060.0,
+              "flexible_gpu_hours_unmet": 0.0,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0
+            },
+            "warm_ready_zero_minutes": 1205,
+            "warm_ready_min_nodes": 0,
+            "warm_ready_max_nodes": 11,
+            "active_spare_01_02_min_gpus": 0.0,
+            "requests_arrived_01_02": 79,
+            "requests_waited_01_02": 0,
+            "at_0110": {
+              "active_nodes": 15,
+              "warm_ready_nodes": 0,
+              "booting_nodes": 0,
+              "off_nodes": 17,
+              "active_spare_gpus": 23.0,
+              "dispatchable_capacity_gpus": 23.0,
+              "queued_requests": null
+            },
+            "hourly_grid_costs": [
+              {
+                "hour": 0,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 85.991667,
+                "cost_cny": 33.234162
+              },
+              {
+                "hour": 1,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 92.533333,
+                "cost_cny": 35.762393
+              },
+              {
+                "hour": 2,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 136.783333,
+                "cost_cny": 52.864185
+              },
+              {
+                "hour": 3,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 139.182292,
+                "cost_cny": 53.791338
+              },
+              {
+                "hour": 4,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 140.745833,
+                "cost_cny": 54.395617
+              },
+              {
+                "hour": 5,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 174.5,
+                "cost_cny": 67.440968
+              },
+              {
+                "hour": 6,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 157.53125,
+                "cost_cny": 60.882865
+              },
+              {
+                "hour": 7,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 149.798958,
+                "cost_cny": 57.89448
+              },
+              {
+                "hour": 8,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 145.461458,
+                "cost_cny": 90.45619
+              },
+              {
+                "hour": 9,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 136.389583,
+                "cost_cny": 84.814783
+              },
+              {
+                "hour": 10,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 126.5,
+                "cost_cny": 106.076791
+              },
+              {
+                "hour": 11,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 99.15625,
+                "cost_cny": 83.147643
+              },
+              {
+                "hour": 12,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 102.5,
+                "cost_cny": 63.740317
+              },
+              {
+                "hour": 13,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 98.5,
+                "cost_cny": 61.25289
+              },
+              {
+                "hour": 14,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 90.259375,
+                "cost_cny": 56.128402
+              },
+              {
+                "hour": 15,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 93.825,
+                "cost_cny": 78.677114
+              },
+              {
+                "hour": 16,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 109.178125,
+                "cost_cny": 91.551503
+              },
+              {
+                "hour": 17,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 118.761458,
+                "cost_cny": 99.587624
+              },
+              {
+                "hour": 18,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 109.6875,
+                "cost_cny": 91.978641
+              },
+              {
+                "hour": 19,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 87.05,
+                "cost_cny": 72.995926
+              },
+              {
+                "hour": 20,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 79.689583,
+                "cost_cny": 66.823836
+              },
+              {
+                "hour": 21,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 80.776042,
+                "cost_cny": 67.734888
+              },
+              {
+                "hour": 22,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 68.6625,
+                "cost_cny": 42.698239
+              },
+              {
+                "hour": 23,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 81.26875,
+                "cost_cny": 50.537521
+              }
+            ]
+          },
+          "forecast": {
+            "metrics": {
+              "facility_kwh": 3240.925,
+              "grid_kwh": 2728.925,
+              "renewable_used_kwh": 512.0,
+              "renewable_curtailed_kwh": 0.0,
+              "cost_cny": 1640.202,
+              "emissions_kg": 1500.909,
+              "requests_completed": 4039,
+              "requests_queued_at_horizon": 0,
+              "requests_running_at_horizon": 13,
+              "requests_rejected": 0,
+              "completion_fraction": 0.9968,
+              "mean_wait_minutes": 0.0,
+              "p95_wait_minutes": 0,
+              "requests_waited": 11,
+              "mean_wait_minutes_by_class": {
+                "interactive": 0.0,
+                "batch": 0.01
+              },
+              "p95_wait_minutes_by_class": {
+                "interactive": 0,
+                "batch": 0
+              },
+              "requests_waited_by_class": {
+                "interactive": 6,
+                "batch": 5
+              },
+              "mean_completion_latency_minutes": 7.8,
+              "latency_allowance_met": 1032,
+              "latency_allowance_total": 4039,
+              "offered_gpu_minutes": 71489,
+              "served_gpu_minutes": 71489,
+              "energy_accounted_gpu_minutes": 255089.0,
+              "peak_active_nodes": 31,
+              "peak_offered_gpu_demand": 267,
+              "max_forecast_capacity_shortfall_gpus": 41.36,
+              "forecast_shortfall_minutes": 625,
+              "max_readiness_capacity_shortfall_gpus": 157.77,
+              "readiness_shortfall_intervals": 160,
+              "max_pre_warm_active_shortfall_gpus": 47.6,
+              "max_target_warm_fleet_shortfall_nodes": 5,
+              "max_target_warm_nodes": 23,
+              "max_warm_stock_shortfall_nodes": 1,
+              "max_warm_ready_deficit_nodes": 2,
+              "peak_offered_fleet_shortfall_gpus": 11,
+              "offered_fleet_shortfall_minutes": 2,
+              "active_capacity_shortfall_gpu_minutes": 0,
+              "flexible_jobs_admitted": 6,
+              "flexible_jobs_deadline_met": 6,
+              "flexible_gpu_hours_scheduled": 3060.0,
+              "flexible_gpu_hours_delivered": 3060.0,
+              "flexible_gpu_hours_unmet": 0.0,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0
+            },
+            "warm_ready_zero_minutes": 19,
+            "warm_ready_min_nodes": 0,
+            "warm_ready_max_nodes": 16,
+            "active_spare_01_02_min_gpus": 6.0,
+            "requests_arrived_01_02": 79,
+            "requests_waited_01_02": 0,
+            "at_0110": {
+              "active_nodes": 15,
+              "warm_ready_nodes": 2,
+              "booting_nodes": 0,
+              "off_nodes": 15,
+              "active_spare_gpus": 23.0,
+              "dispatchable_capacity_gpus": 39.0,
+              "queued_requests": null
+            },
+            "hourly_grid_costs": [
+              {
+                "hour": 0,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 87.267708,
+                "cost_cny": 33.727328
+              },
+              {
+                "hour": 1,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 100.335417,
+                "cost_cny": 38.777751
+              },
+              {
+                "hour": 2,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 139.689583,
+                "cost_cny": 53.987396
+              },
+              {
+                "hour": 3,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 142.59375,
+                "cost_cny": 55.109802
+              },
+              {
+                "hour": 4,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 142.610417,
+                "cost_cny": 55.116244
+              },
+              {
+                "hour": 5,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 169.791667,
+                "cost_cny": 65.621285
+              },
+              {
+                "hour": 6,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 156.942708,
+                "cost_cny": 60.655405
+              },
+              {
+                "hour": 7,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 150.111458,
+                "cost_cny": 58.015255
+              },
+              {
+                "hour": 8,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 146.477083,
+                "cost_cny": 91.087763
+              },
+              {
+                "hour": 9,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 134.5625,
+                "cost_cny": 83.678599
+              },
+              {
+                "hour": 10,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 122.0625,
+                "cost_cny": 102.355718
+              },
+              {
+                "hour": 11,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 98.21875,
+                "cost_cny": 82.361501
+              },
+              {
+                "hour": 12,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 98.0625,
+                "cost_cny": 60.980828
+              },
+              {
+                "hour": 13,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 94.0625,
+                "cost_cny": 58.493401
+              },
+              {
+                "hour": 14,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 90.4375,
+                "cost_cny": 56.23917
+              },
+              {
+                "hour": 15,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 92.8875,
+                "cost_cny": 77.890972
+              },
+              {
+                "hour": 16,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 110.333333,
+                "cost_cny": 92.520205
+              },
+              {
+                "hour": 17,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 118.236458,
+                "cost_cny": 99.147384
+              },
+              {
+                "hour": 18,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 109.635417,
+                "cost_cny": 91.934966
+              },
+              {
+                "hour": 19,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 99.605208,
+                "cost_cny": 83.524118
+              },
+              {
+                "hour": 20,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 84.476042,
+                "cost_cny": 70.837529
+              },
+              {
+                "hour": 21,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 85.682292,
+                "cost_cny": 71.849032
+              },
+              {
+                "hour": 22,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 74.511458,
+                "cost_cny": 46.335453
+              },
+              {
+                "hour": 23,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 80.33125,
+                "cost_cny": 49.95453
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "case": "constrained_high",
+      "nodes": 12,
+      "traffic_profile": "high",
+      "before": {
+        "case": "constrained_high",
+        "nodes": 12,
+        "traffic_profile": "high",
+        "requests_generated": 4052,
+        "offered_peak_gpus": 267,
+        "request_trace_sha256": "454fb128f108940ddfe7ba9a77e7004d3d8a541f151e66ae047b95d36cc5186f",
+        "policies": {
+          "forecast": {
+            "label": "Forecast",
+            "metrics": {
+              "active_capacity_shortfall_gpu_minutes": 2715,
+              "completion_fraction": 0.9968,
+              "cost_cny": 567.106,
+              "emissions_kg": 492.428,
+              "energy_accounted_gpu_minutes": 71489.0,
+              "facility_kwh": 1366.769,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0,
+              "flexible_gpu_hours_delivered": 0.0,
+              "flexible_gpu_hours_scheduled": 0,
+              "flexible_gpu_hours_unmet": 3060.0,
+              "flexible_jobs_admitted": 0,
+              "flexible_jobs_deadline_met": 0,
+              "forecast_shortfall_minutes": 420,
+              "grid_kwh": 895.324,
+              "latency_allowance_met": 920,
+              "latency_allowance_total": 4039,
+              "max_forecast_capacity_shortfall_gpus": 154.51,
+              "max_pre_warm_active_shortfall_gpus": 64.16,
+              "max_readiness_capacity_shortfall_gpus": 154.51,
+              "max_target_warm_fleet_shortfall_nodes": 20,
+              "max_target_warm_nodes": 20,
+              "max_warm_ready_deficit_nodes": 1,
+              "max_warm_stock_shortfall_nodes": 1,
+              "mean_completion_latency_minutes": 10.54,
+              "mean_wait_minutes": 2.73,
+              "mean_wait_minutes_by_class": {
+                "batch": 2.95,
+                "interactive": 2.66
+              },
+              "offered_fleet_shortfall_minutes": 77,
+              "offered_gpu_minutes": 71489,
+              "p95_wait_minutes": 20,
+              "p95_wait_minutes_by_class": {
+                "batch": 16,
+                "interactive": 21
+              },
+              "peak_active_nodes": 12,
+              "peak_offered_fleet_shortfall_gpus": 171,
+              "peak_offered_gpu_demand": 267,
+              "readiness_shortfall_intervals": 124,
+              "renewable_curtailed_kwh": 40.555,
+              "renewable_used_kwh": 471.445,
+              "requests_completed": 4039,
+              "requests_queued_at_horizon": 0,
+              "requests_rejected": 0,
+              "requests_running_at_horizon": 13,
+              "requests_waited": 802,
+              "requests_waited_by_class": {
+                "batch": 249,
+                "interactive": 553
+              },
+              "served_gpu_minutes": 71489
+            },
+            "requests_by_terminal_state": {
+              "completed": 4039,
+              "queued": 0,
+              "rejected": 0,
+              "running": 13
+            }
+          },
+          "always_on": {
+            "label": "Always On",
+            "metrics": {
+              "active_capacity_shortfall_gpu_minutes": 2715,
+              "completion_fraction": 0.9968,
+              "cost_cny": 588.73,
+              "emissions_kg": 521.315,
+              "energy_accounted_gpu_minutes": 71489.0,
+              "facility_kwh": 1421.274,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0,
+              "flexible_gpu_hours_delivered": 0.0,
+              "flexible_gpu_hours_scheduled": 0,
+              "flexible_gpu_hours_unmet": 3060.0,
+              "flexible_jobs_admitted": 0,
+              "flexible_jobs_deadline_met": 0,
+              "forecast_shortfall_minutes": 0,
+              "grid_kwh": 947.846,
+              "latency_allowance_met": 920,
+              "latency_allowance_total": 4039,
+              "max_forecast_capacity_shortfall_gpus": 0.0,
+              "max_pre_warm_active_shortfall_gpus": 0.0,
+              "max_readiness_capacity_shortfall_gpus": 0.0,
+              "max_target_warm_fleet_shortfall_nodes": 0,
+              "max_target_warm_nodes": 0,
+              "max_warm_ready_deficit_nodes": 0,
+              "max_warm_stock_shortfall_nodes": 0,
+              "mean_completion_latency_minutes": 10.54,
+              "mean_wait_minutes": 2.73,
+              "mean_wait_minutes_by_class": {
+                "batch": 2.95,
+                "interactive": 2.66
+              },
+              "offered_fleet_shortfall_minutes": 77,
+              "offered_gpu_minutes": 71489,
+              "p95_wait_minutes": 20,
+              "p95_wait_minutes_by_class": {
+                "batch": 16,
+                "interactive": 21
+              },
+              "peak_active_nodes": 12,
+              "peak_offered_fleet_shortfall_gpus": 171,
+              "peak_offered_gpu_demand": 267,
+              "readiness_shortfall_intervals": 0,
+              "renewable_curtailed_kwh": 38.572,
+              "renewable_used_kwh": 473.428,
+              "requests_completed": 4039,
+              "requests_queued_at_horizon": 0,
+              "requests_rejected": 0,
+              "requests_running_at_horizon": 13,
+              "requests_waited": 801,
+              "requests_waited_by_class": {
+                "batch": 249,
+                "interactive": 552
+              },
+              "served_gpu_minutes": 71489
+            },
+            "requests_by_terminal_state": {
+              "completed": 4039,
+              "queued": 0,
+              "rejected": 0,
+              "running": 13
+            }
+          },
+          "reactive": {
+            "label": "Reactive",
+            "metrics": {
+              "active_capacity_shortfall_gpu_minutes": 3060,
+              "completion_fraction": 0.9968,
+              "cost_cny": 552.744,
+              "emissions_kg": 477.949,
+              "energy_accounted_gpu_minutes": 71485.0,
+              "facility_kwh": 1329.292,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0,
+              "flexible_gpu_hours_delivered": 0.0,
+              "flexible_gpu_hours_scheduled": 0,
+              "flexible_gpu_hours_unmet": 3060.0,
+              "flexible_jobs_admitted": 0,
+              "flexible_jobs_deadline_met": 0,
+              "forecast_shortfall_minutes": 0,
+              "grid_kwh": 868.998,
+              "latency_allowance_met": 914,
+              "latency_allowance_total": 4039,
+              "max_forecast_capacity_shortfall_gpus": 0.0,
+              "max_pre_warm_active_shortfall_gpus": 0.0,
+              "max_readiness_capacity_shortfall_gpus": 0.0,
+              "max_target_warm_fleet_shortfall_nodes": 0,
+              "max_target_warm_nodes": 0,
+              "max_warm_ready_deficit_nodes": 0,
+              "max_warm_stock_shortfall_nodes": 0,
+              "mean_completion_latency_minutes": 11.27,
+              "mean_wait_minutes": 3.46,
+              "mean_wait_minutes_by_class": {
+                "batch": 3.2,
+                "interactive": 3.55
+              },
+              "offered_fleet_shortfall_minutes": 77,
+              "offered_gpu_minutes": 71489,
+              "p95_wait_minutes": 27,
+              "p95_wait_minutes_by_class": {
+                "batch": 16,
+                "interactive": 29
+              },
+              "peak_active_nodes": 12,
+              "peak_offered_fleet_shortfall_gpus": 171,
+              "peak_offered_gpu_demand": 267,
+              "readiness_shortfall_intervals": 0,
+              "renewable_curtailed_kwh": 51.706,
+              "renewable_used_kwh": 460.294,
+              "requests_completed": 4039,
+              "requests_queued_at_horizon": 0,
+              "requests_rejected": 0,
+              "requests_running_at_horizon": 13,
+              "requests_waited": 904,
+              "requests_waited_by_class": {
+                "batch": 295,
+                "interactive": 609
+              },
+              "served_gpu_minutes": 71485
+            },
+            "requests_by_terminal_state": {
+              "completed": 4039,
+              "queued": 0,
+              "rejected": 0,
+              "running": 13
+            }
+          }
+        },
+        "forecast_zero_warm_ready_minute_count": 781,
+        "forecast_zero_warm_ready_sample_minutes": [
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108,
+          109
+        ],
+        "forecast_min_active_spare_gpus": 0.0,
+        "forecast_interval60_119_min_active_spare_gpus": 2.0,
+        "forecast_samples": [
+          {
+            "minute": 0,
+            "active": 6,
+            "warm": 2,
+            "warming": 0,
+            "booting": 0,
+            "off": 4,
+            "active_spare_gpus": 44.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 60,
+            "active": 5,
+            "warm": 1,
+            "warming": 0,
+            "booting": 0,
+            "off": 6,
+            "active_spare_gpus": 31.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 70,
+            "active": 5,
+            "warm": 1,
+            "warming": 0,
+            "booting": 0,
+            "off": 6,
+            "active_spare_gpus": 23.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 75,
+            "active": 5,
+            "warm": 1,
+            "warming": 0,
+            "booting": 0,
+            "off": 6,
+            "active_spare_gpus": 20.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 120,
+            "active": 6,
+            "warm": 1,
+            "warming": 0,
+            "booting": 0,
+            "off": 5,
+            "active_spare_gpus": 39.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 360,
+            "active": 6,
+            "warm": 3,
+            "warming": 0,
+            "booting": 0,
+            "off": 3,
+            "active_spare_gpus": 37.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 720,
+            "active": 11,
+            "warm": 1,
+            "warming": 0,
+            "booting": 0,
+            "off": 0,
+            "active_spare_gpus": 46.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 1020,
+            "active": 12,
+            "warm": 0,
+            "warming": 0,
+            "booting": 0,
+            "off": 0,
+            "active_spare_gpus": 51.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          },
+          {
+            "minute": 1439,
+            "active": 8,
+            "warm": 4,
+            "warming": 0,
+            "booting": 0,
+            "off": 0,
+            "active_spare_gpus": 33.0,
+            "warm_target": 1,
+            "waiting_now": 0
+          }
+        ]
+      },
+      "after": {
+        "requests_generated": 4052,
+        "request_trace_sha256": "454fb128f108940ddfe7ba9a77e7004d3d8a541f151e66ae047b95d36cc5186f",
+        "offered_peak_gpus": 267,
+        "realized_peak_snapshot": {
+          "minute": 1044,
+          "offered_gpus": 267,
+          "active_nodes": 12,
+          "warm_ready_nodes": 0,
+          "booting_nodes": 0,
+          "warming_nodes": 0,
+          "off_nodes": 0,
+          "active_spare_gpus": 0.0,
+          "formula_target_warm_nodes": 13,
+          "warm_ready_deficit_nodes": 2,
+          "warm_stock_target_nodes": 2,
+          "warm_stock_shortfall_nodes": 2,
+          "readiness_capacity_shortfall_gpus": 105.06
+        },
+        "policies": {
+          "always_on": {
+            "metrics": {
+              "facility_kwh": 1421.274,
+              "grid_kwh": 947.846,
+              "renewable_used_kwh": 473.428,
+              "renewable_curtailed_kwh": 38.572,
+              "cost_cny": 588.73,
+              "emissions_kg": 521.315,
+              "requests_completed": 4039,
+              "requests_queued_at_horizon": 0,
+              "requests_running_at_horizon": 13,
+              "requests_rejected": 0,
+              "completion_fraction": 0.9968,
+              "mean_wait_minutes": 2.73,
+              "p95_wait_minutes": 20,
+              "requests_waited": 801,
+              "mean_wait_minutes_by_class": {
+                "interactive": 2.66,
+                "batch": 2.95
+              },
+              "p95_wait_minutes_by_class": {
+                "interactive": 21,
+                "batch": 16
+              },
+              "requests_waited_by_class": {
+                "interactive": 552,
+                "batch": 249
+              },
+              "mean_completion_latency_minutes": 10.54,
+              "latency_allowance_met": 920,
+              "latency_allowance_total": 4039,
+              "offered_gpu_minutes": 71489,
+              "served_gpu_minutes": 71489,
+              "energy_accounted_gpu_minutes": 71489.0,
+              "peak_active_nodes": 12,
+              "peak_offered_gpu_demand": 267,
+              "max_forecast_capacity_shortfall_gpus": 0.0,
+              "forecast_shortfall_minutes": 0,
+              "max_readiness_capacity_shortfall_gpus": 0.0,
+              "readiness_shortfall_intervals": 0,
+              "max_pre_warm_active_shortfall_gpus": 0.0,
+              "max_target_warm_fleet_shortfall_nodes": 0,
+              "max_target_warm_nodes": 0,
+              "max_warm_stock_shortfall_nodes": 0,
+              "max_warm_ready_deficit_nodes": 0,
+              "peak_offered_fleet_shortfall_gpus": 171,
+              "offered_fleet_shortfall_minutes": 77,
+              "active_capacity_shortfall_gpu_minutes": 2715,
+              "flexible_jobs_admitted": 0,
+              "flexible_jobs_deadline_met": 0,
+              "flexible_gpu_hours_scheduled": 0,
+              "flexible_gpu_hours_delivered": 0.0,
+              "flexible_gpu_hours_unmet": 3060.0,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0
+            },
+            "warm_ready_zero_minutes": 1440,
+            "warm_ready_min_nodes": 0,
+            "warm_ready_max_nodes": 0,
+            "active_spare_01_02_min_gpus": 50.0,
+            "requests_arrived_01_02": 79,
+            "requests_waited_01_02": 0,
+            "at_0110": {
+              "active_nodes": 12,
+              "warm_ready_nodes": 0,
+              "booting_nodes": 0,
+              "off_nodes": 0,
+              "active_spare_gpus": 79.0,
+              "dispatchable_capacity_gpus": 79.0,
+              "queued_requests": null
+            },
+            "hourly_grid_costs": [
+              {
+                "hour": 0,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 46.184375,
+                "cost_cny": 17.849392
+              },
+              {
+                "hour": 1,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 48.408333,
+                "cost_cny": 18.70891
+              },
+              {
+                "hour": 2,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 44.908333,
+                "cost_cny": 17.356226
+              },
+              {
+                "hour": 3,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 47.307292,
+                "cost_cny": 18.283378
+              },
+              {
+                "hour": 4,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 45.870833,
+                "cost_cny": 17.728214
+              },
+              {
+                "hour": 5,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 45.710417,
+                "cost_cny": 17.666216
+              },
+              {
+                "hour": 6,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 49.755208,
+                "cost_cny": 19.229452
+              },
+              {
+                "hour": 7,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 42.923958,
+                "cost_cny": 16.589302
+              },
+              {
+                "hour": 8,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 33.798958,
+                "cost_cny": 21.01811
+              },
+              {
+                "hour": 9,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 28.884375,
+                "cost_cny": 17.961944
+              },
+              {
+                "hour": 10,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 15.494792,
+                "cost_cny": 12.993184
+              },
+              {
+                "hour": 11,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 1.122917,
+                "cost_cny": 0.941624
+              },
+              {
+                "hour": 12,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 0.0,
+                "cost_cny": 0.0
+              },
+              {
+                "hour": 13,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 0.0,
+                "cost_cny": 0.0
+              },
+              {
+                "hour": 14,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 0.242708,
+                "cost_cny": 0.15093
+              },
+              {
+                "hour": 15,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 3.695833,
+                "cost_cny": 3.099147
+              },
+              {
+                "hour": 16,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 21.666667,
+                "cost_cny": 18.16862
+              },
+              {
+                "hour": 17,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 55.948958,
+                "cost_cny": 46.916095
+              },
+              {
+                "hour": 18,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 71.427083,
+                "cost_cny": 59.895303
+              },
+              {
+                "hour": 19,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 76.107292,
+                "cost_cny": 63.8199
+              },
+              {
+                "hour": 20,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 75.992708,
+                "cost_cny": 63.723816
+              },
+              {
+                "hour": 21,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 78.398958,
+                "cost_cny": 65.741581
+              },
+              {
+                "hour": 22,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 57.727083,
+                "cost_cny": 35.897976
+              },
+              {
+                "hour": 23,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 56.26875,
+                "cost_cny": 34.991102
+              }
+            ]
+          },
+          "reactive": {
+            "metrics": {
+              "facility_kwh": 1328.557,
+              "grid_kwh": 868.434,
+              "renewable_used_kwh": 460.123,
+              "renewable_curtailed_kwh": 51.877,
+              "cost_cny": 552.452,
+              "emissions_kg": 477.639,
+              "requests_completed": 4039,
+              "requests_queued_at_horizon": 0,
+              "requests_running_at_horizon": 13,
+              "requests_rejected": 0,
+              "completion_fraction": 0.9968,
+              "mean_wait_minutes": 3.33,
+              "p95_wait_minutes": 26,
+              "requests_waited": 886,
+              "mean_wait_minutes_by_class": {
+                "interactive": 3.38,
+                "batch": 3.15
+              },
+              "p95_wait_minutes_by_class": {
+                "interactive": 27,
+                "batch": 16
+              },
+              "requests_waited_by_class": {
+                "interactive": 598,
+                "batch": 288
+              },
+              "mean_completion_latency_minutes": 11.13,
+              "latency_allowance_met": 915,
+              "latency_allowance_total": 4039,
+              "offered_gpu_minutes": 71489,
+              "served_gpu_minutes": 71485,
+              "energy_accounted_gpu_minutes": 71485.0,
+              "peak_active_nodes": 12,
+              "peak_offered_gpu_demand": 267,
+              "max_forecast_capacity_shortfall_gpus": 0.0,
+              "forecast_shortfall_minutes": 0,
+              "max_readiness_capacity_shortfall_gpus": 0.0,
+              "readiness_shortfall_intervals": 0,
+              "max_pre_warm_active_shortfall_gpus": 0.0,
+              "max_target_warm_fleet_shortfall_nodes": 0,
+              "max_target_warm_nodes": 0,
+              "max_warm_stock_shortfall_nodes": 0,
+              "max_warm_ready_deficit_nodes": 0,
+              "peak_offered_fleet_shortfall_gpus": 171,
+              "offered_fleet_shortfall_minutes": 77,
+              "active_capacity_shortfall_gpu_minutes": 3020,
+              "flexible_jobs_admitted": 0,
+              "flexible_jobs_deadline_met": 0,
+              "flexible_gpu_hours_scheduled": 0,
+              "flexible_gpu_hours_delivered": 0.0,
+              "flexible_gpu_hours_unmet": 3060.0,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0
+            },
+            "warm_ready_zero_minutes": 1239,
+            "warm_ready_min_nodes": 0,
+            "warm_ready_max_nodes": 5,
+            "active_spare_01_02_min_gpus": 0.0,
+            "requests_arrived_01_02": 79,
+            "requests_waited_01_02": 3,
+            "at_0110": {
+              "active_nodes": 5,
+              "warm_ready_nodes": 0,
+              "booting_nodes": 0,
+              "off_nodes": 7,
+              "active_spare_gpus": 23.0,
+              "dispatchable_capacity_gpus": 23.0,
+              "queued_requests": null
+            },
+            "hourly_grid_costs": [
+              {
+                "hour": 0,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 38.491667,
+                "cost_cny": 14.876305
+              },
+              {
+                "hour": 1,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 40.046875,
+                "cost_cny": 15.477364
+              },
+              {
+                "hour": 2,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 36.420833,
+                "cost_cny": 14.075967
+              },
+              {
+                "hour": 3,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 38.557292,
+                "cost_cny": 14.901668
+              },
+              {
+                "hour": 4,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 37.120833,
+                "cost_cny": 14.346504
+              },
+              {
+                "hour": 5,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 37.460417,
+                "cost_cny": 14.477746
+              },
+              {
+                "hour": 6,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 44.020833,
+                "cost_cny": 17.013224
+              },
+              {
+                "hour": 7,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 38.423958,
+                "cost_cny": 14.850137
+              },
+              {
+                "hour": 8,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 30.048958,
+                "cost_cny": 18.686148
+              },
+              {
+                "hour": 9,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 25.510417,
+                "cost_cny": 15.863825
+              },
+              {
+                "hour": 10,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 13.11875,
+                "cost_cny": 11.00075
+              },
+              {
+                "hour": 11,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 0.458333,
+                "cost_cny": 0.384336
+              },
+              {
+                "hour": 12,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 0.0,
+                "cost_cny": 0.0
+              },
+              {
+                "hour": 13,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 0.0,
+                "cost_cny": 0.0
+              },
+              {
+                "hour": 14,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 0.0,
+                "cost_cny": 0.0
+              },
+              {
+                "hour": 15,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 2.817708,
+                "cost_cny": 2.362794
+              },
+              {
+                "hour": 16,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 20.460417,
+                "cost_cny": 17.157117
+              },
+              {
+                "hour": 17,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 54.6875,
+                "cost_cny": 45.858297
+              },
+              {
+                "hour": 18,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 71.4125,
+                "cost_cny": 59.883074
+              },
+              {
+                "hour": 19,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 76.945833,
+                "cost_cny": 64.52306
+              },
+              {
+                "hour": 20,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 76.284375,
+                "cost_cny": 63.968393
+              },
+              {
+                "hour": 21,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 78.398958,
+                "cost_cny": 65.741581
+              },
+              {
+                "hour": 22,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 56.758333,
+                "cost_cny": 35.295553
+              },
+              {
+                "hour": 23,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 50.989583,
+                "cost_cny": 31.708217
+              }
+            ]
+          },
+          "forecast": {
+            "metrics": {
+              "facility_kwh": 1361.639,
+              "grid_kwh": 892.734,
+              "renewable_used_kwh": 468.904,
+              "renewable_curtailed_kwh": 43.096,
+              "cost_cny": 564.655,
+              "emissions_kg": 491.004,
+              "requests_completed": 4039,
+              "requests_queued_at_horizon": 0,
+              "requests_running_at_horizon": 13,
+              "requests_rejected": 0,
+              "completion_fraction": 0.9968,
+              "mean_wait_minutes": 2.73,
+              "p95_wait_minutes": 20,
+              "requests_waited": 801,
+              "mean_wait_minutes_by_class": {
+                "interactive": 2.66,
+                "batch": 2.95
+              },
+              "p95_wait_minutes_by_class": {
+                "interactive": 21,
+                "batch": 16
+              },
+              "requests_waited_by_class": {
+                "interactive": 552,
+                "batch": 249
+              },
+              "mean_completion_latency_minutes": 10.54,
+              "latency_allowance_met": 920,
+              "latency_allowance_total": 4039,
+              "offered_gpu_minutes": 71489,
+              "served_gpu_minutes": 71489,
+              "energy_accounted_gpu_minutes": 71489.0,
+              "peak_active_nodes": 12,
+              "peak_offered_gpu_demand": 267,
+              "max_forecast_capacity_shortfall_gpus": 154.43,
+              "forecast_shortfall_minutes": 395,
+              "max_readiness_capacity_shortfall_gpus": 154.43,
+              "readiness_shortfall_intervals": 125,
+              "max_pre_warm_active_shortfall_gpus": 143.11,
+              "max_target_warm_fleet_shortfall_nodes": 18,
+              "max_target_warm_nodes": 18,
+              "max_warm_stock_shortfall_nodes": 2,
+              "max_warm_ready_deficit_nodes": 2,
+              "peak_offered_fleet_shortfall_gpus": 171,
+              "offered_fleet_shortfall_minutes": 77,
+              "active_capacity_shortfall_gpu_minutes": 2715,
+              "flexible_jobs_admitted": 0,
+              "flexible_jobs_deadline_met": 0,
+              "flexible_gpu_hours_scheduled": 0,
+              "flexible_gpu_hours_delivered": 0.0,
+              "flexible_gpu_hours_unmet": 3060.0,
+              "flexible_commitment_missed_gpu_minutes": 0.0,
+              "flexible_deadline_misses": 0
+            },
+            "warm_ready_zero_minutes": 332,
+            "warm_ready_min_nodes": 0,
+            "warm_ready_max_nodes": 4,
+            "active_spare_01_02_min_gpus": 2.0,
+            "requests_arrived_01_02": 79,
+            "requests_waited_01_02": 0,
+            "at_0110": {
+              "active_nodes": 5,
+              "warm_ready_nodes": 2,
+              "booting_nodes": 0,
+              "off_nodes": 5,
+              "active_spare_gpus": 23.0,
+              "dispatchable_capacity_gpus": 39.0,
+              "queued_requests": null
+            },
+            "hourly_grid_costs": [
+              {
+                "hour": 0,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 38.663542,
+                "cost_cny": 14.942732
+              },
+              {
+                "hour": 1,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 41.304167,
+                "cost_cny": 15.963283
+              },
+              {
+                "hour": 2,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 38.142708,
+                "cost_cny": 14.741439
+              },
+              {
+                "hour": 3,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 42.010417,
+                "cost_cny": 16.236236
+              },
+              {
+                "hour": 4,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 39.308333,
+                "cost_cny": 15.191931
+              },
+              {
+                "hour": 5,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 40.66875,
+                "cost_cny": 15.717707
+              },
+              {
+                "hour": 6,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 45.411458,
+                "cost_cny": 17.550674
+              },
+              {
+                "hour": 7,
+                "rate_cny_kwh": 0.38648119,
+                "tariff_period": "valley",
+                "grid_kwh": 39.361458,
+                "cost_cny": 15.212463
+              },
+              {
+                "hour": 8,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 30.798958,
+                "cost_cny": 19.15254
+              },
+              {
+                "hour": 9,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 27.821875,
+                "cost_cny": 17.301221
+              },
+              {
+                "hour": 10,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 14.447917,
+                "cost_cny": 12.115325
+              },
+              {
+                "hour": 11,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 0.828125,
+                "cost_cny": 0.694426
+              },
+              {
+                "hour": 12,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 0.0,
+                "cost_cny": 0.0
+              },
+              {
+                "hour": 13,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 0.0,
+                "cost_cny": 0.0
+              },
+              {
+                "hour": 14,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 0.159375,
+                "cost_cny": 0.099108
+              },
+              {
+                "hour": 15,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 3.019792,
+                "cost_cny": 2.532251
+              },
+              {
+                "hour": 16,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 20.729167,
+                "cost_cny": 17.382478
+              },
+              {
+                "hour": 17,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 55.777083,
+                "cost_cny": 46.771969
+              },
+              {
+                "hour": 18,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 71.427083,
+                "cost_cny": 59.895303
+              },
+              {
+                "hour": 19,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 76.107292,
+                "cost_cny": 63.8199
+              },
+              {
+                "hour": 20,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 75.992708,
+                "cost_cny": 63.723816
+              },
+              {
+                "hour": 21,
+                "rate_cny_kwh": 0.83855171,
+                "tariff_period": "peak",
+                "grid_kwh": 78.398958,
+                "cost_cny": 65.741581
+              },
+              {
+                "hour": 22,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 57.227083,
+                "cost_cny": 35.587048
+              },
+              {
+                "hour": 23,
+                "rate_cny_kwh": 0.62185675,
+                "tariff_period": "flat",
+                "grid_kwh": 55.128125,
+                "cost_cny": 34.281797
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

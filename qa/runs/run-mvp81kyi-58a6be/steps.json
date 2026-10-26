@@ -1,0 +1,39 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "#dynamic-title",
+    "ms": 153
+  },
+  {
+    "index": 1,
+    "action": "capture",
+    "ok": true,
+    "target": "before-default-controls",
+    "ms": 78,
+    "capture": "before-default-controls"
+  },
+  {
+    "index": 2,
+    "action": "click",
+    "ok": true,
+    "target": ".run-button",
+    "ms": 44
+  },
+  {
+    "index": 3,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Node power states",
+    "ms": 3934
+  },
+  {
+    "index": 4,
+    "action": "capture",
+    "ok": true,
+    "target": "before-compact-node-panel",
+    "ms": 57,
+    "capture": "before-compact-node-panel"
+  }
+]

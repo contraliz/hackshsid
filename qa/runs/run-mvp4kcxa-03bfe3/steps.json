@@ -1,0 +1,82 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "#dynamic-title",
+    "ms": 58
+  },
+  {
+    "index": 1,
+    "action": "capture",
+    "ok": true,
+    "target": "mobile-initial",
+    "ms": 31,
+    "capture": "mobile-initial"
+  },
+  {
+    "index": 2,
+    "action": "select",
+    "ok": true,
+    "target": "#dynamic-traffic-profile",
+    "ms": 9
+  },
+  {
+    "index": 3,
+    "action": "select",
+    "ok": true,
+    "target": "#dynamic-traffic-profile",
+    "ms": 7
+  },
+  {
+    "index": 4,
+    "action": "select",
+    "ok": true,
+    "target": "#dynamic-traffic-profile",
+    "ms": 4
+  },
+  {
+    "index": 5,
+    "action": "click",
+    "ok": true,
+    "target": "summary",
+    "ms": 12
+  },
+  {
+    "index": 6,
+    "action": "fill",
+    "ok": true,
+    "target": "#dynamic-warm-overhead",
+    "ms": 8
+  },
+  {
+    "index": 7,
+    "action": "capture",
+    "ok": true,
+    "target": "mobile-controls",
+    "ms": 21,
+    "capture": "mobile-controls"
+  },
+  {
+    "index": 8,
+    "action": "click",
+    "ok": true,
+    "target": ".run-button",
+    "ms": 15
+  },
+  {
+    "index": 9,
+    "action": "wait_for",
+    "ok": true,
+    "target": "At the realized offered-load peak",
+    "ms": 2359
+  },
+  {
+    "index": 10,
+    "action": "capture",
+    "ok": true,
+    "target": "mobile-results",
+    "ms": 21,
+    "capture": "mobile-results"
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "run_id": "run-mvpapjpo-3a045a",
+  "scenario": "gridshift-final-forecast-mobile",
+  "url": "http://127.0.0.1:8001/",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "started_at": "2026-10-26T13:31:45.036Z",
+  "finished_at": "2026-10-26T13:31:48.279Z",
+  "tool": "qa-mcp 0.2.0"
+}

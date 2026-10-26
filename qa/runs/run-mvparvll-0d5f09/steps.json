@@ -1,0 +1,141 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Data center operations",
+    "ms": 62
+  },
+  {
+    "index": 1,
+    "action": "capture",
+    "ok": true,
+    "target": "initial-default",
+    "ms": 34,
+    "capture": "initial-default"
+  },
+  {
+    "index": 2,
+    "action": "click",
+    "ok": true,
+    "target": "More controls",
+    "ms": 51
+  },
+  {
+    "index": 3,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Warm standby target (nodes)",
+    "ms": 5
+  },
+  {
+    "index": 4,
+    "action": "capture",
+    "ok": true,
+    "target": "controls-default-two-warm-nodes",
+    "ms": 36,
+    "capture": "controls-default-two-warm-nodes"
+  },
+  {
+    "index": 5,
+    "action": "click",
+    "ok": true,
+    "target": "More controls",
+    "ms": 20
+  },
+  {
+    "index": 6,
+    "action": "click",
+    "ok": true,
+    "target": "Run simulation",
+    "ms": 19
+  },
+  {
+    "index": 7,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Warm standby (ready to promote now)",
+    "ms": 2895
+  },
+  {
+    "index": 8,
+    "action": "wait_for",
+    "ok": true,
+    "target": "40 minutes",
+    "ms": 10
+  },
+  {
+    "index": 9,
+    "action": "fill",
+    "ok": true,
+    "target": "#replay-minute",
+    "ms": 25
+  },
+  {
+    "index": 10,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Forecast readiness at 01:10",
+    "ms": 17
+  },
+  {
+    "index": 11,
+    "action": "scroll",
+    "ok": true,
+    "target": ".node-power-view",
+    "ms": 29
+  },
+  {
+    "index": 12,
+    "action": "capture",
+    "ok": true,
+    "target": "full-width-node-state-timeline",
+    "ms": 67,
+    "capture": "full-width-node-state-timeline"
+  },
+  {
+    "index": 13,
+    "action": "click",
+    "ok": true,
+    "target": "Node details",
+    "ms": 65
+  },
+  {
+    "index": 14,
+    "action": "capture",
+    "ok": true,
+    "target": "0110-node-work-labels-and-ready-cards",
+    "ms": 65,
+    "capture": "0110-node-work-labels-and-ready-cards"
+  },
+  {
+    "index": 15,
+    "action": "click",
+    "ok": true,
+    "target": "State timeline",
+    "ms": 24
+  },
+  {
+    "index": 16,
+    "action": "capture",
+    "ok": true,
+    "target": "forecast-readiness-0110",
+    "ms": 53,
+    "capture": "forecast-readiness-0110"
+  },
+  {
+    "index": 17,
+    "action": "click",
+    "ok": true,
+    "target": "Grid cost by hour",
+    "ms": 44
+  },
+  {
+    "index": 18,
+    "action": "capture",
+    "ok": true,
+    "target": "hourly-grid-cost-table",
+    "ms": 47,
+    "capture": "hourly-grid-cost-table"
+  }
+]

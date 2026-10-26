@@ -1,0 +1,5 @@
+{
+  "run_id": "run-mvpeclgg-3894b6",
+  "verdict": "Pass: rebuilt Windows onedir package launched, served the local app, ran the simulator, and showed the simulation-backed hourly comparison. Desktop checks reported no overflow, clipped text, broken images, missing image alt text, or runtime errors.",
+  "findings": []
+}

@@ -1,0 +1,5 @@
+{
+  "run_id": "run-mvparvll-0d5f09",
+  "verdict": "Pass for inspected desktop default/Forecast replay: full-width timeline, immediate warm standby/ready GPU counters, node workload labels and hourly tariff table. No confirmed issues. Mobile excluded by explicit user instruction; no mobile verification performed by Sol.",
+  "findings": []
+}

@@ -1,0 +1,76 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "#dynamic-title",
+    "ms": 72
+  },
+  {
+    "index": 1,
+    "action": "capture",
+    "ok": true,
+    "target": "initial-default-controls",
+    "ms": 39,
+    "capture": "initial-default-controls"
+  },
+  {
+    "index": 2,
+    "action": "click",
+    "ok": true,
+    "target": ".run-button",
+    "ms": 23
+  },
+  {
+    "index": 3,
+    "action": "wait_for",
+    "ok": true,
+    "target": "svg.node-power-chart",
+    "ms": 3891
+  },
+  {
+    "index": 4,
+    "action": "capture",
+    "ok": true,
+    "target": "default-timeline-visible",
+    "ms": 64,
+    "capture": "default-timeline-visible"
+  },
+  {
+    "index": 5,
+    "action": "fill",
+    "ok": true,
+    "target": "#replay-minute",
+    "ms": 23
+  },
+  {
+    "index": 6,
+    "action": "capture",
+    "ok": true,
+    "target": "timeline-at-0110",
+    "ms": 52,
+    "capture": "timeline-at-0110"
+  },
+  {
+    "index": 7,
+    "action": "click",
+    "ok": true,
+    "target": "Node details",
+    "ms": 71
+  },
+  {
+    "index": 8,
+    "action": "wait_for",
+    "ok": true,
+    "target": ".node-workload-badge",
+    "ms": 4
+  },
+  {
+    "index": 9,
+    "action": "capture",
+    "ok": true,
+    "target": "node-details-work-labels",
+    "ms": 60,
+    "capture": "node-details-work-labels"
+  }
+]

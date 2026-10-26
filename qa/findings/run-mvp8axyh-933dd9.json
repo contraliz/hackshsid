@@ -1,0 +1,5 @@
+{
+  "run_id": "run-mvp8axyh-933dd9",
+  "verdict": "QA hover action timed out on an offscreen node grid. This was an automation reachability limitation, not a confirmed application defect.",
+  "findings": []
+}

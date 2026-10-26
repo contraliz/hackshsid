@@ -1,0 +1,111 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Data center operations",
+    "ms": 69
+  },
+  {
+    "index": 1,
+    "action": "capture",
+    "ok": true,
+    "target": "mobile-initial",
+    "ms": 31,
+    "capture": "mobile-initial"
+  },
+  {
+    "index": 2,
+    "action": "click",
+    "ok": true,
+    "target": "More controls",
+    "ms": 32
+  },
+  {
+    "index": 3,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Warm standby target (nodes)",
+    "ms": 6
+  },
+  {
+    "index": 4,
+    "action": "capture",
+    "ok": true,
+    "target": "mobile-default-warm-target",
+    "ms": 30,
+    "capture": "mobile-default-warm-target"
+  },
+  {
+    "index": 5,
+    "action": "click",
+    "ok": true,
+    "target": "More controls",
+    "ms": 19
+  },
+  {
+    "index": 6,
+    "action": "click",
+    "ok": true,
+    "target": "Run simulation",
+    "ms": 27
+  },
+  {
+    "index": 7,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Warm standby (ready to promote now)",
+    "ms": 2381
+  },
+  {
+    "index": 8,
+    "action": "wait_for",
+    "ok": true,
+    "target": "40 minutes",
+    "ms": 11
+  },
+  {
+    "index": 9,
+    "action": "fill",
+    "ok": true,
+    "target": "#replay-minute",
+    "ms": 19
+  },
+  {
+    "index": 10,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Forecast readiness at 01:10",
+    "ms": 26
+  },
+  {
+    "index": 11,
+    "action": "scroll",
+    "ok": true,
+    "target": "body",
+    "ms": 27
+  },
+  {
+    "index": 12,
+    "action": "capture",
+    "ok": true,
+    "target": "mobile-state-timeline-at-0110",
+    "ms": 35,
+    "capture": "mobile-state-timeline-at-0110"
+  },
+  {
+    "index": 13,
+    "action": "click",
+    "ok": true,
+    "target": "Node details",
+    "ms": 80
+  },
+  {
+    "index": 14,
+    "action": "capture",
+    "ok": true,
+    "target": "mobile-node-work-labels",
+    "ms": 34,
+    "capture": "mobile-node-work-labels"
+  }
+]

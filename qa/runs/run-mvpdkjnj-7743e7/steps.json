@@ -1,0 +1,68 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Hourly schedule",
+    "ms": 65
+  },
+  {
+    "index": 1,
+    "action": "click",
+    "ok": true,
+    "target": "Hourly schedule",
+    "ms": 83
+  },
+  {
+    "index": 2,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Hourly node-controller comparison",
+    "ms": 10
+  },
+  {
+    "index": 3,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Grid cost by hour",
+    "ms": 2367
+  },
+  {
+    "index": 4,
+    "action": "capture",
+    "ok": true,
+    "target": "hourly-policy-energy-mix",
+    "ms": 53,
+    "capture": "hourly-policy-energy-mix"
+  },
+  {
+    "index": 5,
+    "action": "scroll",
+    "ok": true,
+    "target": "",
+    "ms": 3
+  },
+  {
+    "index": 6,
+    "action": "capture",
+    "ok": true,
+    "target": "hourly-policy-emissions-cost",
+    "ms": 31,
+    "capture": "hourly-policy-emissions-cost"
+  },
+  {
+    "index": 7,
+    "action": "scroll",
+    "ok": true,
+    "target": "",
+    "ms": 2
+  },
+  {
+    "index": 8,
+    "action": "capture",
+    "ok": true,
+    "target": "hourly-policy-queue",
+    "ms": 28,
+    "capture": "hourly-policy-queue"
+  }
+]

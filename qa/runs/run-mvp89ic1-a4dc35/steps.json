@@ -1,0 +1,53 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "#dynamic-title",
+    "ms": 64
+  },
+  {
+    "index": 1,
+    "action": "click",
+    "ok": true,
+    "target": ".run-button",
+    "ms": 43
+  },
+  {
+    "index": 2,
+    "action": "wait_for",
+    "ok": true,
+    "target": "svg.node-power-chart",
+    "ms": 2855
+  },
+  {
+    "index": 3,
+    "action": "click",
+    "ok": true,
+    "target": "State timeline",
+    "ms": 54
+  },
+  {
+    "index": 4,
+    "action": "capture",
+    "ok": true,
+    "target": "mobile-state-timeline-at-default",
+    "ms": 38,
+    "capture": "mobile-state-timeline-at-default"
+  },
+  {
+    "index": 5,
+    "action": "fill",
+    "ok": true,
+    "target": "#replay-minute",
+    "ms": 19
+  },
+  {
+    "index": 6,
+    "action": "capture",
+    "ok": true,
+    "target": "mobile-timeline-at-0110",
+    "ms": 45,
+    "capture": "mobile-timeline-at-0110"
+  }
+]

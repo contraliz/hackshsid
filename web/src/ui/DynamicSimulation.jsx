@@ -9,20 +9,34 @@ const LABELS = {
   renewable_used_kwh: ['Renewable used', 'kWh'], renewable_curtailed_kwh: ['Renewable curtailed', 'kWh'],
   cost_cny: ['Illustrative grid cost', 'CNY'], emissions_kg: ['Grid CO₂', 'kg CO₂'],
   requests_completed: ['Completed requests', ''], requests_queued_at_horizon: ['Queued at horizon', ''],
-  requests_rejected: ['Rejected requests', ''], mean_wait_minutes: ['Mean queue wait', 'min'],
+  requests_rejected: ['Rejected requests', ''], requests_waited: ['Requests with nonzero queue wait', ''], mean_wait_minutes: ['Mean queue wait', 'min'],
   p95_wait_minutes: ['P95 queue wait', 'min'], mean_completion_latency_minutes: ['Mean completion latency', 'min'],
   latency_allowance_met: ['Illustrative response allowances met', 'requests'], peak_active_nodes: ['Peak active nodes', ''],
   max_forecast_capacity_shortfall_gpus: ['Peak forecast fleet shortfall', 'GPUs'], forecast_shortfall_minutes: ['Forecast shortfall intervals', '5-min intervals'],
   max_readiness_capacity_shortfall_gpus: ['Peak readiness shortfall', 'GPUs'], max_pre_warm_active_shortfall_gpus: ['Peak shortfall before warm activation', 'GPUs'],
-  max_target_warm_fleet_shortfall_nodes: ['Peak warm-target fleet gap', 'nodes'], max_target_warm_nodes: ['Peak uncapped warm target', 'nodes'],
+  max_target_warm_fleet_shortfall_nodes: ['Peak legacy scalar target gap', 'nodes'], max_target_warm_nodes: ['Peak legacy scalar warm target (diagnostic)', 'nodes'],
+  max_warm_stock_shortfall_nodes: ['Peak warm-buffer fleet deficit', 'nodes'], max_warm_ready_deficit_nodes: ['Peak warm stock not ready yet', 'nodes'],
   peak_offered_fleet_shortfall_gpus: ['Peak realized demand above fleet', 'GPUs'], offered_fleet_shortfall_minutes: ['Realized fleet overload', 'min'],
   flexible_jobs_admitted: ['Flexible jobs admitted', 'jobs'], flexible_jobs_deadline_met: ['Flexible deadlines met', 'jobs'],
   flexible_gpu_hours_scheduled: ['Flexible work scheduled', 'GPU·h'], flexible_gpu_hours_delivered: ['Flexible work delivered', 'GPU·h'],
-  flexible_gpu_hours_unmet: ['Flexible work unmet / not admitted', 'GPU·h'], flexible_commitment_missed_gpu_minutes: ['Flexible commitment shortfall', 'GPU·min'],
+  flexible_gpu_hours_unmet: ['Flexible work unmet / not admitted', 'GPU·h'], flexible_commitment_missed_gpu_minutes: ['Flexible work left at deadline', 'GPU·min'],
 };
 
-export function DynamicSimulation() {
-  const [controls, setControls] = useState({ nodes: 32, gpus_per_node: 8, seed: 2026, forecast_alpha: 0.3, margin_fraction: 0.15, margin_floor_gpus: 4, min_active_fraction: 0.25, bursts: true });
+function HourlyGridCosts({ policy, selectedPolicy }) {
+  const rows = policy?.hourly_grid_costs || [];
+  if (!rows.length) return null;
+  const total = rows.reduce((sum, row) => sum + row.cost_cny, 0);
+  return <details className="simulation-data-disclosure grid-cost-disclosure">
+    <summary>Grid cost by hour · {selectedPolicy} · ¥{formatNumber(total, 2)} for the day</summary>
+    <p className="grid-cost-note">Illustrative imported-grid energy cost after hourly renewable use; excludes demand/capacity fees and is not a customer bill. Times are local China Standard Time (UTC+8).</p>
+    <div className="job-table-wrap"><table className="job-table"><thead><tr><th>Hour</th><th>Tariff band</th><th>Rate (CNY/kWh)</th><th>Grid imports (kWh)</th><th>Energy cost (CNY)</th></tr></thead><tbody>
+      {rows.map((row) => <tr key={row.hour}><td>{String(row.hour).padStart(2, '0')}:00–{String((row.hour + 1) % 24).padStart(2, '0')}:00</td><td>{row.tariff_period}</td><td>{formatNumber(row.rate_cny_kwh, 8)}</td><td>{formatNumber(row.grid_kwh, 3)}</td><td>{formatNumber(row.cost_cny, 2)}</td></tr>)}
+    </tbody><tfoot><tr><th colSpan="3">Day total</th><td>{formatNumber(rows.reduce((sum, row) => sum + row.grid_kwh, 0), 3)}</td><td>{formatNumber(total, 2)}</td></tr></tfoot></table></div>
+  </details>;
+}
+
+export function DynamicSimulation({ onSimulationResult }) {
+  const [controls, setControls] = useState({ nodes: 32, headroom_nodes: 0, gpus_per_node: 8, seed: 2026, traffic_profile: 'normal', warm_overhead_nodes: 2, forecast_alpha: 0.3, margin_fraction: 0.15, margin_floor_gpus: 4, min_active_fraction: 0.25, bursts: true });
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -60,6 +74,7 @@ export function DynamicSimulation() {
       const body = await response.json();
       if (!response.ok) throw new Error(body.error || `Request failed (${response.status})`);
       setResult(body);
+      onSimulationResult?.(body);
       setSelectedPolicy(body.selected_policy && body.policies?.[body.selected_policy] ? body.selected_policy : 'forecast');
       setMinute(0);
     } catch (e) { setError(e.message || 'Simulation failed.'); }
@@ -74,8 +89,11 @@ export function DynamicSimulation() {
           <label htmlFor="dynamic-nodes">Nodes<input id="dynamic-nodes" type="number" min="2" max="64" value={controls.nodes} onChange={(e) => setControls({ ...controls, nodes: e.target.value })} /></label>
           <label htmlFor="dynamic-gpus">GPUs per node<input id="dynamic-gpus" type="number" min="1" max="16" value={controls.gpus_per_node} onChange={(e) => setControls({ ...controls, gpus_per_node: e.target.value })} /></label>
           <label htmlFor="dynamic-seed">Traffic seed<input id="dynamic-seed" type="number" min="0" value={controls.seed} onChange={(e) => { setPlaying(false); setMinute(0); setControls({ ...controls, seed: e.target.value }); }} /></label>
+          <label htmlFor="dynamic-traffic-profile">Traffic level<select id="dynamic-traffic-profile" value={controls.traffic_profile} onChange={(e) => setControls({ ...controls, traffic_profile: e.target.value })}><option value="low">Low · 0.5×</option><option value="normal">Normal · 1×</option><option value="high">High · 2×</option></select></label>
+          <label htmlFor="dynamic-headroom">Fleet headroom<select id="dynamic-headroom" value={controls.headroom_nodes} onChange={(e) => setControls({ ...controls, headroom_nodes: Number(e.target.value) })}><option value="0">Standard inventory</option><option value="16" disabled={Number(controls.nodes) > 48}>Add 16 fixed nodes</option></select></label>
           <button className="run-button" disabled={busy}>{busy ? 'Simulating…' : 'Run simulation'}</button>
         </div>
+        <p className="dynamic-traffic-note">Synthetic preset scales generated arrival rates only; workload mix, duration, hardware and energy inputs stay fixed.</p>
         <details className="dynamic-tuning">
           <summary>More controls <span>Traffic, forecast and reserve assumptions</span></summary>
           <div className="dynamic-secondary-controls">
@@ -83,6 +101,7 @@ export function DynamicSimulation() {
             <label htmlFor="dynamic-margin">Fallback margin<input id="dynamic-margin" type="number" min="0" max="1" step="0.05" value={controls.margin_fraction} onChange={(e) => setControls({ ...controls, margin_fraction: e.target.value })} /></label>
             <label htmlFor="dynamic-margin-floor">Fallback floor (GPUs)<input id="dynamic-margin-floor" type="number" min="0" max="256" step="1" value={controls.margin_floor_gpus} onChange={(e) => setControls({ ...controls, margin_floor_gpus: e.target.value })} /></label>
             <label htmlFor="dynamic-floor">Minimum active fleet<input id="dynamic-floor" type="number" min="0" max="1" step="0.05" value={controls.min_active_fraction} onChange={(e) => setControls({ ...controls, min_active_fraction: e.target.value })} /></label>
+            <label htmlFor="dynamic-warm-overhead">Warm standby target (nodes)<input id="dynamic-warm-overhead" type="number" min="0" max="8" step="1" value={controls.warm_overhead_nodes} onChange={(e) => setControls({ ...controls, warm_overhead_nodes: e.target.value })} /><small>Default 2 so one can remain while another serves a request; cold replenishment takes 20 min.</small></label>
             <label className="dynamic-checkbox"><input type="checkbox" checked={controls.bursts} onChange={(e) => setControls({ ...controls, bursts: e.target.checked })} /> Include seeded burst chance</label>
             <button type="button" className="quiet-button" onClick={() => setControls({ ...controls, nodes: 12, gpus_per_node: 8 })}>96-GPU reference</button>
           </div>
@@ -91,7 +110,9 @@ export function DynamicSimulation() {
       {error && <p className="queue-error" role="alert">{error}</p>}
       {result && <div className="dynamic-output">
         <div className="dynamic-status-strip">
-          <p className="dynamic-run-summary">Seed {result.seed} <span>·</span> {result.nodes} × {result.gpus_per_node} = {result.fleet_gpus} GPUs <span>·</span> {result.requests_generated} generated requests <span>·</span> {result.selected_policy} controller</p>
+          <p className="dynamic-run-summary">Seed {result.seed} <span>·</span> {result.base_nodes} base + {result.headroom_nodes} headroom nodes × {result.gpus_per_node} = {result.fleet_gpus} GPUs <span>·</span> {result.requests_generated} generated requests <span>·</span> {result.traffic_profile_description} <span>·</span> {result.selected_policy} controller</p>
+          <p className="dynamic-traffic-note">{result.headroom_description}. Inventory stays fixed for the full replay. Forecast plans active readiness across the next {result.assumptions.readiness_horizon_minutes} minutes; the default target is two warm-ready standby nodes.</p>
+          <p className="dynamic-traffic-note">At the realized offered-load peak ({String(Math.floor(result.realized_peak_snapshot.minute / 60)).padStart(2, '0')}:{String(result.realized_peak_snapshot.minute % 60).padStart(2, '0')}, {result.realized_peak_snapshot.offered_gpus} GPUs), forecast state: {result.realized_peak_snapshot.active_nodes} active, {result.realized_peak_snapshot.warm_ready_nodes} warm-ready, {result.realized_peak_snapshot.booting_nodes} booting, {result.realized_peak_snapshot.warming_nodes} warming, {result.realized_peak_snapshot.off_nodes} off. Available warm stock target {result.realized_peak_snapshot.warm_stock_target_nodes}; readiness gap {formatNumber(result.realized_peak_snapshot.readiness_capacity_shortfall_gpus, 1)} GPUs; legacy scalar warm target {result.realized_peak_snapshot.formula_target_warm_nodes} is diagnostic only.</p>
           <p className="dynamic-admission-note">Flexible schedule: <strong>{result.flexible_schedule.admission_status}</strong>{result.flexible_schedule.admission_reason ? ` — ${result.flexible_schedule.admission_reason}` : ` · ${result.flexible_schedule.priority_policy} allocation shared across controllers.`}</p>
         </div>
         <div className="simulation-playback" aria-label="Simulation replay controls">
@@ -109,6 +130,7 @@ export function DynamicSimulation() {
           </> : <span className="control-help">This result does not include minute-by-minute replay data.</span>}
         </div>
         <SavingsReport comparison={result.comparisons?.[selectedPolicy]} baseline={result.unscheduled_baseline} />
+        <HourlyGridCosts policy={result.policies?.[selectedPolicy]} selectedPolicy={selectedPolicy} />
         <div className="simulation-workspace">
           <NodePowerView compact replay={selectedReplay} minute={minute} onMinuteChange={setMinute} gpusPerNode={result.gpus_per_node} />
           <LiveTrafficView compact replay={selectedReplay} minute={minute} />
@@ -127,17 +149,17 @@ export function DynamicSimulation() {
           </tbody></table></div>
         </details>
         <details className="assumptions"><summary>Demand, forecast, hardware, power and pricing assumptions</summary><div className="assumptions-content"><ul>
-          <li>{result.assumptions.demand_model}.</li><li>{result.assumptions.forecast}. Class GPU-minutes/request factors: {Object.entries(result.assumptions.forecast_workload_gpu_minutes_per_request).map(([name, value]) => `${name} ${formatNumber(value, 1)}`).join(', ')}. {result.assumptions.forecast_calibration_limit}</li>
-          <li>{result.assumptions.node_control}; warm-to-active {result.assumptions.warm_start_minutes} min, cold-to-warm {result.assumptions.cold_to_warm_minutes} min, cold-to-active total {result.assumptions.cold_to_active_minutes} min. {result.assumptions.warm_reserve_equation}; window {result.assumptions.warm_reserve_window_minutes} min. Queue load uses: {result.assumptions.warm_queue_forecast_approximation}.</li>
+          <li>{result.assumptions.demand_model}.</li><li>{result.assumptions.forecast}. Class GPU-minutes/request factors: {Object.entries(result.assumptions.forecast_workload_gpu_minutes_per_request).map(([name, value]) => `${name} ${formatNumber(value, 2)}`).join(', ')}. {result.assumptions.forecast_workload_factor_method}. {result.assumptions.forecast_calibration_limit}</li>
+          <li>{result.assumptions.node_control}; warm-to-active {result.assumptions.warm_start_minutes} min (idealized instant promotion), cold-to-warm {result.assumptions.cold_to_warm_minutes} min, cold-to-dispatchable total {result.assumptions.cold_to_active_minutes} min. {result.assumptions.wait_aware_readiness_equation} {result.assumptions.legacy_scalar_warm_target} {result.assumptions.warm_overhead} Queued work fills reserve: {result.assumptions.warm_queue_fill_rule} Queue load uses: {result.assumptions.warm_queue_forecast_approximation}.</li>
           <li>{result.assumptions.minimum_active_floor}.</li>
           <li>Power coefficients (kW IT): {Object.entries(result.assumptions.power_kw_it).map(([k, v]) => `${k} ${v}`).join(', ')}; PUE {result.assumptions.pue}. These are illustrative, not measurements.</li>
           <li>{result.assumptions.renewables}. Tariff: {result.assumptions.tariff} (<a href={result.assumptions.tariff_reference_url} target="_blank" rel="noreferrer">official source</a>). Grid factor: {result.assumptions.grid_emissions} (<a href={result.assumptions.grid_emissions_reference_url} target="_blank" rel="noreferrer">official source</a>).</li>
-          <li>{result.assumptions.flexible_jobs} Accepted flexible jobs follow a fixed hourly LP allocation with no runtime preemption or rescheduling. GPU-hours not delivered by each deadline are reported as unmet. Requests with response allowance shorter than startup remain exposed until active spare capacity exists; no SLA guarantee.</li>
+          <li>{result.assumptions.flexible_jobs} Real-time requests have runtime priority; accepted flexible work waits for residual active capacity and catches up within its window when possible. GPU-hours not delivered by each deadline are reported as unmet. No running request is preempted; no SLA is guaranteed.</li>
         </ul><p>Five-minute trace snapshots show offered demand and node readiness. Booting/off/warm/active nodes are distinct; cold nodes do not become active instantly.</p></div></details>
         <details className="simulation-data-disclosure">
           <summary>Five-minute forecast trace</summary>
-          <div className="job-table-wrap"><table className="job-table"><thead><tr><th>Minute</th><th>Offered GPUs</th><th>Realtime upper</th><th>Flexible commitments</th><th>Total upper demand</th><th>Target warm nodes</th><th>Target fleet gap</th><th>Readiness gap</th><th>Margin / source</th><th>Running request GPUs</th><th>Running flexible GPUs</th><th>Active</th><th>Warm</th><th>Booting</th><th>Off</th></tr></thead><tbody>
-          {(result.policies.forecast.state_trace || []).filter((_, i) => i % 24 === 0).map((row) => <tr key={row.minute}><td>{Math.floor(row.minute / 60)}:{String(row.minute % 60).padStart(2, '0')}</td><td>{row.offered_gpus}</td><td>{formatNumber(row.forecast_upper_gpus, 1)}</td><td>{formatNumber(row.flexible_commitment_gpus, 1)}</td><td>{formatNumber(row.forecast_total_upper_gpus, 1)}</td><td>{row.target_warm_nodes}</td><td>{row.target_warm_fleet_shortfall_nodes}</td><td>{formatNumber(row.readiness_capacity_shortfall_gpus, 1)}</td><td>{formatNumber(row.forecast_margin_gpus, 1)} / {row.forecast_margin_source}</td><td>{row.running_gpus}</td><td>{formatNumber(row.flexible_gpus, 1)}</td><td>{row.active_nodes}</td><td>{row.warm_nodes}</td><td>{row.booting_nodes}</td><td>{row.off_nodes}</td></tr>)}
+          <div className="job-table-wrap"><table className="job-table"><thead><tr><th>Minute</th><th>Offered GPUs</th><th>Realtime upper</th><th>Flexible commitments</th><th>Total upper demand</th><th>Target active nodes</th><th>Legacy warm target</th><th>Warm stock target</th><th>Ready warm</th><th>Warm stock pipeline</th><th>Stock deficit</th><th>Readiness gap</th><th>Margin / source</th><th>Running request GPUs</th><th>Running flexible GPUs</th><th>Active</th><th>Warm</th><th>Booting</th><th>Off</th></tr></thead><tbody>
+          {(result.policies.forecast.state_trace || []).filter((_, i) => i % 24 === 0).map((row) => <tr key={row.minute}><td>{Math.floor(row.minute / 60)}:{String(row.minute % 60).padStart(2, '0')}</td><td>{row.offered_gpus}</td><td>{formatNumber(row.forecast_upper_gpus, 1)}</td><td>{formatNumber(row.flexible_commitment_gpus, 1)}</td><td>{formatNumber(row.forecast_total_upper_gpus, 1)}</td><td>{row.forecast_target_active_nodes}</td><td>{row.target_warm_nodes} (diagnostic)</td><td>{row.warm_stock_target_nodes}</td><td>{row.warm_reserve_ready_nodes}</td><td>{row.warm_reserve_pipeline_nodes}</td><td>{row.warm_stock_shortfall_nodes}</td><td>{formatNumber(row.readiness_capacity_shortfall_gpus, 1)}</td><td>{formatNumber(row.forecast_margin_gpus, 1)} / {row.forecast_margin_source}</td><td>{row.running_gpus}</td><td>{formatNumber(row.flexible_gpus, 1)}</td><td>{row.active_nodes}</td><td>{row.warm_nodes}</td><td>{row.booting_nodes}</td><td>{row.off_nodes}</td></tr>)}
           </tbody></table></div>
         </details>
       </div>}

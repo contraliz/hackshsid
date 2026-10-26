@@ -1,0 +1,21 @@
+# Wait-aware forecast comparison (2026-10-26)
+
+`scripts/compare_wait_policy.py` reruns the saved pre-change payloads and refuses to continue unless each generated request trace SHA-256 matches `wait-aware-forecast-baseline-2026.json`. The table below compares the old forecast policy to the revised forecast on those exact traces; reactive and always-on columns are the current-policy references from the same final run. All wait statistics include requests that started, whether complete or still running at the 24-hour horizon. The p95 often rounds to zero when only a small fraction of requests wait; the count and maximum are included to keep that visible.
+
+| Scenario | Forecast before: waited / mean / p95 / max | Forecast now: waited / mean / p95 / max | Current reactive: waited / mean / p95 | Current always-on: waited / mean / p95 | Forecast facility kWh before → now | Reactive / always-on facility kWh now |
+|---|---:|---:|---:|---:|---:|---:|
+| Normal, seed 2026, 32×8, burst on | 12 / 0.01 / 0 / 4 | 0 / 0 / 0 / 0 | 10 / 0.01 / 0 | 0 / 0 / 0 | 2,909.191 → 2,927.217 | 2,897.232 / 3,091.800 |
+| Normal, seed 2027, 32×8, burst on | 0 / 0 / 0 / 0 | 0 / 0 / 0 / 0 | 0 / 0 / 0 | 0 / 0 / 0 | 2,922.390 → 2,938.952 | 2,908.119 / 3,106.405 |
+| Normal, seed 2028, 32×8, burst on | 0 / 0 / 0 / 0 | 0 / 0 / 0 / 0 | 0 / 0 / 0 | 0 / 0 / 0 | 2,904.036 → 2,920.635 | 2,891.901 / 3,089.984 |
+| High, seed 2026, 48 base + 16 fixed headroom, 8 GPUs/node, burst off | 53 / 0.03 / 0 / 9 | 0 / 0 / 0 / 0 | 25 / 0.01 / 0 | 0 / 0 / 0 | 3,294.445 → 3,300.057 | 3,229.708 / 4,296.188 |
+| Constrained, seed 2026, 12×8, High, burst on, 2 warm overhead | 836 / 2.85 / 21 / 39 | 802 / 2.73 / 20 / 38 | 904 / 3.46 / 27 | 801 / 2.73 / 20 | 1,354.599 → 1,371.191 | 1,329.292 / 1,421.274 |
+
+All five cases preserved the same completed/running/queued/rejected request counts between old and revised forecast runs. The LP admission and flexible-deadline outcomes also matched within each case; the revised forecast had zero flexible deadline misses, while the old forecast missed one deadline in Normal seed 2026 and one in the High ample-fleet case. The constrained case could not admit any flexible jobs (3,060 GPU·h reported unmet) and offered load peaked 171 GPUs above its 96-GPU installed fleet. That real fleet deficit remains visible; the revised policy cannot prevent waits that hardware limits make unavoidable.
+
+At the High ample-fleet actual offered-demand peak (minute 1,143, 127 GPUs), the revised forecast had **16 active, 0 warm-ready, 1 booting, 1 warming, and 46 off** nodes. The active nodes exactly covered the 127-GPU offered peak at 128 GPUs. The 16 fixed headroom nodes therefore remained largely inactive; the one warm node had been consumed by activation at that instant, and the separate stock target was being replenished. Earlier Normal peaks had 5 and 6 warm-ready nodes, while seed 2028 had 1 warm-ready and 22 off. Low ample-fleet seed 2026 generated 968 requests with a 40-GPU peak; its actual peak had 32 active, 1 warm-ready, 31 off, zero waits, and 3,116.279 kWh facility energy.
+
+For the constrained seed, class-level forecast wait after the change was: interactive mean 2.66 minutes, p95 21, 553 requests with nonzero wait; batch mean 2.95 minutes, p95 16, 249 requests with nonzero wait. Before the change these counts were 559 and 277, with respective mean/p95 2.79/23 and 3.04/16. The aggregate should not hide this difference between service classes.
+
+The wait improvement costs energy in these cases: revised forecast used 18.026 kWh more than its old version in Normal 2026, 5.612 kWh more in High ample, and 16.592 kWh more in the constrained case. Against reactive, the revised forecast used 1.0%, 2.2%, and 3.2% more facility energy in those cases respectively. This is a measured tradeoff within these synthetic runs, not proof of lower waiting across seeds. Always-on remained the zero-wait capacity reference where unconstrained, at materially higher idle energy. The warm-overhead value is a target when feasible, not a promise of a warm-ready node at every peak.
+
+Each case's request trace hash and full before/after metrics are recorded in [the JSON evidence artifact](wait-aware-forecast-comparison-2026.json). The baseline predates the time-resolved policy; it is not a fresh source of current results.

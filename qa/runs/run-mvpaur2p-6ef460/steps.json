@@ -1,0 +1,74 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Data center operations",
+    "ms": 66
+  },
+  {
+    "index": 1,
+    "action": "click",
+    "ok": true,
+    "target": "Run simulation",
+    "ms": 40
+  },
+  {
+    "index": 2,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Warm standby (ready to promote now)",
+    "ms": 2436
+  },
+  {
+    "index": 3,
+    "action": "wait_for",
+    "ok": true,
+    "target": "40 minutes",
+    "ms": 11
+  },
+  {
+    "index": 4,
+    "action": "fill",
+    "ok": true,
+    "target": "#replay-minute",
+    "ms": 16
+  },
+  {
+    "index": 5,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Forecast readiness at 01:10",
+    "ms": 25
+  },
+  {
+    "index": 6,
+    "action": "scroll",
+    "ok": true,
+    "target": ".node-power-view",
+    "ms": 24
+  },
+  {
+    "index": 7,
+    "action": "capture",
+    "ok": true,
+    "target": "mobile-full-width-timeline-01-10",
+    "ms": 34,
+    "capture": "mobile-full-width-timeline-01-10"
+  },
+  {
+    "index": 8,
+    "action": "click",
+    "ok": true,
+    "target": "Node details",
+    "ms": 65
+  },
+  {
+    "index": 9,
+    "action": "capture",
+    "ok": true,
+    "target": "mobile-node-details-ready-capacity",
+    "ms": 26,
+    "capture": "mobile-node-details-ready-capacity"
+  }
+]

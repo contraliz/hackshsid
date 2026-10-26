@@ -1,0 +1,22 @@
+{
+  "run_id": "run-mvp7o7sm-2a25a6",
+  "verdict": "One low-severity observability issue resolved and retested; no service defect in the reproduced 01:00–02:00 default scenario.",
+  "findings": [
+    {
+      "id": "fnd-mvp7tmun-6c28ee",
+      "recorded_at": "2026-10-26T12:10:56.879Z",
+      "step": "01:10 zero warm but active spare",
+      "claim": "QA-01 (low, resolved and retested): The node power-state chart did not reveal busy versus immediately free active GPUs, leading to an incorrect perception of no reserve/downtime. The selected-minute panel now exposes occupancy, idle active reserve, warm standby and actual queue separately. Actual default replay had 23 idle active GPUs at 01:00, 28 at 01:10 while warm count was zero, and zero request waits.",
+      "evidence": [
+        "captures/minute-0100-ready-active-vs-warm.png",
+        "captures/minute-0110-zero-warm-active-spare.png",
+        "captures/minute-0115-warm-restored.png",
+        "captures/minute-0200-flexible-shift.png",
+        "steps.json",
+        "measurements.json",
+        "../../../results/ready-reserve-01-02-baseline-2026.json",
+        "../../../results/ready-reserve-01-02-after-2026.json"
+      ]
+    }
+  ]
+}

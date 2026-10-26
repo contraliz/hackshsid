@@ -1,0 +1,96 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "#dynamic-title",
+    "ms": 81
+  },
+  {
+    "index": 1,
+    "action": "fill",
+    "ok": true,
+    "target": "#dynamic-nodes",
+    "ms": 29
+  },
+  {
+    "index": 2,
+    "action": "select",
+    "ok": true,
+    "target": "#dynamic-traffic-profile",
+    "ms": 7
+  },
+  {
+    "index": 3,
+    "action": "select",
+    "ok": true,
+    "target": "#dynamic-headroom",
+    "ms": 6
+  },
+  {
+    "index": 4,
+    "action": "click",
+    "ok": true,
+    "target": "summary",
+    "ms": 227
+  },
+  {
+    "index": 5,
+    "action": "fill",
+    "ok": true,
+    "target": "#dynamic-warm-overhead",
+    "ms": 9
+  },
+  {
+    "index": 6,
+    "action": "click",
+    "ok": true,
+    "target": "label.dynamic-checkbox",
+    "ms": 179
+  },
+  {
+    "index": 7,
+    "action": "capture",
+    "ok": true,
+    "target": "configured-before-run",
+    "ms": 33,
+    "capture": "configured-before-run"
+  },
+  {
+    "index": 8,
+    "action": "click",
+    "ok": true,
+    "target": ".run-button",
+    "ms": 21
+  },
+  {
+    "index": 9,
+    "action": "wait_for",
+    "ok": true,
+    "target": "At the realized offered-load peak",
+    "ms": 3358
+  },
+  {
+    "index": 10,
+    "action": "capture",
+    "ok": true,
+    "target": "completed-peak-summary",
+    "ms": 38,
+    "capture": "completed-peak-summary"
+  },
+  {
+    "index": 11,
+    "action": "fill",
+    "ok": true,
+    "target": "#replay-minute",
+    "ms": 21
+  },
+  {
+    "index": 12,
+    "action": "capture",
+    "ok": true,
+    "target": "replay-minute-1143",
+    "ms": 76,
+    "capture": "replay-minute-1143"
+  }
+]

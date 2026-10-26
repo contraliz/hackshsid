@@ -1,0 +1,12 @@
+{
+  "run_id": "run-mvp6ryck-268275",
+  "scenario": "wait-aware-forecast-high-constrained-mobile",
+  "url": "http://127.0.0.1:8001/",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "started_at": "2026-10-26T11:41:38.852Z",
+  "finished_at": "2026-10-26T11:41:42.256Z",
+  "tool": "qa-mcp 0.2.0"
+}

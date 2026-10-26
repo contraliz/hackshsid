@@ -1,0 +1,12 @@
+{
+  "run_id": "run-mvp83579-a3a801",
+  "scenario": "timeline-visibility-after-desktop",
+  "url": "http://127.0.0.1:8001/",
+  "viewport": {
+    "width": 1366,
+    "height": 768
+  },
+  "started_at": "2026-10-26T12:18:20.565Z",
+  "finished_at": "2026-10-26T12:18:25.172Z",
+  "tool": "qa-mcp 0.2.0"
+}

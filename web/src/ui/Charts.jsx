@@ -15,8 +15,8 @@ function linePath(values, max) {
   return values.map((value, hour) => `${hour === 0 ? 'M' : 'L'} ${xFor(hour).toFixed(2)} ${yFor(value, max).toFixed(2)}`).join(' ');
 }
 
-function Axis({ max, unit, suffix = '' }) {
-  const ticks = [0, max / 3, (max * 2) / 3, max];
+function Axis({ max, unit, suffix = '', tickValues }) {
+  const ticks = tickValues ?? [0, max / 3, (max * 2) / 3, max];
   return (
     <g className="chart-axis">
       {ticks.map((tick, index) => {
@@ -95,4 +95,130 @@ export function EnergyChart({ result }) {
       </svg>
     </div>
   );
+}
+
+const POLICY_SERIES = [
+  { key: 'always_on', label: 'Always-on', color: '#2763a5' },
+  { key: 'reactive', label: 'Reactive', color: '#c27a16' },
+  { key: 'forecast', label: 'Forecast', color: '#7358b8' },
+];
+
+const SMALL_CHART = { left: 39, right: 310, top: 12, bottom: 158 };
+
+function smallX(hour) {
+  return SMALL_CHART.left + (hour / 23) * (SMALL_CHART.right - SMALL_CHART.left);
+}
+
+function smallY(value, max) {
+  return SMALL_CHART.bottom - (value / max) * (SMALL_CHART.bottom - SMALL_CHART.top);
+}
+
+function smallAxis(max, unit) {
+  return (
+    <g className="chart-axis">
+      {[0, max / 2, max].map((tick, index) => {
+        const y = smallY(tick, max);
+        return <g key={index}><line x1={SMALL_CHART.left} y1={y} x2={SMALL_CHART.right} y2={y} className="gridline" /><text x={SMALL_CHART.left - 5} y={y + 3} textAnchor="end">{formatNumber(tick, tick % 1 ? 1 : 0)}</text></g>;
+      })}
+      {[0, 6, 12, 18, 23].map((hour) => <text key={hour} x={smallX(hour)} y="177" textAnchor="middle">{String(hour).padStart(2, '0')}</text>)}
+      <text className="axis-caption" x={(SMALL_CHART.left + SMALL_CHART.right) / 2} y="202" textAnchor="middle">Hour</text>
+      <text className="axis-caption" transform={`translate(10 ${(SMALL_CHART.top + SMALL_CHART.bottom) / 2}) rotate(-90)`} textAnchor="middle">{unit}</text>
+    </g>
+  );
+}
+
+export function PolicyEnergyMixCharts({ result }) {
+  const maxValue = Math.max(0, ...POLICY_SERIES.flatMap(({ key }) =>
+    result.policies[key].hourly_energy.map((row) => row.facility_kwh)));
+  const max = Math.max(5, Math.ceil(maxValue / 5) * 5);
+  const chartHeight = SMALL_CHART.bottom - SMALL_CHART.top;
+  const barWidth = 6;
+  return (
+    <>
+      <div className="legend-inline policy-energy-legend" aria-label="Energy sources">
+        <span><i className="legend-swatch renewable" />Renewable used</span>
+        <span><i className="legend-swatch grid" />Grid imported</span>
+      </div>
+      <div className="policy-energy-grid">
+        {POLICY_SERIES.map(({ key, label }) => (
+          <section className="policy-energy-panel" key={key} aria-label={`${label} electricity use by hour`}>
+            <h3>{label}</h3>
+            <svg className="policy-energy-chart" viewBox="0 0 320 210" role="img" aria-labelledby={`policy-energy-${key}-title policy-energy-${key}-desc`}>
+              <title id={`policy-energy-${key}-title`}>{`${label} hourly electricity mix`}</title>
+              <desc id={`policy-energy-${key}-desc`}>Stacked hourly bars show renewable electricity used and grid electricity imported, on a shared scale across all three controllers.</desc>
+              {smallAxis(max, 'kWh')}
+              {result.policies[key].hourly_energy.map((row) => {
+                const center = smallX(row.hour);
+                const renewableHeight = (row.renewable_kwh / max) * chartHeight;
+                const gridHeight = (row.grid_kwh / max) * chartHeight;
+                const renewableY = SMALL_CHART.bottom - renewableHeight;
+                const gridY = renewableY - gridHeight;
+                return <g key={row.hour}>
+                  <rect x={center - barWidth / 2} y={gridY} width={barWidth} height={Math.max(0, gridHeight)} className="bar-grid">
+                    <title>{`${String(row.hour).padStart(2, '0')}:00 ${label}: ${formatNumber(row.grid_kwh, 2)} kWh grid, ${formatNumber(row.renewable_kwh, 2)} kWh renewable, ${formatNumber(row.facility_kwh, 2)} kWh total`}</title>
+                  </rect>
+                  <rect x={center - barWidth / 2} y={renewableY} width={barWidth} height={Math.max(0, renewableHeight)} className="bar-renewable">
+                    <title>{`${String(row.hour).padStart(2, '0')}:00 ${label}: ${formatNumber(row.renewable_kwh, 2)} kWh renewable used`}</title>
+                  </rect>
+                </g>;
+              })}
+            </svg>
+            <p>{formatNumber(result.policies[key].metrics.facility_kwh, 1)} kWh facility total</p>
+          </section>
+        ))}
+      </div>
+    </>
+  );
+}
+
+function MultiPolicyLineChart({ result, field, title, description, unit, max, digits = 1, tickValues }) {
+  const series = POLICY_SERIES.map(({ key, label, color }) => ({
+    key, label, color,
+    values: result.policies[key].hourly_energy.map((row) => row[field]),
+  }));
+  return (
+    <div className="chart-frame policy-line-chart">
+      <div className="chart-legend" aria-label={`${title} legend`}>
+        {series.map((line) => <span key={line.key}><i className="policy-line-swatch" style={{ '--policy-color': line.color }} />{line.label}</span>)}
+      </div>
+      <svg className="data-chart" viewBox="0 0 960 278" role="img" aria-labelledby={`${field}-chart-title ${field}-chart-desc`}>
+        <title id={`${field}-chart-title`}>{title}</title>
+        <desc id={`${field}-chart-desc`}>{description}</desc>
+        <Axis max={max} unit={unit} tickValues={tickValues} />
+        {series.map((line) => <g key={line.key}>
+          <path d={linePath(line.values, max)} className="policy-path" style={{ '--policy-color': line.color }} />
+          {line.values.map((value, hour) => <circle key={hour} cx={xFor(hour)} cy={yFor(value, max)} r="2.5" className="policy-point" style={{ '--policy-color': line.color }}>
+            <title>{`${String(hour).padStart(2, '0')}:00 · ${line.label}: ${formatNumber(value, digits)} ${unit}`}</title>
+          </circle>)}
+        </g>)}
+      </svg>
+    </div>
+  );
+}
+
+export function PolicyEmissionsChart({ result }) {
+  const peak = Math.max(0, ...POLICY_SERIES.flatMap(({ key }) =>
+    result.policies[key].hourly_energy.map((row) => row.emissions_kg)));
+  const max = Math.max(5, Math.ceil(peak / 5) * 5);
+  return <MultiPolicyLineChart result={result} field="emissions_kg" title="Hourly grid emissions by controller"
+    description="The three lines show hourly grid emissions from the same completed simulation runs, using the simulation's configured carbon-intensity profile."
+    unit="kg CO₂" max={max} digits={2} />;
+}
+
+export function PolicyCostChart({ result }) {
+  const peak = Math.max(0, ...POLICY_SERIES.flatMap(({ key }) =>
+    result.policies[key].hourly_energy.map((row) => row.cost_cny)));
+  const max = Math.max(0.01, Math.ceil(peak * 100) / 100);
+  return <MultiPolicyLineChart result={result} field="cost_cny" title="Hourly grid cost by controller"
+    description="Hourly energy costs from the simulation's illustrative CNY tariff. This is a simulation output, not a utility bill."
+    unit="CNY" max={max} digits={2} />;
+}
+
+export function PolicyQueueChart({ result }) {
+  const peak = Math.max(0, ...POLICY_SERIES.flatMap(({ key }) =>
+    result.policies[key].hourly_energy.map((row) => row.peak_queued_requests)));
+  const max = Math.max(2, Math.ceil(peak / 2) * 2);
+  return <MultiPolicyLineChart result={result} field="peak_queued_requests" title="Peak real-time queue by hour"
+    description="The three lines compare the highest queued-request count recorded at any simulation minute within each hour."
+    unit="queued requests" max={max} digits={0} tickValues={[0, max / 2, max]} />;
 }

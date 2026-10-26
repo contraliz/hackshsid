@@ -42,7 +42,7 @@
 .live-request-card small { color: #8b98a9; font-size: 11px; }
 .live-traffic.is-compact { gap: 8px; align-content: start; min-width: 0; margin: 0; padding: 12px; }
 .live-traffic.is-compact .live-traffic-title-row h3 { font-size: 14px; }
-.live-traffic.is-compact .live-traffic-note { max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.live-traffic.is-compact .live-traffic-note { max-width: none; overflow: visible; white-space: normal; }
 .live-traffic.is-compact .live-time-badge { padding: 4px 7px; font-size: 11px; }
 .live-traffic.is-compact .live-metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
 .live-traffic.is-compact .live-metric { gap: 2px; padding: 6px 8px; }

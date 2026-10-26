@@ -1,0 +1,12 @@
+{
+  "run_id": "run-mvp8cmu5-959b62",
+  "scenario": "timeline-visibility-final-mobile",
+  "url": "http://127.0.0.1:8001/",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "started_at": "2026-10-26T12:25:43.325Z",
+  "finished_at": "2026-10-26T12:25:46.883Z",
+  "tool": "qa-mcp 0.2.0"
+}

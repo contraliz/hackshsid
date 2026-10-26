@@ -1,0 +1,75 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Run simulation",
+    "ms": 59
+  },
+  {
+    "index": 1,
+    "action": "click",
+    "ok": true,
+    "target": "Run simulation",
+    "ms": 33
+  },
+  {
+    "index": 2,
+    "action": "wait_for",
+    "ok": true,
+    "target": "generated requests",
+    "ms": 2367
+  },
+  {
+    "index": 3,
+    "action": "click",
+    "ok": true,
+    "target": "Hourly schedule",
+    "ms": 64
+  },
+  {
+    "index": 4,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Source: the last completed Operations simulation",
+    "ms": 16
+  },
+  {
+    "index": 5,
+    "action": "capture",
+    "ok": true,
+    "target": "packaged-simulation-source",
+    "ms": 34,
+    "capture": "packaged-simulation-source"
+  },
+  {
+    "index": 6,
+    "action": "scroll",
+    "ok": true,
+    "target": "",
+    "ms": 1
+  },
+  {
+    "index": 7,
+    "action": "capture",
+    "ok": true,
+    "target": "packaged-emissions-cost",
+    "ms": 41,
+    "capture": "packaged-emissions-cost"
+  },
+  {
+    "index": 8,
+    "action": "scroll",
+    "ok": true,
+    "target": "",
+    "ms": 2
+  },
+  {
+    "index": 9,
+    "action": "capture",
+    "ok": true,
+    "target": "packaged-queue",
+    "ms": 28,
+    "capture": "packaged-queue"
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "run_id": "run-mvpeclgg-3894b6",
+  "scenario": "gridshift-packaged-windows-smoke",
+  "url": "http://127.0.0.1:61887/",
+  "viewport": {
+    "width": 1366,
+    "height": 768
+  },
+  "started_at": "2026-10-26T15:13:39.232Z",
+  "finished_at": "2026-10-26T15:13:42.108Z",
+  "tool": "qa-mcp 0.2.0"
+}

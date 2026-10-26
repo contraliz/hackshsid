@@ -1,0 +1,119 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Data center operations",
+    "ms": 61
+  },
+  {
+    "index": 1,
+    "action": "capture",
+    "ok": true,
+    "target": "initial-default",
+    "ms": 33,
+    "capture": "initial-default"
+  },
+  {
+    "index": 2,
+    "action": "click",
+    "ok": true,
+    "target": "More controls",
+    "ms": 24
+  },
+  {
+    "index": 3,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Warm standby target (nodes)",
+    "ms": 4
+  },
+  {
+    "index": 4,
+    "action": "capture",
+    "ok": true,
+    "target": "controls-and-standby-default",
+    "ms": 29,
+    "capture": "controls-and-standby-default"
+  },
+  {
+    "index": 5,
+    "action": "click",
+    "ok": true,
+    "target": "Run simulation",
+    "ms": 21
+  },
+  {
+    "index": 6,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Warm standby (ready to promote now)",
+    "ms": 2887
+  },
+  {
+    "index": 7,
+    "action": "wait_for",
+    "ok": true,
+    "target": "40 minutes",
+    "ms": 21
+  },
+  {
+    "index": 8,
+    "action": "scroll",
+    "ok": true,
+    "target": "body",
+    "ms": 29
+  },
+  {
+    "index": 9,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Node power states",
+    "ms": 12
+  },
+  {
+    "index": 10,
+    "action": "capture",
+    "ok": true,
+    "target": "full-width-node-state-timeline",
+    "ms": 43,
+    "capture": "full-width-node-state-timeline"
+  },
+  {
+    "index": 11,
+    "action": "fill",
+    "ok": true,
+    "target": "#replay-minute",
+    "ms": 21
+  },
+  {
+    "index": 12,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Forecast readiness at 01:10",
+    "ms": 22
+  },
+  {
+    "index": 13,
+    "action": "capture",
+    "ok": true,
+    "target": "forecast-ready-at-0110",
+    "ms": 42,
+    "capture": "forecast-ready-at-0110"
+  },
+  {
+    "index": 14,
+    "action": "click",
+    "ok": true,
+    "target": "Grid cost by hour",
+    "ms": 52
+  },
+  {
+    "index": 15,
+    "action": "capture",
+    "ok": true,
+    "target": "hourly-grid-cost-table",
+    "ms": 54,
+    "capture": "hourly-grid-cost-table"
+  }
+]

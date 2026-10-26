@@ -1,0 +1,12 @@
+{
+  "run_id": "run-mvparvll-0d5f09",
+  "scenario": "gridshift-final-forecast-desktop",
+  "url": "http://127.0.0.1:8001/",
+  "viewport": {
+    "width": 1366,
+    "height": 768
+  },
+  "started_at": "2026-10-26T13:33:33.753Z",
+  "finished_at": "2026-10-26T13:33:37.606Z",
+  "tool": "qa-mcp 0.2.0"
+}

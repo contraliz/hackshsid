@@ -1,0 +1,1930 @@
+{
+  "comparison_cases": [
+    {
+      "case": "normal-2026",
+      "payload": {
+        "seed": 2026,
+        "nodes": 32,
+        "gpus_per_node": 8,
+        "traffic_profile": "normal",
+        "bursts": true,
+        "warm_overhead_nodes": 1
+      },
+      "request_trace_sha256": "232acd858cbf1adbb264aca8119db744dcaddb61dd8b486f203f128ec2df9d5f",
+      "generated_requests": 2109,
+      "offered_peak_gpus": 109,
+      "peak_snapshot": {
+        "minute": 1044,
+        "offered_gpus": 109,
+        "active_nodes": 27,
+        "warm_ready_nodes": 5,
+        "booting_nodes": 0,
+        "warming_nodes": 0,
+        "off_nodes": 0,
+        "active_spare_gpus": 107.0,
+        "formula_target_warm_nodes": 0,
+        "warm_ready_deficit_nodes": 0,
+        "warm_stock_target_nodes": 1,
+        "warm_stock_shortfall_nodes": 0,
+        "readiness_capacity_shortfall_gpus": 0.0
+      },
+      "before": {
+        "always_on": {
+          "wait": {
+            "all_started": {
+              "n": 2109,
+              "mean": 0.0,
+              "p95": 0,
+              "max": 0
+            },
+            "waited_over_zero": 0,
+            "unstarted_nonrejected": 0,
+            "by_class": {
+              "interactive": {
+                "n": 1642,
+                "mean": 0.0,
+                "p95": 0,
+                "max": 0
+              },
+              "batch": {
+                "n": 467,
+                "mean": 0.0,
+                "p95": 0,
+                "max": 0
+              }
+            }
+          },
+          "completed": 2102,
+          "running": 7,
+          "queued": 0,
+          "rejected": 0,
+          "energy_kwh": 3091.8,
+          "grid_kwh": 2579.8,
+          "cost_cny": 1518.927,
+          "emissions_kg": 1418.89,
+          "flex_admitted": 6,
+          "flex_deadline_met": 6,
+          "flex_deadline_misses": 0,
+          "flex_unmet_gpu_hours": 0.0,
+          "max_readiness_gap_gpus": 0.0,
+          "readiness_intervals": 0,
+          "fleet_shortfall_gpus": null,
+          "max_warm_ready_deficit_nodes": 0
+        },
+        "reactive": {
+          "wait": {
+            "all_started": {
+              "n": 2109,
+              "mean": 0.01,
+              "p95": 0,
+              "max": 4
+            },
+            "waited_over_zero": 10,
+            "unstarted_nonrejected": 0,
+            "by_class": {
+              "interactive": {
+                "n": 1642,
+                "mean": 0.0,
+                "p95": 0,
+                "max": 2
+              },
+              "batch": {
+                "n": 467,
+                "mean": 0.02,
+                "p95": 0,
+                "max": 4
+              }
+            }
+          },
+          "completed": 2102,
+          "running": 7,
+          "queued": 0,
+          "rejected": 0,
+          "energy_kwh": 2897.232,
+          "grid_kwh": 2385.232,
+          "cost_cny": 1384.728,
+          "emissions_kg": 1311.878,
+          "flex_admitted": 6,
+          "flex_deadline_met": 6,
+          "flex_deadline_misses": 0,
+          "flex_unmet_gpu_hours": 0.0,
+          "max_readiness_gap_gpus": 0.0,
+          "readiness_intervals": 0,
+          "fleet_shortfall_gpus": null,
+          "max_warm_ready_deficit_nodes": 0
+        },
+        "forecast": {
+          "wait": {
+            "all_started": {
+              "n": 2109,
+              "mean": 0.01,
+              "p95": 0,
+              "max": 4
+            },
+            "waited_over_zero": 12,
+            "unstarted_nonrejected": 0,
+            "by_class": {
+              "interactive": {
+                "n": 1642,
+                "mean": 0.01,
+                "p95": 0,
+                "max": 3
+              },
+              "batch": {
+                "n": 467,
+                "mean": 0.03,
+                "p95": 0,
+                "max": 4
+              }
+            }
+          },
+          "completed": 2102,
+          "running": 7,
+          "queued": 0,
+          "rejected": 0,
+          "energy_kwh": 2909.191,
+          "grid_kwh": 2397.191,
+          "cost_cny": 1392.895,
+          "emissions_kg": 1318.455,
+          "flex_admitted": 6,
+          "flex_deadline_met": 5,
+          "flex_deadline_misses": 1,
+          "flex_unmet_gpu_hours": 0.333,
+          "max_readiness_gap_gpus": 73.32,
+          "readiness_intervals": 115,
+          "fleet_shortfall_gpus": 29.13,
+          "max_warm_ready_deficit_nodes": 26
+        }
+      },
+      "after": {
+        "always_on": {
+          "metrics": {
+            "facility_kwh": 3091.8,
+            "grid_kwh": 2579.8,
+            "renewable_used_kwh": 512.0,
+            "renewable_curtailed_kwh": 0.0,
+            "cost_cny": 1518.927,
+            "emissions_kg": 1418.89,
+            "requests_completed": 2102,
+            "requests_queued_at_horizon": 0,
+            "requests_running_at_horizon": 7,
+            "requests_rejected": 0,
+            "completion_fraction": 0.9967,
+            "mean_wait_minutes": 0.0,
+            "p95_wait_minutes": 0,
+            "requests_waited": 0,
+            "mean_wait_minutes_by_class": {
+              "interactive": 0.0,
+              "batch": 0.0
+            },
+            "p95_wait_minutes_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "requests_waited_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "mean_completion_latency_minutes": 7.42,
+            "latency_allowance_met": 486,
+            "latency_allowance_total": 2102,
+            "offered_gpu_minutes": 34704,
+            "served_gpu_minutes": 34704,
+            "energy_accounted_gpu_minutes": 218304.0,
+            "peak_active_nodes": 32,
+            "peak_offered_gpu_demand": 109,
+            "max_forecast_capacity_shortfall_gpus": 0.0,
+            "forecast_shortfall_minutes": 0,
+            "max_readiness_capacity_shortfall_gpus": 0.0,
+            "readiness_shortfall_intervals": 0,
+            "max_pre_warm_active_shortfall_gpus": 0.0,
+            "max_target_warm_fleet_shortfall_nodes": 0,
+            "max_target_warm_nodes": 0,
+            "max_warm_stock_shortfall_nodes": 0,
+            "max_warm_ready_deficit_nodes": 0,
+            "peak_offered_fleet_shortfall_gpus": 0,
+            "offered_fleet_shortfall_minutes": 0,
+            "active_capacity_shortfall_gpu_minutes": 0,
+            "flexible_jobs_admitted": 6,
+            "flexible_jobs_deadline_met": 6,
+            "flexible_gpu_hours_scheduled": 3060.0,
+            "flexible_gpu_hours_delivered": 3060.0,
+            "flexible_gpu_hours_unmet": 0.0,
+            "flexible_commitment_missed_gpu_minutes": 0.0,
+            "flexible_deadline_misses": 0
+          },
+          "flexible_admission_status": "admitted",
+          "flexible_deadline_misses": 0,
+          "state_at_realized_peak": null
+        },
+        "reactive": {
+          "metrics": {
+            "facility_kwh": 2897.232,
+            "grid_kwh": 2385.232,
+            "renewable_used_kwh": 512.0,
+            "renewable_curtailed_kwh": 0.0,
+            "cost_cny": 1384.728,
+            "emissions_kg": 1311.878,
+            "requests_completed": 2102,
+            "requests_queued_at_horizon": 0,
+            "requests_running_at_horizon": 7,
+            "requests_rejected": 0,
+            "completion_fraction": 0.9967,
+            "mean_wait_minutes": 0.01,
+            "p95_wait_minutes": 0,
+            "requests_waited": 10,
+            "mean_wait_minutes_by_class": {
+              "interactive": 0.0,
+              "batch": 0.02
+            },
+            "p95_wait_minutes_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "requests_waited_by_class": {
+              "interactive": 6,
+              "batch": 4
+            },
+            "mean_completion_latency_minutes": 7.43,
+            "latency_allowance_met": 485,
+            "latency_allowance_total": 2102,
+            "offered_gpu_minutes": 34704,
+            "served_gpu_minutes": 34704,
+            "energy_accounted_gpu_minutes": 218304.0,
+            "peak_active_nodes": 32,
+            "peak_offered_gpu_demand": 109,
+            "max_forecast_capacity_shortfall_gpus": 0.0,
+            "forecast_shortfall_minutes": 0,
+            "max_readiness_capacity_shortfall_gpus": 0.0,
+            "readiness_shortfall_intervals": 0,
+            "max_pre_warm_active_shortfall_gpus": 0.0,
+            "max_target_warm_fleet_shortfall_nodes": 0,
+            "max_target_warm_nodes": 0,
+            "max_warm_stock_shortfall_nodes": 0,
+            "max_warm_ready_deficit_nodes": 0,
+            "peak_offered_fleet_shortfall_gpus": 0,
+            "offered_fleet_shortfall_minutes": 0,
+            "active_capacity_shortfall_gpu_minutes": 25,
+            "flexible_jobs_admitted": 6,
+            "flexible_jobs_deadline_met": 6,
+            "flexible_gpu_hours_scheduled": 3060.0,
+            "flexible_gpu_hours_delivered": 3060.0,
+            "flexible_gpu_hours_unmet": 0.0,
+            "flexible_commitment_missed_gpu_minutes": 0.0,
+            "flexible_deadline_misses": 0
+          },
+          "flexible_admission_status": "admitted",
+          "flexible_deadline_misses": 0,
+          "state_at_realized_peak": null
+        },
+        "forecast": {
+          "metrics": {
+            "facility_kwh": 2927.217,
+            "grid_kwh": 2415.217,
+            "renewable_used_kwh": 512.0,
+            "renewable_curtailed_kwh": 0.0,
+            "cost_cny": 1401.48,
+            "emissions_kg": 1328.369,
+            "requests_completed": 2102,
+            "requests_queued_at_horizon": 0,
+            "requests_running_at_horizon": 7,
+            "requests_rejected": 0,
+            "completion_fraction": 0.9967,
+            "mean_wait_minutes": 0.0,
+            "p95_wait_minutes": 0,
+            "requests_waited": 0,
+            "mean_wait_minutes_by_class": {
+              "interactive": 0.0,
+              "batch": 0.0
+            },
+            "p95_wait_minutes_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "requests_waited_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "mean_completion_latency_minutes": 7.42,
+            "latency_allowance_met": 486,
+            "latency_allowance_total": 2102,
+            "offered_gpu_minutes": 34704,
+            "served_gpu_minutes": 34704,
+            "energy_accounted_gpu_minutes": 218304.0,
+            "peak_active_nodes": 32,
+            "peak_offered_gpu_demand": 109,
+            "max_forecast_capacity_shortfall_gpus": 15.13,
+            "forecast_shortfall_minutes": 95,
+            "max_readiness_capacity_shortfall_gpus": 17.41,
+            "readiness_shortfall_intervals": 33,
+            "max_pre_warm_active_shortfall_gpus": 17.41,
+            "max_target_warm_fleet_shortfall_nodes": 2,
+            "max_target_warm_nodes": 3,
+            "max_warm_stock_shortfall_nodes": 1,
+            "max_warm_ready_deficit_nodes": 1,
+            "peak_offered_fleet_shortfall_gpus": 0,
+            "offered_fleet_shortfall_minutes": 0,
+            "active_capacity_shortfall_gpu_minutes": 0,
+            "flexible_jobs_admitted": 6,
+            "flexible_jobs_deadline_met": 6,
+            "flexible_gpu_hours_scheduled": 3060.0,
+            "flexible_gpu_hours_delivered": 3060.0,
+            "flexible_gpu_hours_unmet": 0.0,
+            "flexible_commitment_missed_gpu_minutes": 0.0,
+            "flexible_deadline_misses": 0
+          },
+          "flexible_admission_status": "admitted",
+          "flexible_deadline_misses": 0,
+          "state_at_realized_peak": {
+            "active": 27,
+            "warm_ready": 5,
+            "booting": 0,
+            "warming": 0,
+            "off": 0
+          }
+        }
+      }
+    },
+    {
+      "case": "normal-2027",
+      "payload": {
+        "seed": 2027,
+        "nodes": 32,
+        "gpus_per_node": 8,
+        "traffic_profile": "normal",
+        "bursts": true,
+        "warm_overhead_nodes": 1
+      },
+      "request_trace_sha256": "30e475d76b0cf538ae146e3c62f7112106aea22cf69068e2c83ac9979b9e40b7",
+      "generated_requests": 2080,
+      "offered_peak_gpus": 69,
+      "peak_snapshot": {
+        "minute": 1037,
+        "offered_gpus": 69,
+        "active_nodes": 26,
+        "warm_ready_nodes": 6,
+        "booting_nodes": 0,
+        "warming_nodes": 0,
+        "off_nodes": 0,
+        "active_spare_gpus": 139.0,
+        "formula_target_warm_nodes": 0,
+        "warm_ready_deficit_nodes": 0,
+        "warm_stock_target_nodes": 1,
+        "warm_stock_shortfall_nodes": 0,
+        "readiness_capacity_shortfall_gpus": 0.0
+      },
+      "before": {
+        "always_on": {
+          "wait": {
+            "all_started": {
+              "n": 2080,
+              "mean": 0.0,
+              "p95": 0,
+              "max": 0
+            },
+            "waited_over_zero": 0,
+            "unstarted_nonrejected": 0,
+            "by_class": {
+              "interactive": {
+                "n": 1575,
+                "mean": 0.0,
+                "p95": 0,
+                "max": 0
+              },
+              "batch": {
+                "n": 505,
+                "mean": 0.0,
+                "p95": 0,
+                "max": 0
+              }
+            }
+          },
+          "completed": 2068,
+          "running": 12,
+          "queued": 0,
+          "rejected": 0,
+          "energy_kwh": 3106.405,
+          "grid_kwh": 2594.405,
+          "cost_cny": 1529.928,
+          "emissions_kg": 1426.923,
+          "flex_admitted": 6,
+          "flex_deadline_met": 6,
+          "flex_deadline_misses": 0,
+          "flex_unmet_gpu_hours": 0.0,
+          "max_readiness_gap_gpus": 0.0,
+          "readiness_intervals": 0,
+          "fleet_shortfall_gpus": null,
+          "max_warm_ready_deficit_nodes": 0
+        },
+        "reactive": {
+          "wait": {
+            "all_started": {
+              "n": 2080,
+              "mean": 0.0,
+              "p95": 0,
+              "max": 0
+            },
+            "waited_over_zero": 0,
+            "unstarted_nonrejected": 0,
+            "by_class": {
+              "interactive": {
+                "n": 1575,
+                "mean": 0.0,
+                "p95": 0,
+                "max": 0
+              },
+              "batch": {
+                "n": 505,
+                "mean": 0.0,
+                "p95": 0,
+                "max": 0
+              }
+            }
+          },
+          "completed": 2068,
+          "running": 12,
+          "queued": 0,
+          "rejected": 0,
+          "energy_kwh": 2908.119,
+          "grid_kwh": 2396.119,
+          "cost_cny": 1392.705,
+          "emissions_kg": 1317.865,
+          "flex_admitted": 6,
+          "flex_deadline_met": 6,
+          "flex_deadline_misses": 0,
+          "flex_unmet_gpu_hours": 0.0,
+          "max_readiness_gap_gpus": 0.0,
+          "readiness_intervals": 0,
+          "fleet_shortfall_gpus": null,
+          "max_warm_ready_deficit_nodes": 0
+        },
+        "forecast": {
+          "wait": {
+            "all_started": {
+              "n": 2080,
+              "mean": 0.0,
+              "p95": 0,
+              "max": 0
+            },
+            "waited_over_zero": 0,
+            "unstarted_nonrejected": 0,
+            "by_class": {
+              "interactive": {
+                "n": 1575,
+                "mean": 0.0,
+                "p95": 0,
+                "max": 0
+              },
+              "batch": {
+                "n": 505,
+                "mean": 0.0,
+                "p95": 0,
+                "max": 0
+              }
+            }
+          },
+          "completed": 2068,
+          "running": 12,
+          "queued": 0,
+          "rejected": 0,
+          "energy_kwh": 2922.39,
+          "grid_kwh": 2410.39,
+          "cost_cny": 1402.922,
+          "emissions_kg": 1325.714,
+          "flex_admitted": 6,
+          "flex_deadline_met": 6,
+          "flex_deadline_misses": 0,
+          "flex_unmet_gpu_hours": 0.0,
+          "max_readiness_gap_gpus": 71.64,
+          "readiness_intervals": 169,
+          "fleet_shortfall_gpus": 48.64,
+          "max_warm_ready_deficit_nodes": 26
+        }
+      },
+      "after": {
+        "always_on": {
+          "metrics": {
+            "facility_kwh": 3106.405,
+            "grid_kwh": 2594.405,
+            "renewable_used_kwh": 512.0,
+            "renewable_curtailed_kwh": 0.0,
+            "cost_cny": 1529.928,
+            "emissions_kg": 1426.923,
+            "requests_completed": 2068,
+            "requests_queued_at_horizon": 0,
+            "requests_running_at_horizon": 12,
+            "requests_rejected": 0,
+            "completion_fraction": 0.9942,
+            "mean_wait_minutes": 0.0,
+            "p95_wait_minutes": 0,
+            "requests_waited": 0,
+            "mean_wait_minutes_by_class": {
+              "interactive": 0.0,
+              "batch": 0.0
+            },
+            "p95_wait_minutes_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "requests_waited_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "mean_completion_latency_minutes": 7.82,
+            "latency_allowance_met": 521,
+            "latency_allowance_total": 2068,
+            "offered_gpu_minutes": 36707,
+            "served_gpu_minutes": 36707,
+            "energy_accounted_gpu_minutes": 220307.0,
+            "peak_active_nodes": 32,
+            "peak_offered_gpu_demand": 69,
+            "max_forecast_capacity_shortfall_gpus": 0.0,
+            "forecast_shortfall_minutes": 0,
+            "max_readiness_capacity_shortfall_gpus": 0.0,
+            "readiness_shortfall_intervals": 0,
+            "max_pre_warm_active_shortfall_gpus": 0.0,
+            "max_target_warm_fleet_shortfall_nodes": 0,
+            "max_target_warm_nodes": 0,
+            "max_warm_stock_shortfall_nodes": 0,
+            "max_warm_ready_deficit_nodes": 0,
+            "peak_offered_fleet_shortfall_gpus": 0,
+            "offered_fleet_shortfall_minutes": 0,
+            "active_capacity_shortfall_gpu_minutes": 0,
+            "flexible_jobs_admitted": 6,
+            "flexible_jobs_deadline_met": 6,
+            "flexible_gpu_hours_scheduled": 3060.0,
+            "flexible_gpu_hours_delivered": 3060.0,
+            "flexible_gpu_hours_unmet": 0.0,
+            "flexible_commitment_missed_gpu_minutes": 0.0,
+            "flexible_deadline_misses": 0
+          },
+          "flexible_admission_status": "admitted",
+          "flexible_deadline_misses": 0,
+          "state_at_realized_peak": null
+        },
+        "reactive": {
+          "metrics": {
+            "facility_kwh": 2908.119,
+            "grid_kwh": 2396.119,
+            "renewable_used_kwh": 512.0,
+            "renewable_curtailed_kwh": 0.0,
+            "cost_cny": 1392.705,
+            "emissions_kg": 1317.865,
+            "requests_completed": 2068,
+            "requests_queued_at_horizon": 0,
+            "requests_running_at_horizon": 12,
+            "requests_rejected": 0,
+            "completion_fraction": 0.9942,
+            "mean_wait_minutes": 0.0,
+            "p95_wait_minutes": 0,
+            "requests_waited": 0,
+            "mean_wait_minutes_by_class": {
+              "interactive": 0.0,
+              "batch": 0.0
+            },
+            "p95_wait_minutes_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "requests_waited_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "mean_completion_latency_minutes": 7.82,
+            "latency_allowance_met": 521,
+            "latency_allowance_total": 2068,
+            "offered_gpu_minutes": 36707,
+            "served_gpu_minutes": 36707,
+            "energy_accounted_gpu_minutes": 220307.0,
+            "peak_active_nodes": 32,
+            "peak_offered_gpu_demand": 69,
+            "max_forecast_capacity_shortfall_gpus": 0.0,
+            "forecast_shortfall_minutes": 0,
+            "max_readiness_capacity_shortfall_gpus": 0.0,
+            "readiness_shortfall_intervals": 0,
+            "max_pre_warm_active_shortfall_gpus": 0.0,
+            "max_target_warm_fleet_shortfall_nodes": 0,
+            "max_target_warm_nodes": 0,
+            "max_warm_stock_shortfall_nodes": 0,
+            "max_warm_ready_deficit_nodes": 0,
+            "peak_offered_fleet_shortfall_gpus": 0,
+            "offered_fleet_shortfall_minutes": 0,
+            "active_capacity_shortfall_gpu_minutes": 0,
+            "flexible_jobs_admitted": 6,
+            "flexible_jobs_deadline_met": 6,
+            "flexible_gpu_hours_scheduled": 3060.0,
+            "flexible_gpu_hours_delivered": 3060.0,
+            "flexible_gpu_hours_unmet": 0.0,
+            "flexible_commitment_missed_gpu_minutes": 0.0,
+            "flexible_deadline_misses": 0
+          },
+          "flexible_admission_status": "admitted",
+          "flexible_deadline_misses": 0,
+          "state_at_realized_peak": null
+        },
+        "forecast": {
+          "metrics": {
+            "facility_kwh": 2938.952,
+            "grid_kwh": 2426.952,
+            "renewable_used_kwh": 512.0,
+            "renewable_curtailed_kwh": 0.0,
+            "cost_cny": 1410.59,
+            "emissions_kg": 1334.824,
+            "requests_completed": 2068,
+            "requests_queued_at_horizon": 0,
+            "requests_running_at_horizon": 12,
+            "requests_rejected": 0,
+            "completion_fraction": 0.9942,
+            "mean_wait_minutes": 0.0,
+            "p95_wait_minutes": 0,
+            "requests_waited": 0,
+            "mean_wait_minutes_by_class": {
+              "interactive": 0.0,
+              "batch": 0.0
+            },
+            "p95_wait_minutes_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "requests_waited_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "mean_completion_latency_minutes": 7.82,
+            "latency_allowance_met": 521,
+            "latency_allowance_total": 2068,
+            "offered_gpu_minutes": 36707,
+            "served_gpu_minutes": 36707,
+            "energy_accounted_gpu_minutes": 220307.0,
+            "peak_active_nodes": 32,
+            "peak_offered_gpu_demand": 69,
+            "max_forecast_capacity_shortfall_gpus": 20.3,
+            "forecast_shortfall_minutes": 155,
+            "max_readiness_capacity_shortfall_gpus": 20.3,
+            "readiness_shortfall_intervals": 46,
+            "max_pre_warm_active_shortfall_gpus": 15.51,
+            "max_target_warm_fleet_shortfall_nodes": 3,
+            "max_target_warm_nodes": 3,
+            "max_warm_stock_shortfall_nodes": 1,
+            "max_warm_ready_deficit_nodes": 1,
+            "peak_offered_fleet_shortfall_gpus": 0,
+            "offered_fleet_shortfall_minutes": 0,
+            "active_capacity_shortfall_gpu_minutes": 0,
+            "flexible_jobs_admitted": 6,
+            "flexible_jobs_deadline_met": 6,
+            "flexible_gpu_hours_scheduled": 3060.0,
+            "flexible_gpu_hours_delivered": 3060.0,
+            "flexible_gpu_hours_unmet": 0.0,
+            "flexible_commitment_missed_gpu_minutes": 0.0,
+            "flexible_deadline_misses": 0
+          },
+          "flexible_admission_status": "admitted",
+          "flexible_deadline_misses": 0,
+          "state_at_realized_peak": {
+            "active": 26,
+            "warm_ready": 6,
+            "booting": 0,
+            "warming": 0,
+            "off": 0
+          }
+        }
+      }
+    },
+    {
+      "case": "normal-2028",
+      "payload": {
+        "seed": 2028,
+        "nodes": 32,
+        "gpus_per_node": 8,
+        "traffic_profile": "normal",
+        "bursts": true,
+        "warm_overhead_nodes": 1
+      },
+      "request_trace_sha256": "c8b74c1d00d2597b2edfb149e469f0357c1682c99b3269c2d3bab1ced9f2437f",
+      "generated_requests": 1920,
+      "offered_peak_gpus": 71,
+      "peak_snapshot": {
+        "minute": 1258,
+        "offered_gpus": 71,
+        "active_nodes": 9,
+        "warm_ready_nodes": 1,
+        "booting_nodes": 0,
+        "warming_nodes": 0,
+        "off_nodes": 22,
+        "active_spare_gpus": 1.0,
+        "formula_target_warm_nodes": 0,
+        "warm_ready_deficit_nodes": 0,
+        "warm_stock_target_nodes": 1,
+        "warm_stock_shortfall_nodes": 0,
+        "readiness_capacity_shortfall_gpus": 6.69
+      },
+      "before": {
+        "always_on": {
+          "wait": {
+            "all_started": {
+              "n": 1920,
+              "mean": 0.0,
+              "p95": 0,
+              "max": 0
+            },
+            "waited_over_zero": 0,
+            "unstarted_nonrejected": 0,
+            "by_class": {
+              "interactive": {
+                "n": 1454,
+                "mean": 0.0,
+                "p95": 0,
+                "max": 0
+              },
+              "batch": {
+                "n": 466,
+                "mean": 0.0,
+                "p95": 0,
+                "max": 0
+              }
+            }
+          },
+          "completed": 1911,
+          "running": 9,
+          "queued": 0,
+          "rejected": 0,
+          "energy_kwh": 3089.984,
+          "grid_kwh": 2577.984,
+          "cost_cny": 1516.693,
+          "emissions_kg": 1417.891,
+          "flex_admitted": 6,
+          "flex_deadline_met": 6,
+          "flex_deadline_misses": 0,
+          "flex_unmet_gpu_hours": 0.0,
+          "max_readiness_gap_gpus": 0.0,
+          "readiness_intervals": 0,
+          "fleet_shortfall_gpus": null,
+          "max_warm_ready_deficit_nodes": 0
+        },
+        "reactive": {
+          "wait": {
+            "all_started": {
+              "n": 1920,
+              "mean": 0.0,
+              "p95": 0,
+              "max": 0
+            },
+            "waited_over_zero": 0,
+            "unstarted_nonrejected": 0,
+            "by_class": {
+              "interactive": {
+                "n": 1454,
+                "mean": 0.0,
+                "p95": 0,
+                "max": 0
+              },
+              "batch": {
+                "n": 466,
+                "mean": 0.0,
+                "p95": 0,
+                "max": 0
+              }
+            }
+          },
+          "completed": 1911,
+          "running": 9,
+          "queued": 0,
+          "rejected": 0,
+          "energy_kwh": 2891.901,
+          "grid_kwh": 2379.901,
+          "cost_cny": 1379.707,
+          "emissions_kg": 1308.946,
+          "flex_admitted": 6,
+          "flex_deadline_met": 6,
+          "flex_deadline_misses": 0,
+          "flex_unmet_gpu_hours": 0.0,
+          "max_readiness_gap_gpus": 0.0,
+          "readiness_intervals": 0,
+          "fleet_shortfall_gpus": null,
+          "max_warm_ready_deficit_nodes": 0
+        },
+        "forecast": {
+          "wait": {
+            "all_started": {
+              "n": 1920,
+              "mean": 0.0,
+              "p95": 0,
+              "max": 0
+            },
+            "waited_over_zero": 0,
+            "unstarted_nonrejected": 0,
+            "by_class": {
+              "interactive": {
+                "n": 1454,
+                "mean": 0.0,
+                "p95": 0,
+                "max": 0
+              },
+              "batch": {
+                "n": 466,
+                "mean": 0.0,
+                "p95": 0,
+                "max": 0
+              }
+            }
+          },
+          "completed": 1911,
+          "running": 9,
+          "queued": 0,
+          "rejected": 0,
+          "energy_kwh": 2904.036,
+          "grid_kwh": 2392.036,
+          "cost_cny": 1388.217,
+          "emissions_kg": 1315.62,
+          "flex_admitted": 6,
+          "flex_deadline_met": 6,
+          "flex_deadline_misses": 0,
+          "flex_unmet_gpu_hours": 0.0,
+          "max_readiness_gap_gpus": 72.55,
+          "readiness_intervals": 144,
+          "fleet_shortfall_gpus": 27.78,
+          "max_warm_ready_deficit_nodes": 25
+        }
+      },
+      "after": {
+        "always_on": {
+          "metrics": {
+            "facility_kwh": 3089.984,
+            "grid_kwh": 2577.984,
+            "renewable_used_kwh": 512.0,
+            "renewable_curtailed_kwh": 0.0,
+            "cost_cny": 1516.693,
+            "emissions_kg": 1417.891,
+            "requests_completed": 1911,
+            "requests_queued_at_horizon": 0,
+            "requests_running_at_horizon": 9,
+            "requests_rejected": 0,
+            "completion_fraction": 0.9953,
+            "mean_wait_minutes": 0.0,
+            "p95_wait_minutes": 0,
+            "requests_waited": 0,
+            "mean_wait_minutes_by_class": {
+              "interactive": 0.0,
+              "batch": 0.0
+            },
+            "p95_wait_minutes_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "requests_waited_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "mean_completion_latency_minutes": 7.84,
+            "latency_allowance_met": 483,
+            "latency_allowance_total": 1911,
+            "offered_gpu_minutes": 34455,
+            "served_gpu_minutes": 34455,
+            "energy_accounted_gpu_minutes": 218055.0,
+            "peak_active_nodes": 32,
+            "peak_offered_gpu_demand": 71,
+            "max_forecast_capacity_shortfall_gpus": 0.0,
+            "forecast_shortfall_minutes": 0,
+            "max_readiness_capacity_shortfall_gpus": 0.0,
+            "readiness_shortfall_intervals": 0,
+            "max_pre_warm_active_shortfall_gpus": 0.0,
+            "max_target_warm_fleet_shortfall_nodes": 0,
+            "max_target_warm_nodes": 0,
+            "max_warm_stock_shortfall_nodes": 0,
+            "max_warm_ready_deficit_nodes": 0,
+            "peak_offered_fleet_shortfall_gpus": 0,
+            "offered_fleet_shortfall_minutes": 0,
+            "active_capacity_shortfall_gpu_minutes": 0,
+            "flexible_jobs_admitted": 6,
+            "flexible_jobs_deadline_met": 6,
+            "flexible_gpu_hours_scheduled": 3060.0,
+            "flexible_gpu_hours_delivered": 3060.0,
+            "flexible_gpu_hours_unmet": 0.0,
+            "flexible_commitment_missed_gpu_minutes": 0.0,
+            "flexible_deadline_misses": 0
+          },
+          "flexible_admission_status": "admitted",
+          "flexible_deadline_misses": 0,
+          "state_at_realized_peak": null
+        },
+        "reactive": {
+          "metrics": {
+            "facility_kwh": 2891.901,
+            "grid_kwh": 2379.901,
+            "renewable_used_kwh": 512.0,
+            "renewable_curtailed_kwh": 0.0,
+            "cost_cny": 1379.707,
+            "emissions_kg": 1308.946,
+            "requests_completed": 1911,
+            "requests_queued_at_horizon": 0,
+            "requests_running_at_horizon": 9,
+            "requests_rejected": 0,
+            "completion_fraction": 0.9953,
+            "mean_wait_minutes": 0.0,
+            "p95_wait_minutes": 0,
+            "requests_waited": 0,
+            "mean_wait_minutes_by_class": {
+              "interactive": 0.0,
+              "batch": 0.0
+            },
+            "p95_wait_minutes_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "requests_waited_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "mean_completion_latency_minutes": 7.84,
+            "latency_allowance_met": 483,
+            "latency_allowance_total": 1911,
+            "offered_gpu_minutes": 34455,
+            "served_gpu_minutes": 34455,
+            "energy_accounted_gpu_minutes": 218055.0,
+            "peak_active_nodes": 32,
+            "peak_offered_gpu_demand": 71,
+            "max_forecast_capacity_shortfall_gpus": 0.0,
+            "forecast_shortfall_minutes": 0,
+            "max_readiness_capacity_shortfall_gpus": 0.0,
+            "readiness_shortfall_intervals": 0,
+            "max_pre_warm_active_shortfall_gpus": 0.0,
+            "max_target_warm_fleet_shortfall_nodes": 0,
+            "max_target_warm_nodes": 0,
+            "max_warm_stock_shortfall_nodes": 0,
+            "max_warm_ready_deficit_nodes": 0,
+            "peak_offered_fleet_shortfall_gpus": 0,
+            "offered_fleet_shortfall_minutes": 0,
+            "active_capacity_shortfall_gpu_minutes": 0,
+            "flexible_jobs_admitted": 6,
+            "flexible_jobs_deadline_met": 6,
+            "flexible_gpu_hours_scheduled": 3060.0,
+            "flexible_gpu_hours_delivered": 3060.0,
+            "flexible_gpu_hours_unmet": 0.0,
+            "flexible_commitment_missed_gpu_minutes": 0.0,
+            "flexible_deadline_misses": 0
+          },
+          "flexible_admission_status": "admitted",
+          "flexible_deadline_misses": 0,
+          "state_at_realized_peak": null
+        },
+        "forecast": {
+          "metrics": {
+            "facility_kwh": 2920.635,
+            "grid_kwh": 2408.635,
+            "renewable_used_kwh": 512.0,
+            "renewable_curtailed_kwh": 0.0,
+            "cost_cny": 1395.939,
+            "emissions_kg": 1324.749,
+            "requests_completed": 1911,
+            "requests_queued_at_horizon": 0,
+            "requests_running_at_horizon": 9,
+            "requests_rejected": 0,
+            "completion_fraction": 0.9953,
+            "mean_wait_minutes": 0.0,
+            "p95_wait_minutes": 0,
+            "requests_waited": 0,
+            "mean_wait_minutes_by_class": {
+              "interactive": 0.0,
+              "batch": 0.0
+            },
+            "p95_wait_minutes_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "requests_waited_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "mean_completion_latency_minutes": 7.84,
+            "latency_allowance_met": 483,
+            "latency_allowance_total": 1911,
+            "offered_gpu_minutes": 34455,
+            "served_gpu_minutes": 34455,
+            "energy_accounted_gpu_minutes": 218055.0,
+            "peak_active_nodes": 32,
+            "peak_offered_gpu_demand": 71,
+            "max_forecast_capacity_shortfall_gpus": 21.17,
+            "forecast_shortfall_minutes": 115,
+            "max_readiness_capacity_shortfall_gpus": 21.17,
+            "readiness_shortfall_intervals": 35,
+            "max_pre_warm_active_shortfall_gpus": 20.29,
+            "max_target_warm_fleet_shortfall_nodes": 2,
+            "max_target_warm_nodes": 3,
+            "max_warm_stock_shortfall_nodes": 1,
+            "max_warm_ready_deficit_nodes": 1,
+            "peak_offered_fleet_shortfall_gpus": 0,
+            "offered_fleet_shortfall_minutes": 0,
+            "active_capacity_shortfall_gpu_minutes": 0,
+            "flexible_jobs_admitted": 6,
+            "flexible_jobs_deadline_met": 6,
+            "flexible_gpu_hours_scheduled": 3060.0,
+            "flexible_gpu_hours_delivered": 3060.0,
+            "flexible_gpu_hours_unmet": 0.0,
+            "flexible_commitment_missed_gpu_minutes": 0.0,
+            "flexible_deadline_misses": 0
+          },
+          "flexible_admission_status": "admitted",
+          "flexible_deadline_misses": 0,
+          "state_at_realized_peak": {
+            "active": 9,
+            "warm_ready": 1,
+            "booting": 0,
+            "warming": 0,
+            "off": 22
+          }
+        }
+      }
+    },
+    {
+      "case": "high-ample-2026",
+      "payload": {
+        "seed": 2026,
+        "nodes": 48,
+        "headroom_nodes": 16,
+        "gpus_per_node": 8,
+        "traffic_profile": "high",
+        "bursts": false,
+        "warm_overhead_nodes": 1
+      },
+      "request_trace_sha256": "d9531fc8cbb72d245561617e6b94297ebb3c8237f94ec5a4e3cdf5e1c6cf08f2",
+      "generated_requests": 3913,
+      "offered_peak_gpus": 127,
+      "peak_snapshot": {
+        "minute": 1143,
+        "offered_gpus": 127,
+        "active_nodes": 16,
+        "warm_ready_nodes": 0,
+        "booting_nodes": 1,
+        "warming_nodes": 1,
+        "off_nodes": 46,
+        "active_spare_gpus": 1.0,
+        "formula_target_warm_nodes": 1,
+        "warm_ready_deficit_nodes": 1,
+        "warm_stock_target_nodes": 1,
+        "warm_stock_shortfall_nodes": 0,
+        "readiness_capacity_shortfall_gpus": 9.57
+      },
+      "before": {
+        "always_on": {
+          "wait": {
+            "all_started": {
+              "n": 3913,
+              "mean": 0.0,
+              "p95": 0,
+              "max": 0
+            },
+            "waited_over_zero": 0,
+            "unstarted_nonrejected": 0,
+            "by_class": {
+              "interactive": {
+                "n": 2961,
+                "mean": 0.0,
+                "p95": 0,
+                "max": 0
+              },
+              "batch": {
+                "n": 952,
+                "mean": 0.0,
+                "p95": 0,
+                "max": 0
+              }
+            }
+          },
+          "completed": 3896,
+          "running": 17,
+          "queued": 0,
+          "rejected": 0,
+          "energy_kwh": 4296.188,
+          "grid_kwh": 3784.187,
+          "cost_cny": 2350.357,
+          "emissions_kg": 2081.303,
+          "flex_admitted": 6,
+          "flex_deadline_met": 6,
+          "flex_deadline_misses": 0,
+          "flex_unmet_gpu_hours": 0.0,
+          "max_readiness_gap_gpus": 0.0,
+          "readiness_intervals": 0,
+          "fleet_shortfall_gpus": null,
+          "max_warm_ready_deficit_nodes": 0
+        },
+        "reactive": {
+          "wait": {
+            "all_started": {
+              "n": 3913,
+              "mean": 0.01,
+              "p95": 0,
+              "max": 4
+            },
+            "waited_over_zero": 25,
+            "unstarted_nonrejected": 0,
+            "by_class": {
+              "interactive": {
+                "n": 2961,
+                "mean": 0.0,
+                "p95": 0,
+                "max": 2
+              },
+              "batch": {
+                "n": 952,
+                "mean": 0.04,
+                "p95": 0,
+                "max": 4
+              }
+            }
+          },
+          "completed": 3896,
+          "running": 17,
+          "queued": 0,
+          "rejected": 0,
+          "energy_kwh": 3229.708,
+          "grid_kwh": 2717.708,
+          "cost_cny": 1700.52,
+          "emissions_kg": 1494.74,
+          "flex_admitted": 6,
+          "flex_deadline_met": 6,
+          "flex_deadline_misses": 0,
+          "flex_unmet_gpu_hours": 0.0,
+          "max_readiness_gap_gpus": 0.0,
+          "readiness_intervals": 0,
+          "fleet_shortfall_gpus": null,
+          "max_warm_ready_deficit_nodes": 0
+        },
+        "forecast": {
+          "wait": {
+            "all_started": {
+              "n": 3913,
+              "mean": 0.03,
+              "p95": 0,
+              "max": 9
+            },
+            "waited_over_zero": 53,
+            "unstarted_nonrejected": 0,
+            "by_class": {
+              "interactive": {
+                "n": 2961,
+                "mean": 0.02,
+                "p95": 0,
+                "max": 9
+              },
+              "batch": {
+                "n": 952,
+                "mean": 0.08,
+                "p95": 0,
+                "max": 7
+              }
+            }
+          },
+          "completed": 3896,
+          "running": 17,
+          "queued": 0,
+          "rejected": 0,
+          "energy_kwh": 3294.445,
+          "grid_kwh": 2782.445,
+          "cost_cny": 1743.285,
+          "emissions_kg": 1530.345,
+          "flex_admitted": 6,
+          "flex_deadline_met": 5,
+          "flex_deadline_misses": 1,
+          "flex_unmet_gpu_hours": 0.067,
+          "max_readiness_gap_gpus": 126.25,
+          "readiness_intervals": 244,
+          "fleet_shortfall_gpus": 0.0,
+          "max_warm_ready_deficit_nodes": 17
+        }
+      },
+      "after": {
+        "always_on": {
+          "metrics": {
+            "facility_kwh": 4296.188,
+            "grid_kwh": 3784.187,
+            "renewable_used_kwh": 512.0,
+            "renewable_curtailed_kwh": 0.0,
+            "cost_cny": 2350.357,
+            "emissions_kg": 2081.303,
+            "requests_completed": 3896,
+            "requests_queued_at_horizon": 0,
+            "requests_running_at_horizon": 17,
+            "requests_rejected": 0,
+            "completion_fraction": 0.9957,
+            "mean_wait_minutes": 0.0,
+            "p95_wait_minutes": 0,
+            "requests_waited": 0,
+            "mean_wait_minutes_by_class": {
+              "interactive": 0.0,
+              "batch": 0.0
+            },
+            "p95_wait_minutes_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "requests_waited_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "mean_completion_latency_minutes": 7.75,
+            "latency_allowance_met": 990,
+            "latency_allowance_total": 3896,
+            "offered_gpu_minutes": 68220,
+            "served_gpu_minutes": 68220,
+            "energy_accounted_gpu_minutes": 251820.0,
+            "peak_active_nodes": 64,
+            "peak_offered_gpu_demand": 127,
+            "max_forecast_capacity_shortfall_gpus": 0.0,
+            "forecast_shortfall_minutes": 0,
+            "max_readiness_capacity_shortfall_gpus": 0.0,
+            "readiness_shortfall_intervals": 0,
+            "max_pre_warm_active_shortfall_gpus": 0.0,
+            "max_target_warm_fleet_shortfall_nodes": 0,
+            "max_target_warm_nodes": 0,
+            "max_warm_stock_shortfall_nodes": 0,
+            "max_warm_ready_deficit_nodes": 0,
+            "peak_offered_fleet_shortfall_gpus": 0,
+            "offered_fleet_shortfall_minutes": 0,
+            "active_capacity_shortfall_gpu_minutes": 0,
+            "flexible_jobs_admitted": 6,
+            "flexible_jobs_deadline_met": 6,
+            "flexible_gpu_hours_scheduled": 3060.0,
+            "flexible_gpu_hours_delivered": 3060.0,
+            "flexible_gpu_hours_unmet": 0.0,
+            "flexible_commitment_missed_gpu_minutes": 0.0,
+            "flexible_deadline_misses": 0
+          },
+          "flexible_admission_status": "admitted",
+          "flexible_deadline_misses": 0,
+          "state_at_realized_peak": null
+        },
+        "reactive": {
+          "metrics": {
+            "facility_kwh": 3229.708,
+            "grid_kwh": 2717.708,
+            "renewable_used_kwh": 512.0,
+            "renewable_curtailed_kwh": 0.0,
+            "cost_cny": 1700.52,
+            "emissions_kg": 1494.74,
+            "requests_completed": 3896,
+            "requests_queued_at_horizon": 0,
+            "requests_running_at_horizon": 17,
+            "requests_rejected": 0,
+            "completion_fraction": 0.9957,
+            "mean_wait_minutes": 0.01,
+            "p95_wait_minutes": 0,
+            "requests_waited": 25,
+            "mean_wait_minutes_by_class": {
+              "interactive": 0.0,
+              "batch": 0.04
+            },
+            "p95_wait_minutes_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "requests_waited_by_class": {
+              "interactive": 7,
+              "batch": 18
+            },
+            "mean_completion_latency_minutes": 7.76,
+            "latency_allowance_met": 990,
+            "latency_allowance_total": 3896,
+            "offered_gpu_minutes": 68220,
+            "served_gpu_minutes": 68220,
+            "energy_accounted_gpu_minutes": 251820.0,
+            "peak_active_nodes": 51,
+            "peak_offered_gpu_demand": 127,
+            "max_forecast_capacity_shortfall_gpus": 0.0,
+            "forecast_shortfall_minutes": 0,
+            "max_readiness_capacity_shortfall_gpus": 0.0,
+            "readiness_shortfall_intervals": 0,
+            "max_pre_warm_active_shortfall_gpus": 0.0,
+            "max_target_warm_fleet_shortfall_nodes": 0,
+            "max_target_warm_nodes": 0,
+            "max_warm_stock_shortfall_nodes": 0,
+            "max_warm_ready_deficit_nodes": 0,
+            "peak_offered_fleet_shortfall_gpus": 0,
+            "offered_fleet_shortfall_minutes": 0,
+            "active_capacity_shortfall_gpu_minutes": 0,
+            "flexible_jobs_admitted": 6,
+            "flexible_jobs_deadline_met": 6,
+            "flexible_gpu_hours_scheduled": 3060.0,
+            "flexible_gpu_hours_delivered": 3060.0,
+            "flexible_gpu_hours_unmet": 0.0,
+            "flexible_commitment_missed_gpu_minutes": 0.0,
+            "flexible_deadline_misses": 0
+          },
+          "flexible_admission_status": "admitted",
+          "flexible_deadline_misses": 0,
+          "state_at_realized_peak": null
+        },
+        "forecast": {
+          "metrics": {
+            "facility_kwh": 3300.057,
+            "grid_kwh": 2788.057,
+            "renewable_used_kwh": 512.0,
+            "renewable_curtailed_kwh": 0.0,
+            "cost_cny": 1743.824,
+            "emissions_kg": 1533.432,
+            "requests_completed": 3896,
+            "requests_queued_at_horizon": 0,
+            "requests_running_at_horizon": 17,
+            "requests_rejected": 0,
+            "completion_fraction": 0.9957,
+            "mean_wait_minutes": 0.0,
+            "p95_wait_minutes": 0,
+            "requests_waited": 0,
+            "mean_wait_minutes_by_class": {
+              "interactive": 0.0,
+              "batch": 0.0
+            },
+            "p95_wait_minutes_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "requests_waited_by_class": {
+              "interactive": 0,
+              "batch": 0
+            },
+            "mean_completion_latency_minutes": 7.75,
+            "latency_allowance_met": 990,
+            "latency_allowance_total": 3896,
+            "offered_gpu_minutes": 68220,
+            "served_gpu_minutes": 68220,
+            "energy_accounted_gpu_minutes": 251820.0,
+            "peak_active_nodes": 54,
+            "peak_offered_gpu_demand": 127,
+            "max_forecast_capacity_shortfall_gpus": 0.0,
+            "forecast_shortfall_minutes": 0,
+            "max_readiness_capacity_shortfall_gpus": 21.01,
+            "readiness_shortfall_intervals": 68,
+            "max_pre_warm_active_shortfall_gpus": 21.01,
+            "max_target_warm_fleet_shortfall_nodes": 0,
+            "max_target_warm_nodes": 3,
+            "max_warm_stock_shortfall_nodes": 0,
+            "max_warm_ready_deficit_nodes": 1,
+            "peak_offered_fleet_shortfall_gpus": 0,
+            "offered_fleet_shortfall_minutes": 0,
+            "active_capacity_shortfall_gpu_minutes": 0,
+            "flexible_jobs_admitted": 6,
+            "flexible_jobs_deadline_met": 6,
+            "flexible_gpu_hours_scheduled": 3060.0,
+            "flexible_gpu_hours_delivered": 3060.0,
+            "flexible_gpu_hours_unmet": 0.0,
+            "flexible_commitment_missed_gpu_minutes": 0.0,
+            "flexible_deadline_misses": 0
+          },
+          "flexible_admission_status": "admitted",
+          "flexible_deadline_misses": 0,
+          "state_at_realized_peak": {
+            "active": 16,
+            "warm_ready": 0,
+            "booting": 1,
+            "warming": 1,
+            "off": 46
+          }
+        }
+      }
+    },
+    {
+      "case": "burst-constrained-2026",
+      "payload": {
+        "seed": 2026,
+        "nodes": 12,
+        "gpus_per_node": 8,
+        "traffic_profile": "high",
+        "bursts": true,
+        "warm_overhead_nodes": 2
+      },
+      "request_trace_sha256": "4fb73f59d6ad3157e673a0e64e414a1c75a1ac1401785d048a39a7d8e24e8741",
+      "generated_requests": 4052,
+      "offered_peak_gpus": 267,
+      "peak_snapshot": {
+        "minute": 1044,
+        "offered_gpus": 267,
+        "active_nodes": 12,
+        "warm_ready_nodes": 0,
+        "booting_nodes": 0,
+        "warming_nodes": 0,
+        "off_nodes": 0,
+        "active_spare_gpus": 0.0,
+        "formula_target_warm_nodes": 14,
+        "warm_ready_deficit_nodes": 2,
+        "warm_stock_target_nodes": 2,
+        "warm_stock_shortfall_nodes": 2,
+        "readiness_capacity_shortfall_gpus": 106.52
+      },
+      "before": {
+        "always_on": {
+          "wait": {
+            "all_started": {
+              "n": 4052,
+              "mean": 2.73,
+              "p95": 20,
+              "max": 38
+            },
+            "waited_over_zero": 801,
+            "unstarted_nonrejected": 0,
+            "by_class": {
+              "interactive": {
+                "n": 3057,
+                "mean": 2.66,
+                "p95": 21,
+                "max": 38
+              },
+              "batch": {
+                "n": 995,
+                "mean": 2.95,
+                "p95": 16,
+                "max": 26
+              }
+            }
+          },
+          "completed": 4039,
+          "running": 13,
+          "queued": 0,
+          "rejected": 0,
+          "energy_kwh": 1421.274,
+          "grid_kwh": 947.846,
+          "cost_cny": 588.73,
+          "emissions_kg": 521.315,
+          "flex_admitted": 0,
+          "flex_deadline_met": 0,
+          "flex_deadline_misses": 0,
+          "flex_unmet_gpu_hours": 3060.0,
+          "max_readiness_gap_gpus": 0.0,
+          "readiness_intervals": 0,
+          "fleet_shortfall_gpus": null,
+          "max_warm_ready_deficit_nodes": 0
+        },
+        "reactive": {
+          "wait": {
+            "all_started": {
+              "n": 4052,
+              "mean": 3.46,
+              "p95": 27,
+              "max": 43
+            },
+            "waited_over_zero": 904,
+            "unstarted_nonrejected": 0,
+            "by_class": {
+              "interactive": {
+                "n": 3057,
+                "mean": 3.55,
+                "p95": 29,
+                "max": 43
+              },
+              "batch": {
+                "n": 995,
+                "mean": 3.2,
+                "p95": 16,
+                "max": 27
+              }
+            }
+          },
+          "completed": 4039,
+          "running": 13,
+          "queued": 0,
+          "rejected": 0,
+          "energy_kwh": 1329.292,
+          "grid_kwh": 868.998,
+          "cost_cny": 552.744,
+          "emissions_kg": 477.949,
+          "flex_admitted": 0,
+          "flex_deadline_met": 0,
+          "flex_deadline_misses": 0,
+          "flex_unmet_gpu_hours": 3060.0,
+          "max_readiness_gap_gpus": 0.0,
+          "readiness_intervals": 0,
+          "fleet_shortfall_gpus": null,
+          "max_warm_ready_deficit_nodes": 0
+        },
+        "forecast": {
+          "wait": {
+            "all_started": {
+              "n": 4052,
+              "mean": 2.85,
+              "p95": 21,
+              "max": 39
+            },
+            "waited_over_zero": 836,
+            "unstarted_nonrejected": 0,
+            "by_class": {
+              "interactive": {
+                "n": 3057,
+                "mean": 2.79,
+                "p95": 23,
+                "max": 39
+              },
+              "batch": {
+                "n": 995,
+                "mean": 3.04,
+                "p95": 16,
+                "max": 26
+              }
+            }
+          },
+          "completed": 4039,
+          "running": 13,
+          "queued": 0,
+          "rejected": 0,
+          "energy_kwh": 1354.599,
+          "grid_kwh": 890.65,
+          "cost_cny": 562.328,
+          "emissions_kg": 489.858,
+          "flex_admitted": 0,
+          "flex_deadline_met": 0,
+          "flex_deadline_misses": 0,
+          "flex_unmet_gpu_hours": 3060.0,
+          "max_readiness_gap_gpus": 377.25,
+          "readiness_intervals": 269,
+          "fleet_shortfall_gpus": 310.25,
+          "max_warm_ready_deficit_nodes": 41
+        }
+      },
+      "after": {
+        "always_on": {
+          "metrics": {
+            "facility_kwh": 1421.274,
+            "grid_kwh": 947.846,
+            "renewable_used_kwh": 473.428,
+            "renewable_curtailed_kwh": 38.572,
+            "cost_cny": 588.73,
+            "emissions_kg": 521.315,
+            "requests_completed": 4039,
+            "requests_queued_at_horizon": 0,
+            "requests_running_at_horizon": 13,
+            "requests_rejected": 0,
+            "completion_fraction": 0.9968,
+            "mean_wait_minutes": 2.73,
+            "p95_wait_minutes": 20,
+            "requests_waited": 801,
+            "mean_wait_minutes_by_class": {
+              "interactive": 2.66,
+              "batch": 2.95
+            },
+            "p95_wait_minutes_by_class": {
+              "interactive": 21,
+              "batch": 16
+            },
+            "requests_waited_by_class": {
+              "interactive": 552,
+              "batch": 249
+            },
+            "mean_completion_latency_minutes": 10.54,
+            "latency_allowance_met": 920,
+            "latency_allowance_total": 4039,
+            "offered_gpu_minutes": 71489,
+            "served_gpu_minutes": 71489,
+            "energy_accounted_gpu_minutes": 71489.0,
+            "peak_active_nodes": 12,
+            "peak_offered_gpu_demand": 267,
+            "max_forecast_capacity_shortfall_gpus": 0.0,
+            "forecast_shortfall_minutes": 0,
+            "max_readiness_capacity_shortfall_gpus": 0.0,
+            "readiness_shortfall_intervals": 0,
+            "max_pre_warm_active_shortfall_gpus": 0.0,
+            "max_target_warm_fleet_shortfall_nodes": 0,
+            "max_target_warm_nodes": 0,
+            "max_warm_stock_shortfall_nodes": 0,
+            "max_warm_ready_deficit_nodes": 0,
+            "peak_offered_fleet_shortfall_gpus": 171,
+            "offered_fleet_shortfall_minutes": 77,
+            "active_capacity_shortfall_gpu_minutes": 2715,
+            "flexible_jobs_admitted": 0,
+            "flexible_jobs_deadline_met": 0,
+            "flexible_gpu_hours_scheduled": 0,
+            "flexible_gpu_hours_delivered": 0.0,
+            "flexible_gpu_hours_unmet": 3060.0,
+            "flexible_commitment_missed_gpu_minutes": 0.0,
+            "flexible_deadline_misses": 0
+          },
+          "flexible_admission_status": "infeasible",
+          "flexible_deadline_misses": 0,
+          "state_at_realized_peak": null
+        },
+        "reactive": {
+          "metrics": {
+            "facility_kwh": 1329.292,
+            "grid_kwh": 868.998,
+            "renewable_used_kwh": 460.294,
+            "renewable_curtailed_kwh": 51.706,
+            "cost_cny": 552.744,
+            "emissions_kg": 477.949,
+            "requests_completed": 4039,
+            "requests_queued_at_horizon": 0,
+            "requests_running_at_horizon": 13,
+            "requests_rejected": 0,
+            "completion_fraction": 0.9968,
+            "mean_wait_minutes": 3.46,
+            "p95_wait_minutes": 27,
+            "requests_waited": 904,
+            "mean_wait_minutes_by_class": {
+              "interactive": 3.55,
+              "batch": 3.2
+            },
+            "p95_wait_minutes_by_class": {
+              "interactive": 29,
+              "batch": 16
+            },
+            "requests_waited_by_class": {
+              "interactive": 609,
+              "batch": 295
+            },
+            "mean_completion_latency_minutes": 11.27,
+            "latency_allowance_met": 914,
+            "latency_allowance_total": 4039,
+            "offered_gpu_minutes": 71489,
+            "served_gpu_minutes": 71485,
+            "energy_accounted_gpu_minutes": 71485.0,
+            "peak_active_nodes": 12,
+            "peak_offered_gpu_demand": 267,
+            "max_forecast_capacity_shortfall_gpus": 0.0,
+            "forecast_shortfall_minutes": 0,
+            "max_readiness_capacity_shortfall_gpus": 0.0,
+            "readiness_shortfall_intervals": 0,
+            "max_pre_warm_active_shortfall_gpus": 0.0,
+            "max_target_warm_fleet_shortfall_nodes": 0,
+            "max_target_warm_nodes": 0,
+            "max_warm_stock_shortfall_nodes": 0,
+            "max_warm_ready_deficit_nodes": 0,
+            "peak_offered_fleet_shortfall_gpus": 171,
+            "offered_fleet_shortfall_minutes": 77,
+            "active_capacity_shortfall_gpu_minutes": 3060,
+            "flexible_jobs_admitted": 0,
+            "flexible_jobs_deadline_met": 0,
+            "flexible_gpu_hours_scheduled": 0,
+            "flexible_gpu_hours_delivered": 0.0,
+            "flexible_gpu_hours_unmet": 3060.0,
+            "flexible_commitment_missed_gpu_minutes": 0.0,
+            "flexible_deadline_misses": 0
+          },
+          "flexible_admission_status": "infeasible",
+          "flexible_deadline_misses": 0,
+          "state_at_realized_peak": null
+        },
+        "forecast": {
+          "metrics": {
+            "facility_kwh": 1371.191,
+            "grid_kwh": 899.894,
+            "renewable_used_kwh": 471.297,
+            "renewable_curtailed_kwh": 40.703,
+            "cost_cny": 568.976,
+            "emissions_kg": 494.942,
+            "requests_completed": 4039,
+            "requests_queued_at_horizon": 0,
+            "requests_running_at_horizon": 13,
+            "requests_rejected": 0,
+            "completion_fraction": 0.9968,
+            "mean_wait_minutes": 2.73,
+            "p95_wait_minutes": 20,
+            "requests_waited": 802,
+            "mean_wait_minutes_by_class": {
+              "interactive": 2.66,
+              "batch": 2.95
+            },
+            "p95_wait_minutes_by_class": {
+              "interactive": 21,
+              "batch": 16
+            },
+            "requests_waited_by_class": {
+              "interactive": 553,
+              "batch": 249
+            },
+            "mean_completion_latency_minutes": 10.54,
+            "latency_allowance_met": 920,
+            "latency_allowance_total": 4039,
+            "offered_gpu_minutes": 71489,
+            "served_gpu_minutes": 71489,
+            "energy_accounted_gpu_minutes": 71489.0,
+            "peak_active_nodes": 12,
+            "peak_offered_gpu_demand": 267,
+            "max_forecast_capacity_shortfall_gpus": 154.51,
+            "forecast_shortfall_minutes": 420,
+            "max_readiness_capacity_shortfall_gpus": 154.51,
+            "readiness_shortfall_intervals": 123,
+            "max_pre_warm_active_shortfall_gpus": 64.16,
+            "max_target_warm_fleet_shortfall_nodes": 20,
+            "max_target_warm_nodes": 20,
+            "max_warm_stock_shortfall_nodes": 2,
+            "max_warm_ready_deficit_nodes": 2,
+            "peak_offered_fleet_shortfall_gpus": 171,
+            "offered_fleet_shortfall_minutes": 77,
+            "active_capacity_shortfall_gpu_minutes": 2715,
+            "flexible_jobs_admitted": 0,
+            "flexible_jobs_deadline_met": 0,
+            "flexible_gpu_hours_scheduled": 0,
+            "flexible_gpu_hours_delivered": 0.0,
+            "flexible_gpu_hours_unmet": 3060.0,
+            "flexible_commitment_missed_gpu_minutes": 0.0,
+            "flexible_deadline_misses": 0
+          },
+          "flexible_admission_status": "infeasible",
+          "flexible_deadline_misses": 0,
+          "state_at_realized_peak": {
+            "active": 12,
+            "warm_ready": 0,
+            "booting": 0,
+            "warming": 0,
+            "off": 0
+          }
+        }
+      }
+    }
+  ],
+  "profile_examples": [
+    {
+      "case": "low-ample-2026",
+      "payload": {
+        "seed": 2026,
+        "nodes": 48,
+        "headroom_nodes": 16,
+        "gpus_per_node": 8,
+        "traffic_profile": "low",
+        "bursts": false,
+        "warm_overhead_nodes": 1,
+        "min_active_fraction": 0.5
+      },
+      "request_trace_sha256": "6f511f0f46edde32b3808cec8a9f18dfd6caeb999db97ea017378145b72566e5",
+      "generated_requests": 968,
+      "offered_peak_gpus": 40,
+      "peak_snapshot": {
+        "minute": 1269,
+        "offered_gpus": 40,
+        "active_nodes": 32,
+        "warm_ready_nodes": 1,
+        "booting_nodes": 0,
+        "warming_nodes": 0,
+        "off_nodes": 31,
+        "active_spare_gpus": 216.0,
+        "formula_target_warm_nodes": 0,
+        "warm_ready_deficit_nodes": 0,
+        "warm_stock_target_nodes": 1,
+        "warm_stock_shortfall_nodes": 0,
+        "readiness_capacity_shortfall_gpus": 0.0
+      },
+      "policies": {
+        "always_on": {
+          "facility_kwh": 3917.889,
+          "grid_kwh": 3405.889,
+          "renewable_used_kwh": 512.0,
+          "renewable_curtailed_kwh": 0.0,
+          "cost_cny": 2084.074,
+          "emissions_kg": 1873.239,
+          "requests_completed": 961,
+          "requests_queued_at_horizon": 0,
+          "requests_running_at_horizon": 7,
+          "requests_rejected": 0,
+          "completion_fraction": 0.9928,
+          "mean_wait_minutes": 0.0,
+          "p95_wait_minutes": 0,
+          "requests_waited": 0,
+          "mean_wait_minutes_by_class": {
+            "interactive": 0.0,
+            "batch": 0.0
+          },
+          "p95_wait_minutes_by_class": {
+            "interactive": 0,
+            "batch": 0
+          },
+          "requests_waited_by_class": {
+            "interactive": 0,
+            "batch": 0
+          },
+          "mean_completion_latency_minutes": 7.54,
+          "latency_allowance_met": 239,
+          "latency_allowance_total": 961,
+          "offered_gpu_minutes": 16339,
+          "served_gpu_minutes": 16339,
+          "energy_accounted_gpu_minutes": 199939.0,
+          "peak_active_nodes": 64,
+          "peak_offered_gpu_demand": 40,
+          "max_forecast_capacity_shortfall_gpus": 0.0,
+          "forecast_shortfall_minutes": 0,
+          "max_readiness_capacity_shortfall_gpus": 0.0,
+          "readiness_shortfall_intervals": 0,
+          "max_pre_warm_active_shortfall_gpus": 0.0,
+          "max_target_warm_fleet_shortfall_nodes": 0,
+          "max_target_warm_nodes": 0,
+          "max_warm_stock_shortfall_nodes": 0,
+          "max_warm_ready_deficit_nodes": 0,
+          "peak_offered_fleet_shortfall_gpus": 0,
+          "offered_fleet_shortfall_minutes": 0,
+          "active_capacity_shortfall_gpu_minutes": 0,
+          "flexible_jobs_admitted": 6,
+          "flexible_jobs_deadline_met": 6,
+          "flexible_gpu_hours_scheduled": 3060.0,
+          "flexible_gpu_hours_delivered": 3060.0,
+          "flexible_gpu_hours_unmet": 0.0,
+          "flexible_commitment_missed_gpu_minutes": 0.0,
+          "flexible_deadline_misses": 0
+        },
+        "reactive": {
+          "facility_kwh": 3103.909,
+          "grid_kwh": 2591.909,
+          "renewable_used_kwh": 512.0,
+          "renewable_curtailed_kwh": 0.0,
+          "cost_cny": 1589.749,
+          "emissions_kg": 1425.55,
+          "requests_completed": 961,
+          "requests_queued_at_horizon": 0,
+          "requests_running_at_horizon": 7,
+          "requests_rejected": 0,
+          "completion_fraction": 0.9928,
+          "mean_wait_minutes": 0.0,
+          "p95_wait_minutes": 0,
+          "requests_waited": 0,
+          "mean_wait_minutes_by_class": {
+            "interactive": 0.0,
+            "batch": 0.0
+          },
+          "p95_wait_minutes_by_class": {
+            "interactive": 0,
+            "batch": 0
+          },
+          "requests_waited_by_class": {
+            "interactive": 0,
+            "batch": 0
+          },
+          "mean_completion_latency_minutes": 7.54,
+          "latency_allowance_met": 239,
+          "latency_allowance_total": 961,
+          "offered_gpu_minutes": 16339,
+          "served_gpu_minutes": 16339,
+          "energy_accounted_gpu_minutes": 199939.0,
+          "peak_active_nodes": 51,
+          "peak_offered_gpu_demand": 40,
+          "max_forecast_capacity_shortfall_gpus": 0.0,
+          "forecast_shortfall_minutes": 0,
+          "max_readiness_capacity_shortfall_gpus": 0.0,
+          "readiness_shortfall_intervals": 0,
+          "max_pre_warm_active_shortfall_gpus": 0.0,
+          "max_target_warm_fleet_shortfall_nodes": 0,
+          "max_target_warm_nodes": 0,
+          "max_warm_stock_shortfall_nodes": 0,
+          "max_warm_ready_deficit_nodes": 0,
+          "peak_offered_fleet_shortfall_gpus": 0,
+          "offered_fleet_shortfall_minutes": 0,
+          "active_capacity_shortfall_gpu_minutes": 0,
+          "flexible_jobs_admitted": 6,
+          "flexible_jobs_deadline_met": 6,
+          "flexible_gpu_hours_scheduled": 3060.0,
+          "flexible_gpu_hours_delivered": 3060.0,
+          "flexible_gpu_hours_unmet": 0.0,
+          "flexible_commitment_missed_gpu_minutes": 0.0,
+          "flexible_deadline_misses": 0
+        },
+        "forecast": {
+          "facility_kwh": 3116.279,
+          "grid_kwh": 2604.279,
+          "renewable_used_kwh": 512.0,
+          "renewable_curtailed_kwh": 0.0,
+          "cost_cny": 1597.763,
+          "emissions_kg": 1432.354,
+          "requests_completed": 961,
+          "requests_queued_at_horizon": 0,
+          "requests_running_at_horizon": 7,
+          "requests_rejected": 0,
+          "completion_fraction": 0.9928,
+          "mean_wait_minutes": 0.0,
+          "p95_wait_minutes": 0,
+          "requests_waited": 0,
+          "mean_wait_minutes_by_class": {
+            "interactive": 0.0,
+            "batch": 0.0
+          },
+          "p95_wait_minutes_by_class": {
+            "interactive": 0,
+            "batch": 0
+          },
+          "requests_waited_by_class": {
+            "interactive": 0,
+            "batch": 0
+          },
+          "mean_completion_latency_minutes": 7.54,
+          "latency_allowance_met": 239,
+          "latency_allowance_total": 961,
+          "offered_gpu_minutes": 16339,
+          "served_gpu_minutes": 16339,
+          "energy_accounted_gpu_minutes": 199939.0,
+          "peak_active_nodes": 51,
+          "peak_offered_gpu_demand": 40,
+          "max_forecast_capacity_shortfall_gpus": 0.0,
+          "forecast_shortfall_minutes": 0,
+          "max_readiness_capacity_shortfall_gpus": 0.0,
+          "readiness_shortfall_intervals": 0,
+          "max_pre_warm_active_shortfall_gpus": 0.0,
+          "max_target_warm_fleet_shortfall_nodes": 0,
+          "max_target_warm_nodes": 0,
+          "max_warm_stock_shortfall_nodes": 0,
+          "max_warm_ready_deficit_nodes": 1,
+          "peak_offered_fleet_shortfall_gpus": 0,
+          "offered_fleet_shortfall_minutes": 0,
+          "active_capacity_shortfall_gpu_minutes": 0,
+          "flexible_jobs_admitted": 6,
+          "flexible_jobs_deadline_met": 6,
+          "flexible_gpu_hours_scheduled": 3060.0,
+          "flexible_gpu_hours_delivered": 3060.0,
+          "flexible_gpu_hours_unmet": 0.0,
+          "flexible_commitment_missed_gpu_minutes": 0.0,
+          "flexible_deadline_misses": 0
+        }
+      }
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ComputeChart, EnergyChart } from './Charts.jsx';
+import { ComputeChart, EnergyChart, PolicyCostChart, PolicyEmissionsChart, PolicyEnergyMixCharts, PolicyQueueChart } from './Charts.jsx';
 import { formatNumber, ScenarioControls } from './Controls.jsx';
 import { ComparisonTable, InfeasibleState } from './Results.jsx';
 import { RealtimeQueue } from './RealtimeQueue.jsx';
@@ -38,6 +38,43 @@ async function requestSchedule(controls, signal) {
   return body;
 }
 
+function summarizeSimulationRun(simulationRun) {
+  if (!simulationRun?.policies) return null;
+  const policies = {};
+  for (const key of ['always_on', 'reactive', 'forecast']) {
+    const policy = simulationRun.policies[key];
+    if (!policy) return null;
+    const queuePeakByHour = Array(24).fill(0);
+    for (const frame of policy.state_trace ?? []) {
+      const hour = Math.min(23, Math.max(0, Math.floor(Number(frame.minute) / 60)));
+      queuePeakByHour[hour] = Math.max(queuePeakByHour[hour], Number(frame.queued_requests) || 0);
+    }
+    policies[key] = {
+      metrics: policy.metrics,
+      hourly_energy: (policy.hourly_grid_costs ?? []).map((row) => ({
+        hour: Number(row.hour),
+        grid_kwh: Number(row.grid_kwh) || 0,
+        renewable_kwh: Number(row.renewable_used_kwh) || 0,
+        facility_kwh: Number(row.facility_kwh) || 0,
+        emissions_kg: Number(row.emissions_kg) || 0,
+        cost_cny: Number(row.cost_cny) || 0,
+        peak_queued_requests: queuePeakByHour[Number(row.hour)] || 0,
+      })),
+    };
+  }
+  return {
+    seed: simulationRun.seed,
+    nodes: simulationRun.nodes,
+    gpus_per_node: simulationRun.gpus_per_node,
+    fleet_gpus: simulationRun.fleet_gpus,
+    traffic_profile_description: simulationRun.traffic_profile_description,
+    headroom_description: simulationRun.headroom_description,
+    warm_overhead_nodes: simulationRun.warm_overhead_nodes,
+    assumptions: simulationRun.assumptions,
+    policies,
+  };
+}
+
 function App() {
   const [controls, setControls] = useState(DEFAULTS);
   const [result, setResult] = useState(null);
@@ -45,6 +82,7 @@ function App() {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [workspace, setWorkspace] = useState('operations');
+  const [simulationRun, setSimulationRun] = useState(null);
   const workspaceTabs = useRef({});
 
   async function runSchedule(nextControls = controls) {
@@ -82,6 +120,8 @@ function App() {
       });
     return () => controller.abort();
   }, []);
+
+  const policyEnergy = useMemo(() => summarizeSimulationRun(simulationRun), [simulationRun]);
 
   const selectedLabel = useMemo(
     () => SCENARIOS.find((item) => item.id === controls.scenario)?.label ?? 'Balanced day',
@@ -153,7 +193,7 @@ function App() {
         </nav>
 
         <section id="operations-panel" className="workspace-panel operations-workspace" role="tabpanel" aria-labelledby="operations-tab" hidden={workspace !== 'operations'}>
-          <DynamicSimulation />
+          <DynamicSimulation onSimulationResult={setSimulationRun} />
         </section>
 
         <section id="schedule-panel" className="workspace-panel schedule-workspace" role="tabpanel" aria-labelledby="schedule-tab" hidden={workspace !== 'schedule'}>
@@ -225,6 +265,45 @@ function App() {
                       </div>
                     </div>
                     <EnergyChart result={result} />
+                  </section>
+
+                  <section className="chart-section policy-comparison-section" aria-labelledby="policy-comparison-title">
+                    <div className="section-title-row">
+                      <div>
+                        <h2 id="policy-comparison-title">Hourly node-controller comparison</h2>
+                        <p className="section-unit">Last completed simulation · Always-on, Reactive, and Forecast</p>
+                      </div>
+                    </div>
+                    {!policyEnergy && <p className="policy-comparison-status" role="status">Run the simulation in Operations to populate these charts with its controller replay data.</p>}
+                    {policyEnergy && <>
+                      <p className="policy-comparison-context">
+                        Source: the last completed Operations simulation · seed {policyEnergy.seed} · {policyEnergy.nodes} nodes × {policyEnergy.gpus_per_node} GPUs ({policyEnergy.fleet_gpus} total) · {policyEnergy.traffic_profile_description} · {policyEnergy.headroom_description} · {policyEnergy.warm_overhead_nodes}-node warm target. Every chart summarizes that run's actual controller energy rows and minute-level request queues. The hourly LP schedule is a separate model.
+                      </p>
+                      <div className="policy-chart-block">
+                        <div className="section-title-row">
+                          <div><h3>Electricity use by hour</h3><p className="section-unit">Grid imports + renewable electricity used · kWh</p></div>
+                        </div>
+                        <PolicyEnergyMixCharts result={policyEnergy} />
+                      </div>
+                      <div className="policy-chart-block">
+                        <div className="section-title-row">
+                          <div><h3>Grid emissions by hour</h3><p className="section-unit">Grid imports × the simulation's 0.55 kg CO₂/kWh factor</p></div>
+                        </div>
+                        <PolicyEmissionsChart result={policyEnergy} />
+                      </div>
+                      <div className="policy-chart-block">
+                        <div className="section-title-row">
+                          <div><h3>Grid cost by hour</h3><p className="section-unit">Grid imports × the simulation's illustrative tariff · CNY</p></div>
+                        </div>
+                        <PolicyCostChart result={policyEnergy} />
+                      </div>
+                      <div className="policy-chart-block">
+                        <div className="section-title-row">
+                          <div><h3>Peak real-time queue by hour</h3><p className="section-unit">Highest queued requests recorded during each simulation hour</p></div>
+                        </div>
+                        <PolicyQueueChart result={policyEnergy} />
+                      </div>
+                    </>}
                   </section>
 
                   <details className="schedule-disclosure">

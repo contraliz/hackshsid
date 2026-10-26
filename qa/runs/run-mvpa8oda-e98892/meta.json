@@ -1,0 +1,12 @@
+{
+  "run_id": "run-mvpa8oda-e98892",
+  "scenario": "gridshift-default-forecast-desktop",
+  "url": "http://127.0.0.1:8001/",
+  "viewport": {
+    "width": 1366,
+    "height": 768
+  },
+  "started_at": "2026-10-26T13:18:37.919Z",
+  "finished_at": "2026-10-26T13:18:47.288Z",
+  "tool": "qa-mcp 0.2.0"
+}

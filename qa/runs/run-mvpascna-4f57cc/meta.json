@@ -1,0 +1,12 @@
+{
+  "run_id": "run-mvpascna-4f57cc",
+  "scenario": "gridshift-final-forecast-mobile",
+  "url": "http://127.0.0.1:8001/",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "started_at": "2026-10-26T13:33:55.846Z",
+  "finished_at": "2026-10-26T13:33:59.526Z",
+  "tool": "qa-mcp 0.2.0"
+}

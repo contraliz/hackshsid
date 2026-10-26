@@ -1,0 +1,60 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Hourly schedule",
+    "ms": 57
+  },
+  {
+    "index": 1,
+    "action": "click",
+    "ok": true,
+    "target": "Hourly schedule",
+    "ms": 29
+  },
+  {
+    "index": 2,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Hourly node-controller comparison",
+    "ms": 50
+  },
+  {
+    "index": 3,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Grid emissions by hour",
+    "ms": 2327
+  },
+  {
+    "index": 4,
+    "action": "scroll",
+    "ok": true,
+    "target": "",
+    "ms": 2
+  },
+  {
+    "index": 5,
+    "action": "capture",
+    "ok": true,
+    "target": "hourly-emissions",
+    "ms": 38,
+    "capture": "hourly-emissions"
+  },
+  {
+    "index": 6,
+    "action": "scroll",
+    "ok": true,
+    "target": "",
+    "ms": 2
+  },
+  {
+    "index": 7,
+    "action": "capture",
+    "ok": true,
+    "target": "hourly-queue",
+    "ms": 33,
+    "capture": "hourly-queue"
+  }
+]

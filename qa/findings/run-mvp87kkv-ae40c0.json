@@ -1,0 +1,16 @@
+{
+  "run_id": "run-mvp87kkv-ae40c0",
+  "verdict": "Intermediate implementation check; issue remains open.",
+  "findings": [
+    {
+      "id": "fnd-mvp8g174-d39a50",
+      "recorded_at": "2026-10-26T12:28:21.904Z",
+      "claim": "QA-01 (medium, still unresolved in this intermediate build): Adding SVG dimensions alone did not make the colored history visible; explicit container height was still needed.",
+      "evidence": [
+        "captures/forecast-default-state-timeline-visible.png",
+        "steps.json",
+        "measurements.json"
+      ]
+    }
+  ]
+}

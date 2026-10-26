@@ -1,0 +1,175 @@
+{
+  "url": "http://127.0.0.1:61887/",
+  "title": "GridShift — Compute & energy scheduler",
+  "viewport": {
+    "w": 1366,
+    "h": 768,
+    "dpr": 1
+  },
+  "document": {
+    "scroll_width": 1366,
+    "scroll_height": 2992
+  },
+  "measurements": [
+    {
+      "rule": "horizontal_overflow",
+      "definition": "document scrollWidth exceeds the viewport width",
+      "threshold": "scrollWidth - innerWidth > 0",
+      "count": 0,
+      "truncated": false,
+      "items": []
+    },
+    {
+      "rule": "broken_images",
+      "definition": "img elements whose bytes failed to load",
+      "threshold": "complete && naturalWidth === 0",
+      "count": 0,
+      "truncated": false,
+      "items": []
+    },
+    {
+      "rule": "images_missing_alt",
+      "definition": "img elements with no alt attribute (empty alt is treated as decorative and allowed)",
+      "threshold": "!img.hasAttribute('alt')",
+      "count": 0,
+      "truncated": false,
+      "items": []
+    },
+    {
+      "rule": "small_targets",
+      "definition": "visible interactive controls smaller than 24x24 CSS px",
+      "threshold": "width < 24 || height < 24",
+      "count": 9,
+      "truncated": false,
+      "items": [
+        {
+          "selector": "#top > header > a",
+          "tag": "a",
+          "box": {
+            "x": 32,
+            "y": -1834,
+            "w": 95,
+            "h": 23
+          },
+          "text": "GridShift",
+          "width": 95,
+          "height": 23
+        },
+        {
+          "selector": "#carbon-weight",
+          "tag": "input",
+          "box": {
+            "x": 50,
+            "y": 424,
+            "w": 207,
+            "h": 5
+          },
+          "text": "0.35",
+          "width": 207,
+          "height": 5
+        },
+        {
+          "selector": "#active-equivalent-fraction",
+          "tag": "input",
+          "box": {
+            "x": 50,
+            "y": 611,
+            "w": 207,
+            "h": 5
+          },
+          "text": "1",
+          "width": 207,
+          "height": 5
+        },
+        {
+          "selector": "#renewable-scale",
+          "tag": "input",
+          "box": {
+            "x": 50,
+            "y": 765,
+            "w": 207,
+            "h": 5
+          },
+          "text": "1",
+          "width": 207,
+          "height": 5
+        },
+        {
+          "selector": "#demand-scale",
+          "tag": "input",
+          "box": {
+            "x": 50,
+            "y": 888,
+            "w": 207,
+            "h": 5
+          },
+          "text": "1",
+          "width": 207,
+          "height": 5
+        },
+        {
+          "selector": "div:nth-of-type(3) > table > tbody > tr:nth-of-type(1) > td:nth-of-type(5) > button",
+          "tag": "button",
+          "box": {
+            "x": 1196,
+            "y": 1194,
+            "w": 47,
+            "h": 16
+          },
+          "text": "Remove Standard batch A",
+          "width": 47,
+          "height": 16
+        },
+        {
+          "selector": "div:nth-of-type(3) > table > tbody > tr:nth-of-type(2) > td:nth-of-type(5) > button",
+          "tag": "button",
+          "box": {
+            "x": 1196,
+            "y": 1242,
+            "w": 47,
+            "h": 16
+          },
+          "text": "Remove Standard serving B",
+          "width": 47,
+          "height": 16
+        },
+        {
+          "selector": "div:nth-of-type(3) > table > tbody > tr:nth-of-type(3) > td:nth-of-type(5) > button",
+          "tag": "button",
+          "box": {
+            "x": 1196,
+            "y": 1290,
+            "w": 47,
+            "h": 16
+          },
+          "text": "Remove Pro inference A",
+          "width": 47,
+          "height": 16
+        },
+        {
+          "selector": "div:nth-of-type(3) > table > tbody > tr:nth-of-type(4) > td:nth-of-type(5) > button",
+          "tag": "button",
+          "box": {
+            "x": 1196,
+            "y": 1338,
+            "w": 47,
+            "h": 16
+          },
+          "text": "Remove Standard batch C",
+          "width": 47,
+          "height": 16
+        }
+      ]
+    },
+    {
+      "rule": "clipped_text",
+      "definition": "elements hiding their own overflow whose content does not fit",
+      "threshold": "overflow hidden/clip and scrollWidth/scrollHeight exceed client box by >1px",
+      "count": 0,
+      "truncated": false,
+      "items": []
+    }
+  ],
+  "measured_at": "2026-10-26T15:13:42.078Z",
+  "runtime": []
+}

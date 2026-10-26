@@ -1,0 +1,45 @@
+[
+  {
+    "index": 0,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Run simulation",
+    "ms": 66
+  },
+  {
+    "index": 1,
+    "action": "click",
+    "ok": true,
+    "target": "Run simulation",
+    "ms": 40
+  },
+  {
+    "index": 2,
+    "action": "wait_for",
+    "ok": true,
+    "target": "generated requests",
+    "ms": 2852
+  },
+  {
+    "index": 3,
+    "action": "click",
+    "ok": true,
+    "target": "Hourly schedule",
+    "ms": 68
+  },
+  {
+    "index": 4,
+    "action": "wait_for",
+    "ok": true,
+    "target": "Source: the last completed Operations simulation",
+    "ms": 17
+  },
+  {
+    "index": 5,
+    "action": "wait_for",
+    "ok": false,
+    "target": "Grid cost by hour",
+    "ms": 15003,
+    "error": "condition not met within 15003ms"
+  }
+]
