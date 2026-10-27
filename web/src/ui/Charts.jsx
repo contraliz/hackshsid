@@ -100,7 +100,7 @@ export function EnergyChart({ result }) {
 const POLICY_SERIES = [
   { key: 'always_on', label: 'Always-on', color: '#2763a5' },
   { key: 'reactive', label: 'Reactive', color: '#c27a16' },
-  { key: 'forecast', label: 'Forecast', color: '#7358b8' },
+  { key: 'forecast_v2', label: 'Forecast (v2)', color: '#7358b8' },
 ];
 
 const SMALL_CHART = { left: 39, right: 310, top: 12, bottom: 158 };

@@ -12,7 +12,8 @@ it predicts better than the one it replaces.
    a gang-job tail and a class mix that shifts across the day. Default demo is
    now 40 nodes × 8 GPUs, seed 2026, realistic shape.
 2. **`forecast_v2`** (`backend/forecast_v2.py`) is a fourth controller next to
-   the legacy `forecast`. It is given only observable inputs; the adapter
+   the legacy `forecast`. The UI now exposes only v2; the legacy engine stays in
+   the API as the comparison baseline for the backtest. It is given only observable inputs; the adapter
    `_forecast_v2_curve` in `backend/dynamic_simulation.py` deliberately passes
    `(class, gpus, age)` for running jobs and `(class, gpus, arrival)` for
    queued jobs — no durations, no end minutes, no LP hourly rates.

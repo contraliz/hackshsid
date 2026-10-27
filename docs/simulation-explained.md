@@ -104,7 +104,11 @@ With 8 GPUs per node, suppose the forecast protects 53 GPUs for a future minute.
 
 The clone at `gridshift-forecast/` replaces the original demo default with a
 heavier-tailed, over-dispersed traffic generator and adds a fourth controller,
-`forecast_v2`, that is not allowed to read hidden simulation fields.
+`forecast_v2`, that is not allowed to read hidden simulation fields. The UI now
+shows only Always-on, Reactive and Forecast v2: the legacy `forecast` engine is
+still computed by the API because the backtest needs it as a comparison
+baseline, but it is not selectable and does not appear on the Hourly schedule
+tab.
 
 ### Realistic traffic (`backend/traffic_realistic.py`)
 
@@ -172,7 +176,9 @@ Effect on the 40-node realistic demo (forecast v2):
 
 The legacy forecast controller shares the gates and its service changes
 slightly (9 → 15 waits on seed 2026) because it relied on aggressive early
-boots; its boot count also falls (1,570 → 1,390).
+boots; its boot count also falls (1,570 → 1,390). It remains an API-only
+comparison baseline: hidden from the controller selector, the metrics table and
+the Hourly schedule charts.
 
 ### Measured backtest
 

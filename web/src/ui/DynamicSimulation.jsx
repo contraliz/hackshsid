@@ -40,7 +40,7 @@ export function DynamicSimulation({ onSimulationResult }) {
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
-  const [selectedPolicy, setSelectedPolicy] = useState('forecast');
+  const [selectedPolicy, setSelectedPolicy] = useState('forecast_v2');
   const [minute, setMinute] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(4);
@@ -75,7 +75,7 @@ export function DynamicSimulation({ onSimulationResult }) {
       if (!response.ok) throw new Error(body.error || `Request failed (${response.status})`);
       setResult(body);
       onSimulationResult?.(body);
-      setSelectedPolicy(body.selected_policy && body.policies?.[body.selected_policy] ? body.selected_policy : 'forecast');
+      setSelectedPolicy(body.selected_policy && body.policies?.[body.selected_policy] ? body.selected_policy : 'forecast_v2');
       setMinute(0);
     } catch (e) { setError(e.message || 'Simulation failed.'); }
     finally { setBusy(false); }
@@ -119,7 +119,7 @@ export function DynamicSimulation({ onSimulationResult }) {
         <div className="simulation-playback" aria-label="Simulation replay controls">
           <label htmlFor="replay-policy">Controller</label>
           <select id="replay-policy" value={selectedPolicy} onChange={(event) => { setPlaying(false); setMinute(0); setSelectedPolicy(event.target.value); }}>
-            {Object.entries(result.policies).map(([key, policy]) => <option key={key} value={key}>{policy.label}</option>)}
+            {Object.entries(result.policies).filter(([key]) => key !== 'forecast').map(([key, policy]) => <option key={key} value={key}>{policy.label}</option>)}
           </select>
           {selectedReplay?.frames?.length ? <>
             <button type="button" className="quiet-button" onClick={() => setPlaying((value) => !value)}>{playing ? 'Pause' : 'Play'}</button>
@@ -139,14 +139,14 @@ export function DynamicSimulation({ onSimulationResult }) {
         <details className="simulation-data-disclosure">
           <summary>Controller metrics and policy comparison</summary>
           <div className="job-table-wrap"><table className="comparison-table">
-          <thead><tr><th>Measure</th>{Object.entries(result.policies).map(([key, item]) => <th key={key}>{item.label}</th>)}</tr></thead>
-          <tbody>{Object.entries(LABELS).map(([key, [label, unit]]) => <tr key={key}><th scope="row">{label}</th>{Object.entries(result.policies).map(([policy, item]) => <td key={policy}>{formatNumber(item.metrics[key], key.includes('fraction') ? 3 : key.includes('minutes') ? 1 : 2)}{unit ? ` ${unit}` : ''}</td>)}</tr>)}</tbody>
+          <thead><tr><th>Measure</th>{Object.entries(result.policies).filter(([key]) => key !== 'forecast').map(([key, item]) => <th key={key}>{item.label}</th>)}</tr></thead>
+          <tbody>{Object.entries(LABELS).map(([key, [label, unit]]) => <tr key={key}><th scope="row">{label}</th>{Object.entries(result.policies).filter(([key]) => key !== 'forecast').map(([policy, item]) => <td key={policy}>{formatNumber(item.metrics[key], key.includes('fraction') ? 3 : key.includes('minutes') ? 1 : 2)}{unit ? ` ${unit}` : ''}</td>)}</tr>)}</tbody>
           </table></div>
         </details>
         <details className="simulation-data-disclosure">
-          <summary>Flexible job commitments · {result.policies.forecast.flexible_admission_status}</summary>
+          <summary>Flexible job commitments · {result.policies.forecast_v2.flexible_admission_status}</summary>
           <div className="job-table-wrap"><table className="job-table"><thead><tr><th>Job</th><th>Tier</th><th>Window</th><th>Planned</th><th>Delivered</th><th>Unmet</th><th>Deadline</th><th>Status</th></tr></thead><tbody>
-          {result.policies.forecast.flexible_jobs.map((job) => <tr key={job.id}><td>{job.name}</td><td>{job.tier}</td><td>{job.arrival}:00–{job.deadline}:00</td><td>{formatNumber(job.gpu_hours, 1)} GPU·h</td><td>{formatNumber(job.delivered_gpu_hours, 1)} GPU·h</td><td>{formatNumber(job.unmet_gpu_hours, 1)} GPU·h</td><td>{job.deadline_met ? 'Met' : 'Not met'}</td><td>{job.status}</td></tr>)}
+          {result.policies.forecast_v2.flexible_jobs.map((job) => <tr key={job.id}><td>{job.name}</td><td>{job.tier}</td><td>{job.arrival}:00–{job.deadline}:00</td><td>{formatNumber(job.gpu_hours, 1)} GPU·h</td><td>{formatNumber(job.delivered_gpu_hours, 1)} GPU·h</td><td>{formatNumber(job.unmet_gpu_hours, 1)} GPU·h</td><td>{job.deadline_met ? 'Met' : 'Not met'}</td><td>{job.status}</td></tr>)}
           </tbody></table></div>
         </details>
         <details className="assumptions"><summary>Demand, forecast, hardware, power and pricing assumptions</summary><div className="assumptions-content"><ul>
@@ -160,7 +160,7 @@ export function DynamicSimulation({ onSimulationResult }) {
         <details className="simulation-data-disclosure">
           <summary>Five-minute forecast trace</summary>
           <div className="job-table-wrap"><table className="job-table"><thead><tr><th>Minute</th><th>Offered GPUs</th><th>Realtime upper</th><th>Flexible commitments</th><th>Total upper demand</th><th>Target active nodes</th><th>Legacy warm target</th><th>Warm stock target</th><th>Ready warm</th><th>Warm stock pipeline</th><th>Stock deficit</th><th>Readiness gap</th><th>Margin / source</th><th>Running request GPUs</th><th>Running flexible GPUs</th><th>Active</th><th>Warm</th><th>Booting</th><th>Off</th></tr></thead><tbody>
-          {(result.policies.forecast.state_trace || []).filter((_, i) => i % 24 === 0).map((row) => <tr key={row.minute}><td>{Math.floor(row.minute / 60)}:{String(row.minute % 60).padStart(2, '0')}</td><td>{row.offered_gpus}</td><td>{formatNumber(row.forecast_upper_gpus, 1)}</td><td>{formatNumber(row.flexible_commitment_gpus, 1)}</td><td>{formatNumber(row.forecast_total_upper_gpus, 1)}</td><td>{row.forecast_target_active_nodes}</td><td>{row.target_warm_nodes} (diagnostic)</td><td>{row.warm_stock_target_nodes}</td><td>{row.warm_reserve_ready_nodes}</td><td>{row.warm_reserve_pipeline_nodes}</td><td>{row.warm_stock_shortfall_nodes}</td><td>{formatNumber(row.readiness_capacity_shortfall_gpus, 1)}</td><td>{formatNumber(row.forecast_margin_gpus, 1)} / {row.forecast_margin_source}</td><td>{row.running_gpus}</td><td>{formatNumber(row.flexible_gpus, 1)}</td><td>{row.active_nodes}</td><td>{row.warm_nodes}</td><td>{row.booting_nodes}</td><td>{row.off_nodes}</td></tr>)}
+          {(result.policies.forecast_v2.state_trace || []).filter((_, i) => i % 24 === 0).map((row) => <tr key={row.minute}><td>{Math.floor(row.minute / 60)}:{String(row.minute % 60).padStart(2, '0')}</td><td>{row.offered_gpus}</td><td>{formatNumber(row.forecast_upper_gpus, 1)}</td><td>{formatNumber(row.flexible_commitment_gpus, 1)}</td><td>{formatNumber(row.forecast_total_upper_gpus, 1)}</td><td>{row.forecast_target_active_nodes}</td><td>{row.target_warm_nodes} (diagnostic)</td><td>{row.warm_stock_target_nodes}</td><td>{row.warm_reserve_ready_nodes}</td><td>{row.warm_reserve_pipeline_nodes}</td><td>{row.warm_stock_shortfall_nodes}</td><td>{formatNumber(row.readiness_capacity_shortfall_gpus, 1)}</td><td>{formatNumber(row.forecast_margin_gpus, 1)} / {row.forecast_margin_source}</td><td>{row.running_gpus}</td><td>{formatNumber(row.flexible_gpus, 1)}</td><td>{row.active_nodes}</td><td>{row.warm_nodes}</td><td>{row.booting_nodes}</td><td>{row.off_nodes}</td></tr>)}
           </tbody></table></div>
         </details>
       </div>}

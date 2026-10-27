@@ -41,7 +41,7 @@ async function requestSchedule(controls, signal) {
 function summarizeSimulationRun(simulationRun) {
   if (!simulationRun?.policies) return null;
   const policies = {};
-  for (const key of ['always_on', 'reactive', 'forecast']) {
+  for (const key of ['always_on', 'reactive', 'forecast_v2']) {
     const policy = simulationRun.policies[key];
     if (!policy) return null;
     const queuePeakByHour = Array(24).fill(0);
@@ -271,7 +271,7 @@ function App() {
                     <div className="section-title-row">
                       <div>
                         <h2 id="policy-comparison-title">Hourly node-controller comparison</h2>
-                        <p className="section-unit">Last completed simulation · Always-on, Reactive, and Forecast</p>
+                        <p className="section-unit">Last completed simulation · Always-on, Reactive, and Forecast v2</p>
                       </div>
                     </div>
                     {!policyEnergy && <p className="policy-comparison-status" role="status">Run the simulation in Operations to populate these charts with its controller replay data.</p>}
