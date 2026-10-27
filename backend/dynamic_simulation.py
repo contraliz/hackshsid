@@ -35,6 +35,11 @@ TRAFFIC_PROFILES = {"low": 0.5, "normal": 1.0, "high": 2.0}
 TRACE_SOURCES = ("realistic", "legacy")
 FORECAST_POLICIES = ("forecast", "forecast_v2")
 DEFAULT_WARM_OVERHEAD_NODES = 2
+# Anti-churn control hygiene: require a sustained, material gap before paying
+# for a 20-minute cold boot, and do not power-cycle the same machine repeatedly.
+BOOT_DEADBAND_NODES = 2
+BOOT_CONFIRM_ISSUES = 2
+OFF_COOLDOWN_MINUTES = 30
 
 
 def _poisson(rng: random.Random, mean: float) -> int:
@@ -355,7 +360,9 @@ def _forecast_ready_nodes(nodes: list["Node"], minutes_ahead: int) -> int:
 
 
 def _plan_active_readiness(nodes: list["Node"], upper_demand_by_offset: list[float],
-                           gpus_per_node: int, warm_ready_floor: int = 1) -> dict[str, Any]:
+                           gpus_per_node: int, warm_ready_floor: int = 1,
+                           cold_start_enabled: bool = True,
+                           min_cold_gap: int = 1) -> dict[str, Any]:
     """Plan causal active readiness and preserve warm stock for near demand.
 
     Warm nodes can be promoted immediately. For targets at least one cold-start
@@ -370,11 +377,16 @@ def _plan_active_readiness(nodes: list["Node"], upper_demand_by_offset: list[flo
             continue
         # For demand at least one cold-start lead time away, boot from OFF
         # first so ready standby remains available for nearer real-time work.
-        if offset >= COLD_TO_ACTIVE_MINUTES:
+        # A cold boot is only paid for when the gap is material and has been
+        # confirmed over consecutive planning issues; a node that was just
+        # powered off is not immediately woken again.
+        if offset >= COLD_TO_ACTIVE_MINUTES and cold_start_enabled:
             for node in nodes:
                 if _forecast_ready_nodes(nodes, offset) >= target:
                     break
-                if node.state == "off":
+                if target - _forecast_ready_nodes(nodes, offset) < min_cold_gap:
+                    break
+                if node.state == "off" and node.cooldown <= 0:
                     node.state, node.remaining, node.purpose = "booting", COLD_BOOT_TO_WARM_MINUTES, "activation"
                     node.idle = 0
                     cold_started += 1
@@ -388,11 +400,13 @@ def _plan_active_readiness(nodes: list["Node"], upper_demand_by_offset: list[flo
                     node.idle = 0
                     warm_started += 1
                     ready_warm -= 1
-        if offset >= COLD_TO_ACTIVE_MINUTES:
+        if offset >= COLD_TO_ACTIVE_MINUTES and cold_start_enabled:
             for node in nodes:
                 if _forecast_ready_nodes(nodes, offset) >= target:
                     break
-                if node.state == "off":
+                if target - _forecast_ready_nodes(nodes, offset) < min_cold_gap:
+                    break
+                if node.state == "off" and node.cooldown <= 0:
                     node.state, node.remaining, node.purpose = "booting", COLD_BOOT_TO_WARM_MINUTES, "activation"
                     node.idle = 0
                     cold_started += 1
@@ -421,6 +435,7 @@ class Node:
     idle: int = 0
     used: int = 0
     purpose: str | None = None
+    cooldown: int = 0
 
 
 def _validate(payload: dict[str, Any]) -> tuple[int, int, int, int]:
@@ -823,6 +838,7 @@ def _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed, al
     flex_minute_allocations: list[tuple[int, float]] = []
     margin_window_errors: list[float] = []
     v2_margins: list[float] = []
+    boot_streak = 0
     forecast_debug: list[dict[str, Any]] = []
     issued_window_forecasts: dict[int, dict[int, float]] = {}
     forecast = upper = forecast_realtime = forecast_running = forecast_queue = forecast_flex = 0.0
@@ -964,7 +980,14 @@ def _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed, al
                 target_warm_fleet_shortfall = legacy_reserve["target_warm_fleet_shortfall_nodes"]
                 target_warm_realizable = legacy_reserve["target_warm_realizable_nodes"]
                 peak_fleet_shortfall = max((max(0.0, demand - n * gpn) for demand in upper_by_offset), default=0.0)
-                readiness_plan = _plan_active_readiness(nodes, upper_by_offset, gpn)
+                cold_peak_target = max((math.ceil(max(0.0, upper_by_offset[o]) / gpn)
+                                        for o in range(COLD_TO_ACTIVE_MINUTES, horizon + 1)), default=0)
+                cold_gap = cold_peak_target - _forecast_ready_nodes(nodes, COLD_TO_ACTIVE_MINUTES)
+                boot_streak = boot_streak + 1 if cold_gap >= BOOT_DEADBAND_NODES else 0
+                readiness_plan = _plan_active_readiness(
+                    nodes, upper_by_offset, gpn,
+                    cold_start_enabled=boot_streak >= BOOT_CONFIRM_ISSUES,
+                    min_cold_gap=BOOT_DEADBAND_NODES)
                 readiness_shortfall = readiness_plan["peak_readiness_gap_gpus"]
                 readiness_shortfall_minutes = readiness_plan["readiness_gap_minutes"]
                 pre_warm_shortfall = readiness_plan["pre_warm_active_gap_gpus"]
@@ -1110,6 +1133,7 @@ def _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed, al
                 if len([x for x in nodes if x.state == "warm"]) > desired_warm and node.idle >= 30:
                     node.state = "off"
                     node.idle = 0
+                    node.cooldown = OFF_COOLDOWN_MINUTES
             # Forecast controller replenishes its warm target at the next
             # bucket; reactive control intentionally keeps no forecast reserve.
         if forecaster is not None:
@@ -1510,7 +1534,7 @@ def _ensure_warm_reserve(nodes: list[Node], target_warm: int) -> None:
     for node in nodes:
         if not deficit:
             break
-        if node.state == "off":
+        if node.state == "off" and node.cooldown <= 0:
             node.state, node.remaining, node.purpose = "booting", COLD_BOOT_TO_WARM_MINUTES, "warm_stock"
             deficit -= 1
 
@@ -1534,6 +1558,8 @@ def _warm_stock_pipeline_nodes(nodes: list[Node]) -> int:
 
 def _advance_transitions(nodes: list[Node]) -> None:
     for node in nodes:
+        if node.cooldown > 0:
+            node.cooldown -= 1
         if node.state in ("booting", "warming"):
             node.remaining -= 1
             if node.remaining <= 0:

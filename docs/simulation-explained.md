@@ -147,6 +147,33 @@ It estimates the missing pieces online:
    per five-minute horizon bucket, with a `max(4 GPUs, 20%)` cold-start
    fallback.
 
+### Anti-churn control hygiene
+
+The readiness plan is recomputed every five minutes while a cold boot costs 20
+minutes, so an unconstrained planner turns forecast noise into power cycling:
+it boots for a predicted peak, the peak does not materialise, the warm node is
+powered off after 30 idle minutes, and the next prediction boots another one.
+Three gates now sit between the forecast and the boot action:
+
+* **Deadband** — a gap of one node does not justify a cold boot; the gap must be
+  at least `BOOT_DEADBAND_NODES` (2).
+* **Confirmation** — the gap must persist across `BOOT_CONFIRM_ISSUES` (2)
+  consecutive five-minute issues, i.e. ten minutes.
+* **Cooldown** — a node powered off cannot be booted again for
+  `OFF_COOLDOWN_MINUTES` (30), so the same machine is not cycled repeatedly.
+
+Effect on the 40-node realistic demo (forecast v2):
+
+| seed | boot node-minutes | boot→warm→off cycles (never active) | waits | facility kWh |
+|---|---:|---:|---:|---:|
+| 2026 | 3,020 → 1,700 (−44%) | 100 → 43 | 0 → 0 | 3,679 → 3,631 |
+| 2028 | 1,320 → 1,030 (−22%) | 25 → 12 | 23 → 24 | 4,214 → 4,200 |
+| 7 | 1,310 → 750 (−43%) | 29 → 11 | 54 → 54 | 4,128 → 4,112 |
+
+The legacy forecast controller shares the gates and its service changes
+slightly (9 → 15 waits on seed 2026) because it relied on aggressive early
+boots; its boot count also falls (1,570 → 1,390).
+
 ### Measured backtest
 
 `scripts/benchmark_forecast.py` runs both forecast engines on the same trace
