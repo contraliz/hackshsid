@@ -14,6 +14,8 @@ from typing import Any
 
 from .data import JOBS, RENEWABLE_AVAILABLE, build_case, validate_case
 from .scheduler import solve_lp
+from .forecast_v2 import ForecasterV2, FlexCommitment, NodeView, QueuedJob, RunningJob
+from .traffic_realistic import generate_realistic_requests
 
 MINUTES_PER_DAY = 24 * 60
 BUCKET = 5
@@ -30,6 +32,8 @@ FORECAST_HORIZON_MINUTES = 2 * COLD_TO_ACTIVE_MINUTES
 MARGIN_HISTORY_WINDOWS_REQUIRED = 28
 MARGIN_QUANTILE = 0.95
 TRAFFIC_PROFILES = {"low": 0.5, "normal": 1.0, "high": 2.0}
+TRACE_SOURCES = ("realistic", "legacy")
+FORECAST_POLICIES = ("forecast", "forecast_v2")
 DEFAULT_WARM_OVERHEAD_NODES = 2
 
 
@@ -449,6 +453,9 @@ def run_dynamic_comparison(payload: dict[str, Any] | None = None) -> dict[str, A
         raise ValueError("Traffic profile must be low, normal, or high.")
     traffic_multiplier = TRAFFIC_PROFILES[traffic_profile]
     explicit_trace = payload.get("request_trace") is not None
+    trace_source = payload.get("trace_source", "realistic")
+    if not isinstance(trace_source, str) or trace_source not in TRACE_SOURCES:
+        raise ValueError("Trace source must be 'realistic' or 'legacy'.")
     try:
         alpha = float(payload.get("forecast_alpha", 0.3))
         margin_fraction = float(payload.get("margin_fraction", 0.15))
@@ -480,17 +487,27 @@ def run_dynamic_comparison(payload: dict[str, Any] | None = None) -> dict[str, A
                 raise ValueError("Workload factors must use known request classes and positive finite values.")
             work_factors[name] = factor
     min_active_nodes = min(n, max(1, math.ceil(n * min_active_fraction)))
-    requests = _validate_request_trace(payload.get("request_trace"), n * gpn) if explicit_trace else generate_requests(seed, burst=bool(payload.get("bursts", True)), traffic_multiplier=traffic_multiplier)
+    if explicit_trace:
+        requests = _validate_request_trace(payload.get("request_trace"), n * gpn)
+    elif trace_source == "realistic":
+        requests = generate_realistic_requests(seed, traffic_multiplier=traffic_multiplier,
+                                               gpus_per_node=gpn, nodes=n)
+    else:
+        requests = generate_requests(seed, burst=bool(payload.get("bursts", True)),
+                                     traffic_multiplier=traffic_multiplier)
     offered = _offered_gpu_trace(requests)
     flex_plan = _prepare_flexible_plan(n * gpn, payload.get("flexible_jobs"))
     # Forecast series are causal by construction: each bucket uses only prior
     # completed arrival counts; synthetic generator rates seed the first bucket.
     arrival_rates = _arrival_rate_forecasts(requests, alpha, generator_prior=not explicit_trace,
                                             generator_rate_multiplier=traffic_multiplier)
-    policies = {name: _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed,
-                                   alpha, margin_fraction, margin_floor_gpus, min_active_nodes,
-                                   name, deepcopy(flex_plan), warm_overhead_nodes=int(warm_overhead_nodes))
-                for name in ("always_on", "reactive", "forecast")}
+    policies = {}
+    for name in ("always_on", "reactive", "forecast", "forecast_v2"):
+        policies[name] = _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed,
+                                     alpha, margin_fraction, margin_floor_gpus, min_active_nodes,
+                                     name, deepcopy(flex_plan),
+                                     warm_overhead_nodes=int(warm_overhead_nodes),
+                                     engine="v2" if name == "forecast_v2" else "legacy")
     baseline_plan = _greedy_asap_plan(flex_plan, n * gpn)
     baseline_run = _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed,
                                alpha, margin_fraction, margin_floor_gpus, min_active_nodes,
@@ -507,16 +524,17 @@ def run_dynamic_comparison(payload: dict[str, Any] | None = None) -> dict[str, A
     }
     comparisons = {key: _compare_to_unscheduled_baseline(baseline, policy, key)
                    for key, policy in policies.items()}
-    forecast_policy = policies["forecast"]
+    forecast_policy = policies["forecast_v2"]
     margin_sources = sorted({row["forecast_margin_source"] for row in forecast_policy["state_trace"]})
     realized_peak_minute = max(range(len(offered)), key=offered.__getitem__) if offered else 0
-    realized_peak_frame = forecast_policy["replay"]["frames"][realized_peak_minute]
+    realized_peak_frame = policies["forecast_v2"]["replay"]["frames"][realized_peak_minute]
     return {
         "seed": seed, "nodes": n, "base_nodes": n - headroom_nodes, "headroom_nodes": headroom_nodes,
         "headroom_description": f"Fixed inventory includes {headroom_nodes} added headroom nodes" if headroom_nodes else "Standard fixed inventory; no added headroom nodes",
         "gpus_per_node": gpn, "fleet_gpus": n * gpn,
         "traffic_profile": traffic_profile,
         "traffic_multiplier": None if explicit_trace else traffic_multiplier,
+        "trace_source": "explicit" if explicit_trace else trace_source,
         "traffic_profile_description": ("Explicit request trace; preset multiplier is not applied" if explicit_trace
                                          else f"Synthetic generated arrivals at {traffic_multiplier:g}× normal rate ({traffic_profile} traffic); workload mix, durations, hardware and energy inputs unchanged"),
         "requests_generated": len(requests), "offered_peak_gpus": max(offered, default=0),
@@ -537,7 +555,7 @@ def run_dynamic_comparison(payload: dict[str, Any] | None = None) -> dict[str, A
         },
         "forecast_margin_rule": (f"95th percentile of matured prior window-maximum positive residuals after {MARGIN_HISTORY_WINDOWS_REQUIRED} windows; "
                                  f"otherwise max({margin_floor_gpus:g} GPUs, {margin_fraction:.0%} of predicted total demand)"),
-        "selected_policy": "forecast", "forecast_alpha": alpha, "margin_fraction": margin_fraction,
+        "selected_policy": "forecast_v2", "forecast_alpha": alpha, "margin_fraction": margin_fraction,
         "margin_floor_gpus": margin_floor_gpus,
         "minimum_active_nodes": min_active_nodes,
         "warm_overhead_nodes": int(warm_overhead_nodes),
@@ -550,7 +568,10 @@ def run_dynamic_comparison(payload: dict[str, Any] | None = None) -> dict[str, A
         "comparisons": comparisons,
         "assumptions": {
             "data_status": "synthetic_illustrative_not_measurements",
-            "demand_model": "seeded Poisson requests; 5-minute arrivals; triangular service durations; optional hidden 3x bursts",
+            "demand_model": ("heavy-tailed, over-dispersed, autocorrelated synthetic requests (log-normal sizes/durations, AR(1) intensity, diurnal class mix)" if trace_source == "realistic" and not explicit_trace
+                             else "seeded Poisson requests; 5-minute arrivals; triangular service durations; optional hidden 3x bursts"),
+            "trace_source": "explicit request_trace" if explicit_trace else trace_source,
+            "forecast_v2_information_set": "ForecasterV2 receives arrivals seen, running jobs as (class, gpus, age), queued jobs as (class, gpus, arrival), own node states/ETAs, and its own accepted flexible commitments only. It never receives request durations, running end minutes, the LP hourly rate vector, the generator time-of-day curve, or future arrivals.",
             "forecast": (f"5-minute causal per-class arrival-rate EWMA (alpha={alpha:g}; requests/minute) convolved with the rounded duration survival distribution; "
                          f"initialized from {'the declared synthetic generator baseline' if payload.get('request_trace') is None else 'zero for the explicit request trace'} and adjusted by its known diurnal profile; separate expected future arrivals from exact running occupancy and a per-request queued-work placement plan"),
             "arrival_rate_initial_prior": "synthetic generator baseline; not observed history" if payload.get("request_trace") is None else "zero; explicit trace arrivals update future buckets causally",
@@ -769,13 +790,16 @@ def _validate_request_trace(raw: Any, fleet_gpus: int) -> list[dict[str, Any]]:
 
 def _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed, alpha,
                 margin_fraction, margin_floor_gpus, min_active_nodes, policy, flex_plan,
-                *, queue_policy="interactive_batch", warm_overhead_nodes=DEFAULT_WARM_OVERHEAD_NODES):
+                *, queue_policy="interactive_batch", warm_overhead_nodes=DEFAULT_WARM_OVERHEAD_NODES,
+                engine="legacy"):
     first_hour_flex = sum(row[0] for row in flex_plan["hourly_rates"])
     first_hour_reservation = flex_plan["realtime_reservation_gpus"][0]
     first_hour_nodes = math.ceil((first_hour_flex + first_hour_reservation) / gpn)
     initial_active = n if policy == "always_on" else min(n, max(2, n // 2, first_hour_nodes))
     initial_warm = min(max(0, warm_overhead_nodes), max(0, n - initial_active))
     nodes = [Node("active" if i < initial_active else "warm" if i < initial_active + initial_warm else "off") for i in range(n)]
+    forecaster = (ForecasterV2(gpn, n, WARM_START_MINUTES, COLD_TO_ACTIVE_MINUTES)
+                  if engine == "v2" else None)
     # bounded initial queue / state tracking; generated offered load is not dropped
     arrived_at: dict[int, list[dict[str, Any]]] = {}
     for r in requests:
@@ -798,6 +822,8 @@ def _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed, al
     flex_done_by_job = [0.0] * len(flex_plan["jobs"])
     flex_minute_allocations: list[tuple[int, float]] = []
     margin_window_errors: list[float] = []
+    v2_margins: list[float] = []
+    forecast_debug: list[dict[str, Any]] = []
     issued_window_forecasts: dict[int, dict[int, float]] = {}
     forecast = upper = forecast_realtime = forecast_running = forecast_queue = forecast_flex = 0.0
     forecast_window_peak = 0.0
@@ -822,6 +848,9 @@ def _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed, al
                                      wait_minutes=statuses[rid]["start"] - statuses[rid]["arrival"],
                                      response_minutes=minute - statuses[rid]["arrival"])
                 hist_wait.append(statuses[rid]["wait_minutes"])
+                if forecaster is not None:
+                    forecaster.observe_completion_for(statuses[rid]["class"],
+                                                      minute - statuses[rid]["start"])
                 del running[rid]
         # Finish jobs whose declared deadline is at this boundary; any planned
         # work that could not run before it is an explicit miss, never silently
@@ -844,11 +873,13 @@ def _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed, al
             else:
                 statuses[r["id"]]["status"] = "queued"
                 waiting.append(r["id"])
+                if forecaster is not None:
+                    forecaster.observe_arrival(minute, r["class"], r["gpus"])
 
         # Mature only issued forecasts whose entire requested minute has now
         # been observed. Residuals use offered demand at this minute, not future
         # trace values exposed before their timestamp.
-        if policy == "forecast":
+        if policy in FORECAST_POLICIES:
             actual_total = offered[minute] + _flex_rate_at(flex_plan["hourly_rates"], minute)
             for issue_minute, predictions in list(issued_window_forecasts.items()):
                 if minute in predictions:
@@ -860,46 +891,69 @@ def _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed, al
         # Causal reserve update every five minutes. The adopted target window
         # is [warm-to-active, fully-off-to-active), with total demand evaluated
         # minute-by-minute so flexible commitments are paired at the same time.
+        if forecaster is not None:
+            arrivals_now: dict[str, int] = {}
+            for observed_request in arrived_at.get(minute, []):
+                arrivals_now[observed_request["class"]] = arrivals_now.get(observed_request["class"], 0) + 1
+            forecaster.observe_minute(minute, arrivals_now)
+
         if minute % BUCKET == 0:
-            rates = arrival_rates[min(minute // BUCKET, len(arrival_rates) - 1)]
             horizon = FORECAST_HORIZON_MINUTES
-            future_arrivals = _expected_future_arrival_concurrency(rates, minute, horizon, work_factors)
-            queue_profile, queue_starts, queue_unplaced = _queued_workload_profile(
-                waiting, statuses, running, nodes, minute, horizon, gpn, flex_plan,
-                future_arrivals, queue_policy,
-            )
-            predicted_by_offset: dict[int, float] = {}
-            realtime_by_offset: dict[int, float] = {}
-            running_by_offset: dict[int, float] = {}
-            queue_by_offset: dict[int, float] = {}
-            flex_by_offset: dict[int, float] = {}
-            for offset in range(horizon + 1):
-                future_minute = minute + offset
-                future_flex = _flex_rate_at(flex_plan["hourly_rates"], future_minute)
-                future_running = _known_running_gpu_demand(running, future_minute)
-                future_queue = queue_profile[offset]
-                new_arrivals = future_arrivals[offset]
-                realtime = new_arrivals + future_running + future_queue
-                predicted_by_offset[offset] = realtime + future_flex
-                realtime_by_offset[offset] = new_arrivals
-                running_by_offset[offset] = future_running
-                queue_by_offset[offset] = future_queue
-                flex_by_offset[offset] = future_flex
+            if engine == "v2":
+                (predicted_by_offset, upper_by_offset, realtime_by_offset, running_by_offset,
+                 queue_by_offset, flex_by_offset, margin, margin_source,
+                 queue_unplaced, v2_margins) = _forecast_v2_curve(
+                    forecaster, minute, running, waiting, statuses, nodes, flex_plan,
+                    flex_done_by_job, gpn, horizon)
+            else:
+              rates = arrival_rates[min(minute // BUCKET, len(arrival_rates) - 1)]
+              future_arrivals = _expected_future_arrival_concurrency(rates, minute, horizon, work_factors)
+              queue_profile, queue_starts, queue_unplaced = _queued_workload_profile(
+                  waiting, statuses, running, nodes, minute, horizon, gpn, flex_plan,
+                  future_arrivals, queue_policy,
+              )
+              predicted_by_offset: dict[int, float] = {}
+              realtime_by_offset: dict[int, float] = {}
+              running_by_offset: dict[int, float] = {}
+              queue_by_offset: dict[int, float] = {}
+              flex_by_offset: dict[int, float] = {}
+              for offset in range(horizon + 1):
+                  future_minute = minute + offset
+                  future_flex = _flex_rate_at(flex_plan["hourly_rates"], future_minute)
+                  future_running = _known_running_gpu_demand(running, future_minute)
+                  future_queue = queue_profile[offset]
+                  new_arrivals = future_arrivals[offset]
+                  realtime = new_arrivals + future_running + future_queue
+                  predicted_by_offset[offset] = realtime + future_flex
+                  realtime_by_offset[offset] = new_arrivals
+                  running_by_offset[offset] = future_running
+                  queue_by_offset[offset] = future_queue
+                  flex_by_offset[offset] = future_flex
 
             bridge_offsets = list(range(1, horizon + 1))
             forecast_total_peak = max((predicted_by_offset[offset] for offset in bridge_offsets), default=0.0)
             forecast_peak_offset = max(bridge_offsets, key=lambda offset: predicted_by_offset[offset], default=1)
             forecast_window_peak = forecast_total_peak
-            margin, margin_source = _forecast_margin(margin_window_errors, forecast_total_peak,
-                                                    margin_fraction, margin_floor_gpus)
-            upper_by_offset = [predicted_by_offset[offset] + margin for offset in range(horizon + 1)]
+            if engine != "v2":
+                margin, margin_source = _forecast_margin(margin_window_errors, forecast_total_peak,
+                                                         margin_fraction, margin_floor_gpus)
+                upper_by_offset = [predicted_by_offset[offset] + margin for offset in range(horizon + 1)]
             upper = predicted_by_offset[0] + margin
             forecast = realtime_by_offset[0]
             forecast_realtime = realtime_by_offset[0]
             forecast_running = running_by_offset[0]
             forecast_queue = queue_by_offset[0]
             forecast_flex = flex_by_offset[0]
-            if policy == "forecast":
+            forecast_debug.append({
+                "minute": minute,
+                "engine": engine,
+                "predicted": [round(float(predicted_by_offset[o]), 3) for o in range(horizon + 1)],
+                "upper": [round(float(upper_by_offset[o]), 3) for o in range(horizon + 1)],
+                "margin_gpus": round(float(margin), 3),
+                "margin_source": margin_source,
+                "margins_by_bucket": [round(float(v), 2) for v in v2_margins] if engine == "v2" else [],
+            })
+            if policy in FORECAST_POLICIES:
                 active_nodes = sum(x.state == "active" for x in nodes)
                 # Keep the earlier static target as a diagnostic; actual
                 # activation decisions now follow a time-resolved readiness plan.
@@ -958,7 +1012,7 @@ def _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed, al
             protected_flex = planned_flex if policy == "reactive" else 0.0
             required = math.ceil((protected_flex + sum(r["gpus"] for r in running.values()) + sum(statuses[r]["gpus"] for r in waiting)) / gpn)
             _scale_up(nodes, min(n, required), gpn)
-        if policy == "forecast":
+        if policy in FORECAST_POLICIES:
             # Reactive same-minute commitments can consume planned standby
             # while demand is being dispatched; restore the configured stock
             # from the off fleet if it remains available.
@@ -1001,7 +1055,7 @@ def _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed, al
                     break
             req.update(status="running", start=minute)
             running[rid] = {"end": minute + req["duration"], "nodes": alloc, "gpus": req["gpus"]}
-        if policy == "forecast":
+        if policy in FORECAST_POLICIES:
             # If real-time work still cannot start, expand warm stock to cover
             # its queued GPU total (up to fleet size). Booting toward this
             # target makes the readiness gap visible instead of leaving nodes
@@ -1049,7 +1103,7 @@ def _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed, al
                     node.state = "warm"
                     node.idle = 0
             warm_ids = [i for i, node in enumerate(nodes) if node.state == "warm"]
-            desired_warm = warm_stock_target if policy == "forecast" else 0
+            desired_warm = warm_stock_target if policy in FORECAST_POLICIES else 0
             for ni in reversed(warm_ids):
                 node = nodes[ni]
                 node.idle += 1
@@ -1058,6 +1112,15 @@ def _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed, al
                     node.idle = 0
             # Forecast controller replenishes its warm target at the next
             # bucket; reactive control intentionally keeps no forecast reserve.
+        if forecaster is not None:
+            # Observed demand pressure = real-time work plus flexible work the
+            # controller has actually allocated this minute. This is exactly what
+            # the forecaster is asked to predict, so residuals are comparable.
+            queued_gpus_now = sum(statuses[rid]["gpus"] for rid in waiting)
+            observed_demand_now = (sum(job["gpus"] for job in running.values())
+                                   + queued_gpus_now + flex_busy_gpu)
+            forecaster.score(minute, observed_demand_now)
+
         # Hourly supply curves are rates/energy per one-hour slot converted to a per-minute quantity.
         active = sum(x.state == "active" for x in nodes)
         warm = sum(x.state == "warm" for x in nodes)
@@ -1112,35 +1175,35 @@ def _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed, al
             "active_spare_gpus": round(max(0.0, active * gpn - busy_gpus - flex_busy_gpu), 3),
             "warm_ready_capacity_gpus": warm * gpn,
             "dispatchable_capacity_gpus": round(max(0.0, active * gpn - busy_gpus - flex_busy_gpu) + warm * gpn, 3),
-            "target_warm_nodes": target_warm if policy == "forecast" else None,
-            "forecast_target_active_nodes": forecast_target_active if policy == "forecast" else None,
-            "forecast_warm_nodes_started": forecast_warm_started if policy == "forecast" else 0,
-            "forecast_cold_nodes_started": forecast_cold_started if policy == "forecast" else 0,
-            "warm_stock_target_nodes": warm_stock_target if policy == "forecast" else None,
-            "warm_overhead_nodes": warm_overhead_nodes if policy == "forecast" else 0,
-            "queued_reserve_demand_nodes": queued_reserve_demand_nodes if policy == "forecast" else 0,
-            "warm_stock_shortfall_nodes": warm_stock_shortfall if policy == "forecast" else 0,
-            "warm_ready_deficit_nodes": max(0, warm_stock_target - sum(node.state == "warm" for node in nodes)) if policy == "forecast" else 0,
+            "target_warm_nodes": target_warm if policy in FORECAST_POLICIES else None,
+            "forecast_target_active_nodes": forecast_target_active if policy in FORECAST_POLICIES else None,
+            "forecast_warm_nodes_started": forecast_warm_started if policy in FORECAST_POLICIES else 0,
+            "forecast_cold_nodes_started": forecast_cold_started if policy in FORECAST_POLICIES else 0,
+            "warm_stock_target_nodes": warm_stock_target if policy in FORECAST_POLICIES else None,
+            "warm_overhead_nodes": warm_overhead_nodes if policy in FORECAST_POLICIES else 0,
+            "queued_reserve_demand_nodes": queued_reserve_demand_nodes if policy in FORECAST_POLICIES else 0,
+            "warm_stock_shortfall_nodes": warm_stock_shortfall if policy in FORECAST_POLICIES else 0,
+            "warm_ready_deficit_nodes": max(0, warm_stock_target - sum(node.state == "warm" for node in nodes)) if policy in FORECAST_POLICIES else 0,
             "warm_stock_shortfall_reason": (
-                "Insufficient inactive fleet capacity to reach the warm-stock target" if policy == "forecast" and warm_stock_shortfall > 0
-                else "Cold capacity is still booting or warming" if policy == "forecast" and warm_stock_target > sum(node.state == "warm" for node in nodes) and sum(node.state in ("warming", "booting") for node in nodes) > 0
-                else "Warm stock is currently being consumed for workload" if policy == "forecast" and warm_stock_target > 0 and sum(node.state == "warm" for node in nodes) < warm_stock_target
+                "Insufficient inactive fleet capacity to reach the warm-stock target" if policy in FORECAST_POLICIES and warm_stock_shortfall > 0
+                else "Cold capacity is still booting or warming" if policy in FORECAST_POLICIES and warm_stock_target > sum(node.state == "warm" for node in nodes) and sum(node.state in ("warming", "booting") for node in nodes) > 0
+                else "Warm stock is currently being consumed for workload" if policy in FORECAST_POLICIES and warm_stock_target > 0 and sum(node.state == "warm" for node in nodes) < warm_stock_target
                 else ""
             ),
-            "target_warm_fleet_shortfall_nodes": target_warm_fleet_shortfall if policy == "forecast" else 0,
+            "target_warm_fleet_shortfall_nodes": target_warm_fleet_shortfall if policy in FORECAST_POLICIES else 0,
             "warm_reserve_ready_nodes": sum(node.state == "warm" for node in nodes),
             "warm_reserve_booting_nodes": sum(node.state == "booting" and node.purpose == "warm_stock" for node in nodes),
             "warm_reserve_warming_nodes": sum(node.state == "warming" for node in nodes),
             "warm_reserve_pipeline_nodes": _warm_stock_pipeline_nodes(nodes),
             "warm_reserve_pipeline_gap_nodes": max(
                 0, warm_stock_target - _warm_stock_pipeline_nodes(nodes)
-            ) if policy == "forecast" else 0,
-            "readiness_capacity_shortfall_gpus": round(readiness_shortfall, 2) if policy == "forecast" else 0.0,
-            "pre_warm_active_shortfall_gpus": round(pre_warm_shortfall, 2) if policy == "forecast" else 0.0,
-            "forecast_capacity_shortfall_gpus": round(peak_fleet_shortfall, 2) if policy == "forecast" else 0.0,
-            "forecast_margin_gpus": round(margin, 2) if policy == "forecast" else 0.0,
-            "forecast_margin_source": margin_source if policy == "forecast" else None,
-            "forecast_window_peak_upper_gpus": round(forecast_window_peak + margin, 2) if policy == "forecast" else 0.0,
+            ) if policy in FORECAST_POLICIES else 0,
+            "readiness_capacity_shortfall_gpus": round(readiness_shortfall, 2) if policy in FORECAST_POLICIES else 0.0,
+            "pre_warm_active_shortfall_gpus": round(pre_warm_shortfall, 2) if policy in FORECAST_POLICIES else 0.0,
+            "forecast_capacity_shortfall_gpus": round(peak_fleet_shortfall, 2) if policy in FORECAST_POLICIES else 0.0,
+            "forecast_margin_gpus": round(margin, 2) if policy in FORECAST_POLICIES else 0.0,
+            "forecast_margin_source": margin_source if policy in FORECAST_POLICIES else None,
+            "forecast_window_peak_upper_gpus": round(forecast_window_peak + margin, 2) if policy in FORECAST_POLICIES else 0.0,
             "facility_kw": round(it_kw * 1.25, 4),
             "grid_kwh": round(grid, 6),
             "renewable_used_kwh": round(used, 6),
@@ -1154,9 +1217,9 @@ def _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed, al
             booting_now = sum(x.state == "booting" for x in nodes)
             warming_now = sum(x.state == "warming" for x in nodes)
             pipeline_nodes = _warm_stock_pipeline_nodes(nodes)
-            reserve_pipeline_gap = max(0, warm_stock_target - pipeline_nodes) if policy == "forecast" else 0
+            reserve_pipeline_gap = max(0, warm_stock_target - pipeline_nodes) if policy in FORECAST_POLICIES else 0
             total_upper = forecast_window_peak + margin
-            shortfall = peak_fleet_shortfall if policy == "forecast" else 0.0
+            shortfall = peak_fleet_shortfall if policy in FORECAST_POLICIES else 0.0
             timeline_states.append({"minute": minute, "offered_gpus": offered[minute],
                                     "forecast_gpus": round(forecast, 2),
                                     "forecast_realtime_gpu_demand": round(forecast_realtime, 2),
@@ -1285,7 +1348,48 @@ def _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed, al
             "flexible_jobs": flex_plan["jobs"], "flexible_admission_status": flex_plan["admission_status"],
             "flexible_admission_reason": flex_plan["admission_reason"],
             "replay": {"node_ids": [f"node-{i + 1:02d}" for i in range(n)],
-                       "frames": replay_frames, "requests": request_replay}}
+                       "frames": replay_frames, "requests": request_replay,
+                       "forecast_debug": forecast_debug}}
+
+
+
+def _forecast_v2_curve(forecaster: ForecasterV2, minute: int, running: dict[str, dict[str, Any]],
+                       waiting: deque[str], statuses: dict[str, dict[str, Any]], nodes: list[Node],
+                       flex_plan: dict[str, Any], flex_done_by_job: list[float], gpn: int,
+                       horizon: int) -> tuple[list[float], list[float], list[float], list[float],
+                                              list[float], list[float], float, str, int, list[float]]:
+    """Build the information-restricted inputs the v2 forecaster is allowed to see.
+
+    Note what is *not* passed: request durations, running end minutes, or the LP
+    hourly rate vector. The forecaster must infer all three.
+    """
+    running_views = [
+        RunningJob(statuses[rid]["class"], int(job["gpus"]),
+                   max(0, minute - int(statuses[rid]["start"])))
+        for rid, job in running.items()
+    ]
+    queued_views = [
+        QueuedJob(statuses[rid]["class"], int(statuses[rid]["gpus"]),
+                  int(statuses[rid]["arrival"]), rid)
+        for rid in waiting
+    ]
+    node_views = [NodeView(node.state, int(node.remaining)) for node in nodes]
+    flex_views = []
+    for index, job in enumerate(flex_plan["jobs"]):
+        if not job.get("admitted"):
+            continue
+        # Only work whose release window has actually opened can consume capacity.
+        if int(job["arrival"]) * 60 > minute:
+            continue
+        remaining = max(0.0, float(job["gpu_hours"]) * 60 - flex_done_by_job[index])
+        minutes_left = int(job["deadline"]) * 60 - minute
+        if remaining > 1e-9 and minutes_left > 0:
+            flex_views.append(FlexCommitment(remaining, minutes_left, float(job["max_gpus"])))
+    result = forecaster.predict(minute, running_views, queued_views, node_views, flex_views)
+    return (result.predicted_by_offset, result.upper_by_offset, result.new_arrivals_by_offset,
+            result.running_by_offset, result.queue_by_offset, result.flex_by_offset,
+            result.margin_gpus, result.margin_source, result.unplaced_queue_jobs,
+            result.margins_by_bucket)
 
 
 def _scale_up(nodes: list[Node], target_active: int, gpn: int) -> None:

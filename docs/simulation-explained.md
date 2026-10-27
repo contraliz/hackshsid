@@ -100,6 +100,67 @@ After each real-time dispatch pass, any requests still waiting expand the warm-s
 
 With 8 GPUs per node, suppose the forecast protects 53 GPUs for a future minute. The plan requires `ceil(53/8)=7` ready nodes, or 56 GPUs. If five nodes are active and two are warm, total immediate dispatchable capacity is 56 GPUs; a real-time request can promote a warm node in that same simulated minute. If the 53-GPU need is 20 minutes away and no warm capacity is available, the controller can begin two cold boots now; the nodes become warm and immediately dispatchable after their 20-minute boot. An unexpected need arriving five minutes into that boot cannot use those cold nodes and may wait if active spare plus warm stock is exhausted.
 
+## Realistic traffic shape and the v2 forecaster (draft)
+
+The clone at `gridshift-forecast/` replaces the original demo default with a
+heavier-tailed, over-dispersed traffic generator and adds a fourth controller,
+`forecast_v2`, that is not allowed to read hidden simulation fields.
+
+### Realistic traffic (`backend/traffic_realistic.py`)
+
+| Property | Original demo | Realistic shape |
+|---|---|---|
+| Arrivals | independent Poisson per 5-min bucket | Poisson with two multiplicative AR(1) factors (minute-scale bursts + multi-hour regime shifts) |
+| Request size | uniform 1–2 or 2–4 GPUs | log-normal batch sizes with a gang tail, mostly 1-GPU interactive |
+| Duration | triangular 2–8 / 5–30 min | log-normal with long stragglers (×4 tail, ~1.5% of jobs) |
+| Class mix | fixed rates all day | interactive share shifts with the hour |
+| Diurnal shape | piecewise-constant multiplier | cosine-interpolated profile with two peaks |
+
+Defaults visible in the UI are now 40 nodes × 8 GPUs, seed 2026. Peak offered
+demand reaches ~280 GPUs against 320 installed, so queueing and startup
+latency occur instead of every controller trivially succeeding. The generator
+is still synthetic: it is shaped to resemble published cluster traces, not
+fitted to one.
+
+### `forecast_v2` information set
+
+The v2 forecaster receives only: arrivals already observed, running jobs as
+`(class, gpus, age)`, queued jobs as `(class, gpus, arrival)`, its own node
+states and boot timers, and its own admitted flexible commitments. It never
+receives request durations, running end minutes, the LP hourly rate vector,
+the generator's time-of-day curve, or a generator-seeded arrival rate.
+
+It estimates the missing pieces online:
+
+1. **Time-of-day intensity**: 48 half-hour slots per class, each shrunk toward
+   the running global rate with a pseudo-count prior, multiplied by a
+   short-horizon EWMA deviation factor.
+2. **Service time**: Kaplan–Meier survival from completed lifetimes plus
+   right-censored ages of running jobs, shrunk toward a broad exponential
+   prior until enough lifetimes are observed. Running load uses
+   `S(age+h)/S(age)`; queued jobs use an expected duration.
+3. **Flexible load**: predicted under the dispatcher's actual greedy policy
+   (real-time first, then flexible work up to remaining work and `max_gpus`),
+   not from the LP's hourly plan.
+4. **Uncertainty**: split-conformal residuals. Every issued forecast is scored
+   when its minute is observed; the upper bound uses an online 92nd percentile
+   per five-minute horizon bucket, with a `max(4 GPUs, 20%)` cold-start
+   fallback.
+
+### Measured backtest
+
+`scripts/benchmark_forecast.py` runs both forecast engines on the same trace
+and compares predictions with realised demand. On seed 2026 at horizon 5
+minutes: legacy MAE 48.6 GPUs with a +7.9 GPU bias and a 74.6 GPU mean upper
+margin; v2 MAE 11.7 GPUs, bias −5.3 GPUs, margin 8.9 GPUs, 0.89 coverage
+(nominal 0.92). Full tables are in `results/forecast-v2/backtest.md`.
+
+Service outcomes are dominated by fleet sizing: when offered demand exceeds
+the fleet, every controller queues similarly. With enough capacity (40 nodes),
+the forecast controllers avoid the cold-boot waits that reactive control
+incurs, and v2 reaches the same zero-wait result as the legacy controller
+while keeping a far smaller standby margin.
+
 ## Energy, cost, and emissions
 
 Minute-level node IT power is `18 kW fixed site load + 1.0 kW per active node + 0.25 kW per warm node + 1.2 kW per booting/warming node + 0.35 kW per occupied GPU`. Facility energy multiplies by PUE `1.25` and divides minute-kW by 60 to obtain kWh. Off nodes draw zero modeled node power. Startup states draw more than warm standby in this simplified model. These coefficients are synthetic, and do not represent measured hardware or cooling behavior.

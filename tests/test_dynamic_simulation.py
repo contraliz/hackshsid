@@ -230,7 +230,7 @@ def test_headroom_inventory_is_fixed_and_warm_overhead_is_separate_from_formula_
     result = run_dynamic_comparison({"seed": 2026, "nodes": 48, "headroom_nodes": 16,
                                     "gpus_per_node": 8, "traffic_profile": "high",
                                     "bursts": False, "warm_overhead_nodes": 1,
-                                    "min_active_fraction": 0.5})
+                                    "min_active_fraction": 0.5, "trace_source": "legacy"})
     assert result["base_nodes"] == 48 and result["headroom_nodes"] == 16
     assert result["nodes"] == 64 and result["fleet_gpus"] == 512
     assert result["headroom_nodes"] == 16
@@ -269,8 +269,8 @@ def test_dynamic_simulation_api_returns_policy_comparison():
     response = app.test_client().post("/api/dynamic-simulation", json={"seed": 2, "nodes": 4, "gpus_per_node": 8, "bursts": False})
     assert response.status_code == 200
     body = response.get_json()
-    assert set(body["policies"]) == {"always_on", "reactive", "forecast"}
-    assert body["selected_policy"] == "forecast"
+    assert set(body["policies"]) == {"always_on", "reactive", "forecast", "forecast_v2"}
+    assert body["selected_policy"] == "forecast_v2"
     assert body["unscheduled_baseline"]["label"] == "Always-on FIFO / ASAP (no energy scheduling)"
     assert set(body["comparisons"]) == set(body["policies"])
     assert set(body["comparisons"]["forecast"]["savings"]) == {
@@ -340,7 +340,8 @@ def test_replay_node_workload_breakdown_matches_placements_and_marks_mixed_node(
 
 
 def test_default_forecast_01_to_02_has_idle_active_reserve_and_no_observed_wait():
-    result = run_dynamic_comparison({})
+    result = run_dynamic_comparison({"trace_source": "legacy", "seed": 2026, "nodes": 32,
+                                     "gpus_per_node": 8, "traffic_profile": "normal"})
     forecast = result["policies"]["forecast"]
     replay = forecast["replay"]
     frames = replay["frames"]
