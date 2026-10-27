@@ -12,6 +12,7 @@
 .savings-report-heading h2 { margin: 0; color: #243652; font-size: 12px; font-weight: 700; }
 .savings-report-heading > span { color: #8190a4; font-size: 11px; text-align: right; }
 .savings-queue-block { display: grid; gap: 4px; margin-top: 6px; }
+.savings-metric-row.savings-queue-row { grid-template-columns: minmax(0, 240px); }
 .savings-queue-heading { display: flex; align-items: baseline; gap: 8px; }
 .savings-queue-heading h3 { margin: 0; color: #33414f; font-size: 12px; }
 .savings-queue-heading span { color: #8190a4; font-size: 11px; }

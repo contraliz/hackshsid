@@ -34,9 +34,6 @@ function quantity(metrics, key, unit) {
 
 const QUEUE_METRICS = [
   { key: 'requests_waited', label: 'Requests that waited', unit: 'requests', digits: 0 },
-  { key: 'mean_wait_minutes', label: 'Mean queue wait', unit: 'min', digits: 2 },
-  { key: 'p95_wait_minutes', label: 'P95 queue wait', unit: 'min', digits: 1 },
-  { key: 'peak_queued_requests', label: 'Peak queue depth', unit: 'requests', digits: 0 },
 ];
 
 function queueValue(metrics, key, digits) {
@@ -105,7 +102,7 @@ export function SavingsReport({ comparison, baseline }) {
         <h3>Queue and wait</h3>
         <span>Observed at dispatch, not a forecast estimate</span>
       </div>
-      <div className="savings-metric-row">
+      <div className="savings-metric-row savings-queue-row">
         {QUEUE_METRICS.map(({ key, label, unit, digits }) => {
           const baselineValue = queueNumber(baselineMetrics?.[key], baselineMetrics);
           const optimizedValue = queueNumber(optimizedMetrics?.[key], optimizedMetrics);
