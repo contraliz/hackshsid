@@ -1310,6 +1310,7 @@ def _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed, al
         "mean_wait_minutes": round(sum(waits) / len(waits), 2) if waits else None,
         "p95_wait_minutes": round(sorted(waits)[min(len(waits)-1, math.ceil(.95*len(waits))-1)], 2) if waits else None,
         "requests_waited": sum(wait > 0 for wait in waits),
+        "peak_queued_requests": max((row["queued_requests"] for row in timeline_states), default=0),
         "mean_wait_minutes_by_class": {
             name: round(sum(values) / len(values), 2) if values else None
             for name, values in waits_by_class.items()

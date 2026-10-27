@@ -56,6 +56,14 @@ Three gates now apply:
 Result on seed 2026: boot node-minutes 3,020 → 1,700, never-active cycles
 100 → 43, facility kWh 3,679 → 3,631, waits unchanged at 0.
 
+## Savings tab: queue and wait
+
+The savings report now carries a visible "Queue and wait" row comparing the
+unscheduled baseline with the selected controller: requests that waited, mean
+queue wait, P95 queue wait, and peak queue depth. These come from the minute
+replay (`peak_queued_requests` is the maximum queued-request count over the
+whole day), so they are observed values, not forecast estimates.
+
 ## Honest limitations
 
 * The realistic generator is synthetic. It is shaped to produce queueing and

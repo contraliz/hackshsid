@@ -11,6 +11,10 @@
 .savings-report-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
 .savings-report-heading h2 { margin: 0; color: #243652; font-size: 12px; font-weight: 700; }
 .savings-report-heading > span { color: #8190a4; font-size: 11px; text-align: right; }
+.savings-queue-block { display: grid; gap: 4px; margin-top: 6px; }
+.savings-queue-heading { display: flex; align-items: baseline; gap: 8px; }
+.savings-queue-heading h3 { margin: 0; color: #33414f; font-size: 12px; }
+.savings-queue-heading span { color: #8190a4; font-size: 11px; }
 .savings-metric-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
 .savings-metric { display: grid; align-content: center; gap: 3px; min-width: 0; padding: 5px 7px; border: 1px solid #edf1f5; border-radius: 5px; background: #fbfcfe; }
 .savings-metric-top { display: flex; align-items: baseline; justify-content: space-between; gap: 5px; }

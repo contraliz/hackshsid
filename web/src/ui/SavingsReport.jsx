@@ -32,6 +32,30 @@ function quantity(metrics, key, unit) {
     : `${number(value, 1)} ${unit}`;
 }
 
+const QUEUE_METRICS = [
+  { key: 'requests_waited', label: 'Requests that waited', unit: 'requests', digits: 0 },
+  { key: 'mean_wait_minutes', label: 'Mean queue wait', unit: 'min', digits: 2 },
+  { key: 'p95_wait_minutes', label: 'P95 queue wait', unit: 'min', digits: 1 },
+  { key: 'peak_queued_requests', label: 'Peak queue depth', unit: 'requests', digits: 0 },
+];
+
+function queueValue(metrics, key, digits) {
+  const value = metrics?.[key];
+  // No queued work means the wait statistics are undefined; show zero instead
+  // of a dash so the comparison reads cleanly.
+  if ((value === null || value === undefined) && Number(metrics?.requests_waited) === 0) {
+    return number(0, digits);
+  }
+  return number(value, digits);
+}
+
+function queueNumber(value, metrics) {
+  if (value === null || value === undefined) {
+    return Number(metrics?.requests_waited) === 0 ? 0 : null;
+  }
+  return Number(value);
+}
+
 function metricChange(pct) {
   if (pct === null || pct === undefined || pct === '' || !Number.isFinite(Number(pct))) {
     return { text: 'Unavailable', kind: 'unavailable' };
@@ -74,6 +98,30 @@ export function SavingsReport({ comparison, baseline }) {
           {change.kind === 'unavailable' && comparison.savings_reason?.[key] && <small className="savings-reason">{comparison.savings_reason[key]}</small>}
         </article>;
       })}
+    </div>
+
+    <div className="savings-queue-block">
+      <div className="savings-queue-heading">
+        <h3>Queue and wait</h3>
+        <span>Observed at dispatch, not a forecast estimate</span>
+      </div>
+      <div className="savings-metric-row">
+        {QUEUE_METRICS.map(({ key, label, unit, digits }) => {
+          const baselineValue = queueNumber(baselineMetrics?.[key], baselineMetrics);
+          const optimizedValue = queueNumber(optimizedMetrics?.[key], optimizedMetrics);
+          const delta = baselineValue === null || optimizedValue === null ? null : optimizedValue - baselineValue;
+          const kind = delta === null ? 'unavailable' : delta < 0 ? 'reduction' : delta > 0 ? 'increase' : 'neutral';
+          const deltaText = delta === null ? 'Unavailable'
+            : delta === 0 ? 'unchanged'
+              : `${delta > 0 ? '+' : '−'}${number(Math.abs(delta), digits)} ${unit}`;
+          return <article className="savings-metric" key={key}>
+            <div className="savings-metric-top"><span>{label}</span><strong className={`savings-change is-${kind}`}>{deltaText}</strong></div>
+            <p className="savings-values" title={`${baselineLabel} → ${optimizedLabel}`}>
+              <span>{queueValue(baselineMetrics, key, digits)} → {queueValue(optimizedMetrics, key, digits)} {unit}</span>
+            </p>
+          </article>;
+        })}
+      </div>
     </div>
 
     <details className="savings-service-details">
