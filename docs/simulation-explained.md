@@ -103,7 +103,8 @@ With 8 GPUs per node, suppose the forecast protects 53 GPUs for a future minute.
 ## Realistic traffic shape and the v2 forecaster (draft)
 
 The clone at `gridshift-forecast/` replaces the original demo default with a
-heavier-tailed, over-dispersed traffic generator and adds a fourth controller,
+heavier-tailed, over-dispersed traffic generator (now the only generator every
+simulation uses) and adds a fourth controller,
 `forecast_v2`, that is not allowed to read hidden simulation fields. The UI now
 shows only Always-on, Reactive and Forecast v2: the legacy `forecast` engine is
 still computed by the API because the backtest needs it as a comparison
@@ -155,8 +156,8 @@ It estimates the missing pieces online:
 
 `scripts/benchmark_forecast.py` runs both forecast engines on the same trace
 and compares predictions with realised demand. On seed 2026 at horizon 5
-minutes: legacy MAE 48.6 GPUs with a +7.9 GPU bias and a 74.6 GPU mean upper
-margin; v2 MAE 11.7 GPUs, bias −5.3 GPUs, margin 8.9 GPUs, 0.89 coverage
+minutes: legacy MAE 40.6 GPUs with a +7.0 GPU bias and a 75.9 GPU mean upper
+margin; v2 MAE 19.0 GPUs, bias −2.3 GPUs, margin 41.3 GPUs, 0.90 coverage
 (nominal 0.92). Full tables are in `results/forecast-v2/backtest.md`.
 
 Service outcomes are dominated by fleet sizing: when offered demand exceeds

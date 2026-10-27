@@ -125,6 +125,9 @@ def generate_realistic_requests(seed: int, *, traffic_multiplier: float = 1.0,
     if traffic_multiplier <= 0 or not math.isfinite(traffic_multiplier):
         raise ValueError("Traffic multiplier must be a positive finite number.")
     rng = random.Random(seed)
+    # The intensity path is drawn from its own stream so the traffic level
+    # scales the same day shape instead of producing a different realisation.
+    shape_rng = random.Random((seed << 1) ^ 0x5EED)
     fleet_gpus = max(1, int(gpus_per_node) * int(nodes))
 
     # Two autoregressive multiplicative factors: a minute-scale burst process
@@ -136,8 +139,8 @@ def generate_realistic_requests(seed: int, *, traffic_multiplier: float = 1.0,
 
     records: list[dict[str, Any]] = []
     for minute in range(MINUTES_PER_DAY):
-        fast = FAST_PHI * fast + FAST_SIG * rng.gauss(0.0, 1.0)
-        slow = SLOW_PHI * slow + SLOW_SIG * rng.gauss(0.0, 1.0)
+        fast = FAST_PHI * fast + FAST_SIG * shape_rng.gauss(0.0, 1.0)
+        slow = SLOW_PHI * slow + SLOW_SIG * shape_rng.gauss(0.0, 1.0)
         hour = minute / 60.0
         intensity = (_interp(PROFILE_KNOTS, hour) * BASE_TOTAL_PER_MIN
                      * traffic_multiplier

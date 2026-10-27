@@ -32,7 +32,6 @@ FORECAST_HORIZON_MINUTES = 2 * COLD_TO_ACTIVE_MINUTES
 MARGIN_HISTORY_WINDOWS_REQUIRED = 28
 MARGIN_QUANTILE = 0.95
 TRAFFIC_PROFILES = {"low": 0.5, "normal": 1.0, "high": 2.0}
-TRACE_SOURCES = ("realistic", "legacy")
 FORECAST_POLICIES = ("forecast", "forecast_v2")
 DEFAULT_WARM_OVERHEAD_NODES = 2
 
@@ -453,9 +452,6 @@ def run_dynamic_comparison(payload: dict[str, Any] | None = None) -> dict[str, A
         raise ValueError("Traffic profile must be low, normal, or high.")
     traffic_multiplier = TRAFFIC_PROFILES[traffic_profile]
     explicit_trace = payload.get("request_trace") is not None
-    trace_source = payload.get("trace_source", "realistic")
-    if not isinstance(trace_source, str) or trace_source not in TRACE_SOURCES:
-        raise ValueError("Trace source must be 'realistic' or 'legacy'.")
     try:
         alpha = float(payload.get("forecast_alpha", 0.3))
         margin_fraction = float(payload.get("margin_fraction", 0.15))
@@ -487,14 +483,10 @@ def run_dynamic_comparison(payload: dict[str, Any] | None = None) -> dict[str, A
                 raise ValueError("Workload factors must use known request classes and positive finite values.")
             work_factors[name] = factor
     min_active_nodes = min(n, max(1, math.ceil(n * min_active_fraction)))
-    if explicit_trace:
-        requests = _validate_request_trace(payload.get("request_trace"), n * gpn)
-    elif trace_source == "realistic":
-        requests = generate_realistic_requests(seed, traffic_multiplier=traffic_multiplier,
-                                               gpus_per_node=gpn, nodes=n)
-    else:
-        requests = generate_requests(seed, burst=bool(payload.get("bursts", True)),
-                                     traffic_multiplier=traffic_multiplier)
+    requests = (_validate_request_trace(payload.get("request_trace"), n * gpn)
+                if explicit_trace
+                else generate_realistic_requests(seed, traffic_multiplier=traffic_multiplier,
+                                                 gpus_per_node=gpn, nodes=n))
     offered = _offered_gpu_trace(requests)
     flex_plan = _prepare_flexible_plan(n * gpn, payload.get("flexible_jobs"))
     # Forecast series are causal by construction: each bucket uses only prior
@@ -534,7 +526,6 @@ def run_dynamic_comparison(payload: dict[str, Any] | None = None) -> dict[str, A
         "gpus_per_node": gpn, "fleet_gpus": n * gpn,
         "traffic_profile": traffic_profile,
         "traffic_multiplier": None if explicit_trace else traffic_multiplier,
-        "trace_source": "explicit" if explicit_trace else trace_source,
         "traffic_profile_description": ("Explicit request trace; preset multiplier is not applied" if explicit_trace
                                          else f"Synthetic generated arrivals at {traffic_multiplier:g}× normal rate ({traffic_profile} traffic); workload mix, durations, hardware and energy inputs unchanged"),
         "requests_generated": len(requests), "offered_peak_gpus": max(offered, default=0),
@@ -568,9 +559,8 @@ def run_dynamic_comparison(payload: dict[str, Any] | None = None) -> dict[str, A
         "comparisons": comparisons,
         "assumptions": {
             "data_status": "synthetic_illustrative_not_measurements",
-            "demand_model": ("heavy-tailed, over-dispersed, autocorrelated synthetic requests (log-normal sizes/durations, AR(1) intensity, diurnal class mix)" if trace_source == "realistic" and not explicit_trace
-                             else "seeded Poisson requests; 5-minute arrivals; triangular service durations; optional hidden 3x bursts"),
-            "trace_source": "explicit request_trace" if explicit_trace else trace_source,
+            "demand_model": ("explicit request_trace" if explicit_trace else
+                             "heavy-tailed, over-dispersed, autocorrelated synthetic requests (log-normal sizes/durations, AR(1) intensity, diurnal class mix)"),
             "forecast_v2_information_set": "ForecasterV2 receives arrivals seen, running jobs as (class, gpus, age), queued jobs as (class, gpus, arrival), own node states/ETAs, and its own accepted flexible commitments only. It never receives request durations, running end minutes, the LP hourly rate vector, the generator time-of-day curve, or future arrivals.",
             "forecast": (f"5-minute causal per-class arrival-rate EWMA (alpha={alpha:g}; requests/minute) convolved with the rounded duration survival distribution; "
                          f"initialized from {'the declared synthetic generator baseline' if payload.get('request_trace') is None else 'zero for the explicit request trace'} and adjusted by its known diurnal profile; separate expected future arrivals from exact running occupancy and a per-request queued-work placement plan"),

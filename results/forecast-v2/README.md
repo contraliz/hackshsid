@@ -7,7 +7,8 @@ it predicts better than the one it replaces.
 ## What changed
 
 1. **New traffic generator** (`backend/traffic_realistic.py`) replaces the
-   uniform-Poisson demo as the default. It uses heavy-tailed sizes and
+   uniform-Poisson demo and is now the only generator any simulation uses; the
+   legacy generator survives only as a helper for old scripts and unit tests. It uses heavy-tailed sizes and
    durations, two AR(1) intensity processes (bursts plus slow regime shifts),
    a gang-job tail and a class mix that shifts across the day. Default demo is
    now 40 nodes × 8 GPUs, seed 2026, realistic shape.
@@ -33,8 +34,8 @@ the old demo, not a transferable one.
 
 | engine | bias | MAE | RMSE | mean upper margin | coverage |
 |---|---:|---:|---:|---:|---:|
-| forecast (oracle inputs) | +7.9 | 48.6 | 72.2 | 74.6 | 0.90 |
-| forecast_v2 (observable only) | −5.3 | 11.7 | 18.6 | 8.9 | 0.89 |
+| forecast (oracle inputs) | +7.0 | 40.6 | 66.8 | 75.9 | 0.94 |
+| forecast_v2 (observable only) | −2.3 | 19.0 | 34.8 | 41.3 | 0.90 |
 
 Full tables for seeds 2026, 2028 and 7 are in `backtest.md` / `backtest.json`.
 
@@ -56,7 +57,7 @@ whole day), so they are observed values, not forecast estimates.
   must change with it.
 * Queue placement uses an expected duration from the survival curve, not a
   per-job estimate; long queued jobs can be packed too optimistically.
-* Conformal coverage lands at 0.86–0.91 against a 0.92 nominal level because
+* Conformal coverage lands at 0.88–0.90 against a 0.92 nominal level because
   residuals are autocorrelated; the bound is honest but not exact.
 * Service outcomes remain dominated by fleet sizing. When offered demand
   exceeds installed capacity, no forecaster prevents a queue.

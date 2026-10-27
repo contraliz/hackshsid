@@ -86,8 +86,7 @@ def test_conformal_margin_switches_after_enough_matured_residuals():
 
 
 def test_realistic_run_produces_finite_v2_forecasts_and_service_metrics():
-    result = run_dynamic_comparison({"nodes": 40, "gpus_per_node": 8, "seed": 2026,
-                                     "trace_source": "realistic"})
+    result = run_dynamic_comparison({"nodes": 40, "gpus_per_node": 8, "seed": 2026})
     policy = result["policies"]["forecast_v2"]
     assert len(policy["replay"]["frames"]) == 1440
     debug = policy["replay"]["forecast_debug"]

@@ -36,7 +36,7 @@ function HourlyGridCosts({ policy, selectedPolicy }) {
 }
 
 export function DynamicSimulation({ onSimulationResult }) {
-  const [controls, setControls] = useState({ nodes: 40, headroom_nodes: 0, gpus_per_node: 8, seed: 2026, trace_source: 'realistic', traffic_profile: 'normal', warm_overhead_nodes: 2, forecast_alpha: 0.3, margin_fraction: 0.15, margin_floor_gpus: 4, min_active_fraction: 0.25, bursts: true });
+  const [controls, setControls] = useState({ nodes: 40, headroom_nodes: 0, gpus_per_node: 8, seed: 2026, traffic_profile: 'normal', warm_overhead_nodes: 2, forecast_alpha: 0.3, margin_fraction: 0.15, margin_floor_gpus: 4, min_active_fraction: 0.25 });
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -89,11 +89,10 @@ export function DynamicSimulation({ onSimulationResult }) {
           <label htmlFor="dynamic-nodes">Nodes<input id="dynamic-nodes" type="number" min="2" max="64" value={controls.nodes} onChange={(e) => setControls({ ...controls, nodes: e.target.value })} /></label>
           <label htmlFor="dynamic-gpus">GPUs per node<input id="dynamic-gpus" type="number" min="1" max="16" value={controls.gpus_per_node} onChange={(e) => setControls({ ...controls, gpus_per_node: e.target.value })} /></label>
           <label htmlFor="dynamic-traffic-profile">Traffic level<select id="dynamic-traffic-profile" value={controls.traffic_profile} onChange={(e) => setControls({ ...controls, traffic_profile: e.target.value })}><option value="low">Low · 0.5×</option><option value="normal">Normal · 1×</option><option value="high">High · 2×</option></select></label>
-          <label htmlFor="dynamic-trace-source">Traffic shape<select id="dynamic-trace-source" value={controls.trace_source} onChange={(e) => { setPlaying(false); setMinute(0); setControls({ ...controls, trace_source: e.target.value }); }}><option value="realistic">Realistic · heavy-tailed</option><option value="legacy">Legacy demo · Poisson</option></select></label>
           <label htmlFor="dynamic-headroom">Fleet headroom<select id="dynamic-headroom" value={controls.headroom_nodes} onChange={(e) => setControls({ ...controls, headroom_nodes: Number(e.target.value) })}><option value="0">Standard inventory</option><option value="16" disabled={Number(controls.nodes) > 48}>Add 16 fixed nodes</option></select></label>
           <button className="run-button" disabled={busy}>{busy ? 'Simulating…' : 'Run simulation'}</button>
         </div>
-        <p className="dynamic-traffic-note">The realistic shape uses heavy-tailed sizes and durations, over-dispersed bursty arrivals and a shifting interactive/batch mix, so queues and cold-start gaps actually occur. The legacy shape is the original uniform-Poisson demo. The traffic level scales arrival rates only.</p>
+        <p className="dynamic-traffic-note">Every run uses the heavy-tailed, bursty realistic traffic shape: sizes and durations are log-normal, arrivals are over-dispersed and autocorrelated, and the interactive/batch mix shifts across the day. The traffic level scales the arrival rate of that same day shape.</p>
         <details className="dynamic-tuning">
           <summary>More controls <span>Traffic, forecast and reserve assumptions</span></summary>
           <div className="dynamic-secondary-controls">
@@ -102,7 +101,6 @@ export function DynamicSimulation({ onSimulationResult }) {
             <label htmlFor="dynamic-margin-floor">Fallback floor (GPUs)<input id="dynamic-margin-floor" type="number" min="0" max="256" step="1" value={controls.margin_floor_gpus} onChange={(e) => setControls({ ...controls, margin_floor_gpus: e.target.value })} /></label>
             <label htmlFor="dynamic-floor">Minimum active fleet<input id="dynamic-floor" type="number" min="0" max="1" step="0.05" value={controls.min_active_fraction} onChange={(e) => setControls({ ...controls, min_active_fraction: e.target.value })} /></label>
             <label htmlFor="dynamic-warm-overhead">Warm standby target (nodes)<input id="dynamic-warm-overhead" type="number" min="0" max="8" step="1" value={controls.warm_overhead_nodes} onChange={(e) => setControls({ ...controls, warm_overhead_nodes: e.target.value })} /><small>Default 2 so one can remain while another serves a request; cold replenishment takes 20 min.</small></label>
-            <label className="dynamic-checkbox"><input type="checkbox" checked={controls.bursts} onChange={(e) => setControls({ ...controls, bursts: e.target.checked })} /> Include seeded burst chance</label>
             <button type="button" className="quiet-button" onClick={() => setControls({ ...controls, nodes: 12, gpus_per_node: 8 })}>96-GPU reference</button>
           </div>
         </details>

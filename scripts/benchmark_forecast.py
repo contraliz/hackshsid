@@ -29,8 +29,7 @@ def _pinball(actual: float, upper: float, quantile: float = CONFIDENCE) -> float
 
 
 def evaluate(seed: int) -> dict:
-    result = run_dynamic_comparison({"nodes": 32, "gpus_per_node": 8, "seed": seed,
-                                     "trace_source": "realistic"})
+    result = run_dynamic_comparison({"nodes": 32, "gpus_per_node": 8, "seed": seed})
     trace = {row["minute"]: row for row in result["policies"]["forecast_v2"]["state_trace"]}
     fleet = result["fleet_gpus"]
     report = {"seed": seed, "requests": result["requests_generated"],
