@@ -112,7 +112,7 @@ export function SavingsReport({ comparison, baseline }) {
           const delta = baselineValue === null || optimizedValue === null ? null : optimizedValue - baselineValue;
           const kind = delta === null ? 'unavailable' : delta < 0 ? 'reduction' : delta > 0 ? 'increase' : 'neutral';
           const deltaText = delta === null ? 'Unavailable'
-            : delta === 0 ? 'unchanged'
+            : delta === 0 ? `0 ${unit}`
               : `${delta > 0 ? '+' : '−'}${number(Math.abs(delta), digits)} ${unit}`;
           return <article className="savings-metric" key={key}>
             <div className="savings-metric-top"><span>{label}</span><strong className={`savings-change is-${kind}`}>{deltaText}</strong></div>
