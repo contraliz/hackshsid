@@ -1285,7 +1285,10 @@ def _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed, al
         "completion_fraction": round(counts["completed"] / max(1, len(requests)), 4),
         "mean_wait_minutes": round(sum(waits) / len(waits), 2) if waits else None,
         "p95_wait_minutes": round(sorted(waits)[min(len(waits)-1, math.ceil(.95*len(waits))-1)], 2) if waits else None,
-        "requests_waited": sum(wait > 0 for wait in waits),
+        "requests_waited": sum(1 for v in statuses.values()
+                               if v["status"] == "queued"
+                               or (v.get("start") is not None and v["start"] > v["arrival"])),
+        "requests_total": len(requests),
         "peak_queued_requests": max((row["queued_requests"] for row in timeline_states), default=0),
         "mean_wait_minutes_by_class": {
             name: round(sum(values) / len(values), 2) if values else None
@@ -1296,7 +1299,11 @@ def _run_policy(requests, offered, arrival_rates, work_factors, n, gpn, seed, al
             for name, values in waits_by_class.items()
         },
         "requests_waited_by_class": {
-            name: sum(wait > 0 for wait in values) for name, values in waits_by_class.items()
+            name: sum(1 for v in statuses.values()
+                      if v["class"] == name
+                      and (v["status"] == "queued"
+                           or (v.get("start") is not None and v["start"] > v["arrival"])))
+            for name in CLASSES
         },
         "mean_completion_latency_minutes": round(sum(v["response_minutes"] for v in statuses.values() if v.get("response_minutes") is not None) / max(1, counts["completed"]), 2),
         "latency_allowance_met": deadlines,

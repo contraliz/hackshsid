@@ -32,27 +32,6 @@ function quantity(metrics, key, unit) {
     : `${number(value, 1)} ${unit}`;
 }
 
-const QUEUE_METRICS = [
-  { key: 'requests_waited', label: 'Requests that waited', unit: 'requests', digits: 0 },
-];
-
-function queueValue(metrics, key, digits) {
-  const value = metrics?.[key];
-  // No queued work means the wait statistics are undefined; show zero instead
-  // of a dash so the comparison reads cleanly.
-  if ((value === null || value === undefined) && Number(metrics?.requests_waited) === 0) {
-    return number(0, digits);
-  }
-  return number(value, digits);
-}
-
-function queueNumber(value, metrics) {
-  if (value === null || value === undefined) {
-    return Number(metrics?.requests_waited) === 0 ? 0 : null;
-  }
-  return Number(value);
-}
-
 function metricChange(pct) {
   if (pct === null || pct === undefined || pct === '' || !Number.isFinite(Number(pct))) {
     return { text: 'Unavailable', kind: 'unavailable' };
@@ -76,6 +55,9 @@ export function SavingsReport({ comparison, baseline }) {
   const baselineLabel = baselineResult?.label ?? baseline?.label ?? 'Unscheduled baseline';
   const optimizedLabel = optimized?.label ?? 'Selected controller';
   const comparable = comparison.service_comparable;
+  const waitedCount = Number(optimizedMetrics?.requests_waited) || 0;
+  const totalRequests = Number(optimizedMetrics?.requests_total) || 0;
+  const waitedShare = totalRequests > 0 ? Math.round((waitedCount / totalRequests) * 100) : 0;
   const hasServiceComparison = comparable === true || comparable === false;
 
   return <section className="savings-report" aria-labelledby="savings-report-title">
@@ -99,25 +81,14 @@ export function SavingsReport({ comparison, baseline }) {
 
     <div className="savings-queue-block">
       <div className="savings-queue-heading">
-        <h3>Queue and wait</h3>
-        <span>Observed at dispatch, not a forecast estimate</span>
+        <h3>Queue</h3>
+        <span>{optimizedLabel} · observed during the replay</span>
       </div>
       <div className="savings-metric-row savings-queue-row">
-        {QUEUE_METRICS.map(({ key, label, unit, digits }) => {
-          const baselineValue = queueNumber(baselineMetrics?.[key], baselineMetrics);
-          const optimizedValue = queueNumber(optimizedMetrics?.[key], optimizedMetrics);
-          const delta = baselineValue === null || optimizedValue === null ? null : optimizedValue - baselineValue;
-          const kind = delta === null ? 'unavailable' : delta < 0 ? 'reduction' : delta > 0 ? 'increase' : 'neutral';
-          const deltaText = delta === null ? 'Unavailable'
-            : delta === 0 ? `0 ${unit}`
-              : `${delta > 0 ? '+' : '−'}${number(Math.abs(delta), digits)} ${unit}`;
-          return <article className="savings-metric" key={key}>
-            <div className="savings-metric-top"><span>{label}</span><strong className={`savings-change is-${kind}`}>{deltaText}</strong></div>
-            <p className="savings-values" title={`${baselineLabel} → ${optimizedLabel}`}>
-              <span>{queueValue(baselineMetrics, key, digits)} → {queueValue(optimizedMetrics, key, digits)} {unit}</span>
-            </p>
-          </article>;
-        })}
+        <article className="savings-metric">
+          <div className="savings-metric-top"><span>Requests that waited</span><strong>{number(waitedCount, 0)}</strong></div>
+          <p className="savings-values"><span>{waitedShare}% of {number(totalRequests, 0)} requests waited at least one minute</span></p>
+        </article>
       </div>
     </div>
 
