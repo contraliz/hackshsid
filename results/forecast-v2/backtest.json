@@ -30,76 +30,76 @@
         "max_readiness_shortfall_gpus": 0.0
       },
       "forecast": {
-        "requests_waited": 11,
+        "requests_waited": 8,
         "p95_wait_minutes": 0,
-        "mean_wait_minutes": 0.02,
+        "mean_wait_minutes": 0.01,
         "rejected": 0,
         "completed": 1543,
         "flexible_gpu_hours_unmet": 0.0,
         "flexible_deadlines_met": 6,
-        "facility_kwh": 3529.206,
+        "facility_kwh": 3535.253,
         "peak_active_nodes": 32,
         "max_readiness_shortfall_gpus": 284.72,
         "forecast_accuracy": {
           "5": {
             "samples": 287,
-            "bias_gpus": 7.78,
-            "mae_gpus": 49.56,
-            "rmse_gpus": 72.99,
+            "bias_gpus": 7.89,
+            "mae_gpus": 48.56,
+            "rmse_gpus": 72.24,
             "p90_abs_error_gpus": 141.1,
-            "coverage": 0.892,
+            "coverage": 0.895,
             "mean_upper_width_gpus": 74.58,
-            "pinball_loss": 11.98
+            "pinball_loss": 11.677
           },
           "10": {
             "samples": 286,
-            "bias_gpus": 13.76,
-            "mae_gpus": 50.3,
-            "rmse_gpus": 73.42,
+            "bias_gpus": 13.86,
+            "mae_gpus": 49.3,
+            "rmse_gpus": 72.69,
             "p90_abs_error_gpus": 136.16,
-            "coverage": 0.878,
+            "coverage": 0.881,
             "mean_upper_width_gpus": 74.44,
-            "pinball_loss": 12.183
+            "pinball_loss": 11.885
           },
           "15": {
             "samples": 285,
-            "bias_gpus": 18.26,
-            "mae_gpus": 51.54,
-            "rmse_gpus": 74.55,
+            "bias_gpus": 18.37,
+            "mae_gpus": 50.62,
+            "rmse_gpus": 73.81,
             "p90_abs_error_gpus": 137.61,
-            "coverage": 0.86,
+            "coverage": 0.863,
             "mean_upper_width_gpus": 74.3,
-            "pinball_loss": 12.372
+            "pinball_loss": 12.063
           },
           "20": {
             "samples": 284,
-            "bias_gpus": 22.06,
-            "mae_gpus": 53.1,
-            "rmse_gpus": 76.49,
+            "bias_gpus": 22.16,
+            "mae_gpus": 52.18,
+            "rmse_gpus": 75.75,
             "p90_abs_error_gpus": 148.07,
-            "coverage": 0.859,
+            "coverage": 0.863,
             "mean_upper_width_gpus": 74.15,
-            "pinball_loss": 12.464
+            "pinball_loss": 12.125
           },
           "30": {
             "samples": 282,
-            "bias_gpus": 30.52,
-            "mae_gpus": 56.66,
-            "rmse_gpus": 81.19,
+            "bias_gpus": 30.62,
+            "mae_gpus": 55.75,
+            "rmse_gpus": 80.49,
             "p90_abs_error_gpus": 159.17,
-            "coverage": 0.816,
+            "coverage": 0.819,
             "mean_upper_width_gpus": 73.85,
-            "pinball_loss": 13.287
+            "pinball_loss": 12.948
           },
           "40": {
             "samples": 280,
-            "bias_gpus": 36.62,
-            "mae_gpus": 60.48,
-            "rmse_gpus": 85.52,
+            "bias_gpus": 36.72,
+            "mae_gpus": 59.65,
+            "rmse_gpus": 84.88,
             "p90_abs_error_gpus": 171.22,
-            "coverage": 0.789,
+            "coverage": 0.793,
             "mean_upper_width_gpus": 73.53,
-            "pinball_loss": 14.082
+            "pinball_loss": 13.75
           }
         }
       },
@@ -111,69 +111,69 @@
         "completed": 1543,
         "flexible_gpu_hours_unmet": 0.0,
         "flexible_deadlines_met": 6,
-        "facility_kwh": 3516.357,
+        "facility_kwh": 3527.987,
         "peak_active_nodes": 32,
-        "max_readiness_shortfall_gpus": 63.21,
+        "max_readiness_shortfall_gpus": 78.57,
         "forecast_accuracy": {
           "5": {
             "samples": 287,
-            "bias_gpus": -5.59,
-            "mae_gpus": 11.46,
-            "rmse_gpus": 17.11,
-            "p90_abs_error_gpus": 25.73,
-            "coverage": 0.892,
-            "mean_upper_width_gpus": 8.72,
-            "pinball_loss": 2.984
+            "bias_gpus": -5.31,
+            "mae_gpus": 11.69,
+            "rmse_gpus": 18.63,
+            "p90_abs_error_gpus": 25.85,
+            "coverage": 0.889,
+            "mean_upper_width_gpus": 8.95,
+            "pinball_loss": 3.133
           },
           "10": {
             "samples": 286,
-            "bias_gpus": -6.91,
-            "mae_gpus": 14.19,
-            "rmse_gpus": 19.79,
-            "p90_abs_error_gpus": 35.41,
-            "coverage": 0.902,
-            "mean_upper_width_gpus": 14.14,
-            "pinball_loss": 3.441
+            "bias_gpus": -6.55,
+            "mae_gpus": 15.38,
+            "rmse_gpus": 22.93,
+            "p90_abs_error_gpus": 40.35,
+            "coverage": 0.913,
+            "mean_upper_width_gpus": 15.5,
+            "pinball_loss": 4.027
           },
           "15": {
             "samples": 285,
-            "bias_gpus": -7.97,
-            "mae_gpus": 15.64,
-            "rmse_gpus": 21.24,
-            "p90_abs_error_gpus": 36.28,
-            "coverage": 0.895,
-            "mean_upper_width_gpus": 17.2,
-            "pinball_loss": 3.945
+            "bias_gpus": -7.56,
+            "mae_gpus": 17.24,
+            "rmse_gpus": 24.38,
+            "p90_abs_error_gpus": 44.12,
+            "coverage": 0.888,
+            "mean_upper_width_gpus": 19.43,
+            "pinball_loss": 4.745
           },
           "20": {
             "samples": 284,
-            "bias_gpus": -8.56,
-            "mae_gpus": 16.96,
-            "rmse_gpus": 22.79,
-            "p90_abs_error_gpus": 35.96,
-            "coverage": 0.908,
-            "mean_upper_width_gpus": 20.27,
-            "pinball_loss": 4.157
+            "bias_gpus": -8.09,
+            "mae_gpus": 18.07,
+            "rmse_gpus": 25.02,
+            "p90_abs_error_gpus": 44.75,
+            "coverage": 0.905,
+            "mean_upper_width_gpus": 22.29,
+            "pinball_loss": 4.815
           },
           "30": {
             "samples": 282,
-            "bias_gpus": -7.93,
-            "mae_gpus": 19.18,
-            "rmse_gpus": 25.66,
-            "p90_abs_error_gpus": 46.74,
-            "coverage": 0.901,
-            "mean_upper_width_gpus": 25.65,
-            "pinball_loss": 5.514
+            "bias_gpus": -7.4,
+            "mae_gpus": 21.02,
+            "rmse_gpus": 28.97,
+            "p90_abs_error_gpus": 52.0,
+            "coverage": 0.904,
+            "mean_upper_width_gpus": 32.43,
+            "pinball_loss": 6.632
           },
           "40": {
             "samples": 280,
-            "bias_gpus": -7.79,
-            "mae_gpus": 20.36,
-            "rmse_gpus": 27.11,
-            "p90_abs_error_gpus": 47.54,
-            "coverage": 0.893,
-            "mean_upper_width_gpus": 28.37,
-            "pinball_loss": 6.139
+            "bias_gpus": -7.26,
+            "mae_gpus": 22.32,
+            "rmse_gpus": 30.35,
+            "p90_abs_error_gpus": 52.69,
+            "coverage": 0.882,
+            "mean_upper_width_gpus": 34.9,
+            "pinball_loss": 6.963
           }
         }
       }
@@ -215,71 +215,71 @@
         "mean_wait_minutes": 1.12,
         "rejected": 0,
         "completed": 1944,
-        "flexible_gpu_hours_unmet": 219.8,
+        "flexible_gpu_hours_unmet": 219.583,
         "flexible_deadlines_met": 5,
-        "facility_kwh": 3929.058,
+        "facility_kwh": 3931.278,
         "peak_active_nodes": 32,
         "max_readiness_shortfall_gpus": 375.02,
         "forecast_accuracy": {
           "5": {
             "samples": 287,
-            "bias_gpus": 1.96,
-            "mae_gpus": 53.25,
-            "rmse_gpus": 77.37,
+            "bias_gpus": 1.93,
+            "mae_gpus": 52.97,
+            "rmse_gpus": 77.16,
             "p90_abs_error_gpus": 141.5,
             "coverage": 0.923,
-            "mean_upper_width_gpus": 108.68,
-            "pinball_loss": 13.596
+            "mean_upper_width_gpus": 108.51,
+            "pinball_loss": 13.582
           },
           "10": {
             "samples": 286,
-            "bias_gpus": 9.07,
-            "mae_gpus": 54.95,
-            "rmse_gpus": 78.15,
+            "bias_gpus": 9.04,
+            "mae_gpus": 54.73,
+            "rmse_gpus": 78.01,
             "p90_abs_error_gpus": 145.31,
             "coverage": 0.909,
-            "mean_upper_width_gpus": 108.6,
-            "pinball_loss": 13.537
+            "mean_upper_width_gpus": 108.44,
+            "pinball_loss": 13.554
           },
           "15": {
             "samples": 285,
-            "bias_gpus": 15.95,
-            "mae_gpus": 57.0,
-            "rmse_gpus": 80.44,
+            "bias_gpus": 15.91,
+            "mae_gpus": 56.79,
+            "rmse_gpus": 80.22,
             "p90_abs_error_gpus": 142.35,
-            "coverage": 0.87,
-            "mean_upper_width_gpus": 108.53,
-            "pinball_loss": 13.646
+            "coverage": 0.874,
+            "mean_upper_width_gpus": 108.36,
+            "pinball_loss": 13.636
           },
           "20": {
             "samples": 284,
-            "bias_gpus": 22.91,
-            "mae_gpus": 59.4,
-            "rmse_gpus": 83.36,
+            "bias_gpus": 22.89,
+            "mae_gpus": 59.17,
+            "rmse_gpus": 83.14,
             "p90_abs_error_gpus": 148.84,
-            "coverage": 0.842,
-            "mean_upper_width_gpus": 108.45,
-            "pinball_loss": 13.762
+            "coverage": 0.845,
+            "mean_upper_width_gpus": 108.28,
+            "pinball_loss": 13.744
           },
           "30": {
             "samples": 282,
-            "bias_gpus": 35.41,
-            "mae_gpus": 66.72,
-            "rmse_gpus": 92.11,
+            "bias_gpus": 35.35,
+            "mae_gpus": 66.47,
+            "rmse_gpus": 91.92,
             "p90_abs_error_gpus": 162.51,
             "coverage": 0.755,
-            "mean_upper_width_gpus": 108.29,
-            "pinball_loss": 15.438
+            "mean_upper_width_gpus": 108.12,
+            "pinball_loss": 15.408
           },
           "40": {
             "samples": 280,
-            "bias_gpus": 44.85,
-            "mae_gpus": 71.94,
-            "rmse_gpus": 99.34,
+            "bias_gpus": 44.8,
+            "mae_gpus": 71.72,
+            "rmse_gpus": 99.14,
             "p90_abs_error_gpus": 178.39,
-            "coverage": 0.693,
-            "mean_upper_width_gpus": 108.13,
-            "pinball_loss": 18.272
+            "coverage": 0.696,
+            "mean_upper_width_gpus": 107.96,
+            "pinball_loss": 18.2
           }
         }
       },
@@ -289,71 +289,71 @@
         "mean_wait_minutes": 1.12,
         "rejected": 0,
         "completed": 1944,
-        "flexible_gpu_hours_unmet": 220.833,
+        "flexible_gpu_hours_unmet": 218.967,
         "flexible_deadlines_met": 5,
-        "facility_kwh": 3935.091,
+        "facility_kwh": 3940.902,
         "peak_active_nodes": 32,
         "max_readiness_shortfall_gpus": 167.0,
         "forecast_accuracy": {
           "5": {
             "samples": 287,
-            "bias_gpus": -1.9,
-            "mae_gpus": 11.86,
-            "rmse_gpus": 22.84,
+            "bias_gpus": -1.98,
+            "mae_gpus": 12.13,
+            "rmse_gpus": 23.13,
             "p90_abs_error_gpus": 40.0,
-            "coverage": 0.913,
-            "mean_upper_width_gpus": 50.01,
-            "pinball_loss": 8.156
+            "coverage": 0.92,
+            "mean_upper_width_gpus": 50.38,
+            "pinball_loss": 8.275
           },
           "10": {
             "samples": 286,
-            "bias_gpus": -3.45,
-            "mae_gpus": 13.83,
-            "rmse_gpus": 25.34,
-            "p90_abs_error_gpus": 44.63,
+            "bias_gpus": -3.48,
+            "mae_gpus": 14.12,
+            "rmse_gpus": 25.73,
+            "p90_abs_error_gpus": 45.0,
             "coverage": 0.941,
-            "mean_upper_width_gpus": 52.01,
-            "pinball_loss": 8.038
+            "mean_upper_width_gpus": 52.26,
+            "pinball_loss": 8.191
           },
           "15": {
             "samples": 285,
-            "bias_gpus": -4.65,
-            "mae_gpus": 15.55,
-            "rmse_gpus": 28.94,
-            "p90_abs_error_gpus": 47.19,
+            "bias_gpus": -4.68,
+            "mae_gpus": 15.84,
+            "rmse_gpus": 29.24,
+            "p90_abs_error_gpus": 47.6,
             "coverage": 0.937,
-            "mean_upper_width_gpus": 48.45,
-            "pinball_loss": 7.953
+            "mean_upper_width_gpus": 48.77,
+            "pinball_loss": 8.109
           },
           "20": {
             "samples": 284,
-            "bias_gpus": -5.41,
-            "mae_gpus": 16.77,
-            "rmse_gpus": 30.97,
+            "bias_gpus": -5.45,
+            "mae_gpus": 17.07,
+            "rmse_gpus": 31.17,
             "p90_abs_error_gpus": 52.0,
-            "coverage": 0.937,
-            "mean_upper_width_gpus": 47.36,
-            "pinball_loss": 8.033
+            "coverage": 0.933,
+            "mean_upper_width_gpus": 47.76,
+            "pinball_loss": 8.137
           },
           "30": {
             "samples": 282,
-            "bias_gpus": -5.91,
-            "mae_gpus": 18.35,
-            "rmse_gpus": 34.56,
+            "bias_gpus": -6.01,
+            "mae_gpus": 18.5,
+            "rmse_gpus": 34.58,
             "p90_abs_error_gpus": 62.0,
             "coverage": 0.926,
-            "mean_upper_width_gpus": 52.78,
-            "pinball_loss": 9.343
+            "mean_upper_width_gpus": 53.07,
+            "pinball_loss": 9.485
           },
           "40": {
             "samples": 280,
-            "bias_gpus": -5.94,
-            "mae_gpus": 19.53,
-            "rmse_gpus": 37.23,
-            "p90_abs_error_gpus": 65.01,
-            "coverage": 0.914,
-            "mean_upper_width_gpus": 58.01,
-            "pinball_loss": 10.219
+            "bias_gpus": -6.09,
+            "mae_gpus": 19.71,
+            "rmse_gpus": 37.15,
+            "p90_abs_error_gpus": 66.0,
+            "coverage": 0.918,
+            "mean_upper_width_gpus": 58.74,
+            "pinball_loss": 10.389
           }
         }
       }
@@ -397,69 +397,69 @@
         "completed": 2129,
         "flexible_gpu_hours_unmet": 196.717,
         "flexible_deadlines_met": 5,
-        "facility_kwh": 3893.432,
+        "facility_kwh": 3895.526,
         "peak_active_nodes": 32,
         "max_readiness_shortfall_gpus": 358.2,
         "forecast_accuracy": {
           "5": {
             "samples": 287,
-            "bias_gpus": 3.27,
-            "mae_gpus": 70.16,
-            "rmse_gpus": 92.13,
+            "bias_gpus": 3.26,
+            "mae_gpus": 70.22,
+            "rmse_gpus": 92.26,
             "p90_abs_error_gpus": 154.09,
             "coverage": 0.951,
             "mean_upper_width_gpus": 133.82,
-            "pinball_loss": 13.842
+            "pinball_loss": 13.843
           },
           "10": {
             "samples": 286,
-            "bias_gpus": 11.96,
-            "mae_gpus": 69.36,
-            "rmse_gpus": 92.07,
+            "bias_gpus": 11.95,
+            "mae_gpus": 69.48,
+            "rmse_gpus": 92.24,
             "p90_abs_error_gpus": 158.65,
             "coverage": 0.927,
             "mean_upper_width_gpus": 133.74,
-            "pinball_loss": 13.354
+            "pinball_loss": 13.355
           },
           "15": {
             "samples": 285,
-            "bias_gpus": 18.59,
-            "mae_gpus": 68.95,
-            "rmse_gpus": 93.05,
+            "bias_gpus": 18.58,
+            "mae_gpus": 69.13,
+            "rmse_gpus": 93.25,
             "p90_abs_error_gpus": 163.61,
             "coverage": 0.898,
             "mean_upper_width_gpus": 133.66,
-            "pinball_loss": 13.302
+            "pinball_loss": 13.303
           },
           "20": {
             "samples": 284,
-            "bias_gpus": 25.37,
-            "mae_gpus": 69.03,
-            "rmse_gpus": 94.63,
+            "bias_gpus": 25.36,
+            "mae_gpus": 69.27,
+            "rmse_gpus": 94.86,
             "p90_abs_error_gpus": 169.19,
             "coverage": 0.873,
             "mean_upper_width_gpus": 133.58,
-            "pinball_loss": 13.341
+            "pinball_loss": 13.342
           },
           "30": {
             "samples": 282,
-            "bias_gpus": 38.42,
-            "mae_gpus": 70.6,
-            "rmse_gpus": 98.06,
+            "bias_gpus": 38.41,
+            "mae_gpus": 70.84,
+            "rmse_gpus": 98.25,
             "p90_abs_error_gpus": 182.84,
             "coverage": 0.798,
             "mean_upper_width_gpus": 133.41,
-            "pinball_loss": 14.104
+            "pinball_loss": 14.105
           },
           "40": {
             "samples": 280,
-            "bias_gpus": 48.39,
-            "mae_gpus": 73.22,
-            "rmse_gpus": 101.83,
+            "bias_gpus": 48.38,
+            "mae_gpus": 73.46,
+            "rmse_gpus": 102.05,
             "p90_abs_error_gpus": 189.58,
             "coverage": 0.743,
             "mean_upper_width_gpus": 133.23,
-            "pinball_loss": 14.79
+            "pinball_loss": 14.849
           }
         }
       },
@@ -469,71 +469,71 @@
         "mean_wait_minutes": 1.24,
         "rejected": 0,
         "completed": 2129,
-        "flexible_gpu_hours_unmet": 206.683,
+        "flexible_gpu_hours_unmet": 203.883,
         "flexible_deadlines_met": 5,
-        "facility_kwh": 3882.645,
+        "facility_kwh": 3889.26,
         "peak_active_nodes": 32,
-        "max_readiness_shortfall_gpus": 172.8,
+        "max_readiness_shortfall_gpus": 175.65,
         "forecast_accuracy": {
           "5": {
             "samples": 287,
-            "bias_gpus": -1.84,
-            "mae_gpus": 14.14,
-            "rmse_gpus": 30.54,
+            "bias_gpus": -1.81,
+            "mae_gpus": 14.11,
+            "rmse_gpus": 30.49,
             "p90_abs_error_gpus": 45.0,
-            "coverage": 0.895,
-            "mean_upper_width_gpus": 49.73,
-            "pinball_loss": 9.321
+            "coverage": 0.906,
+            "mean_upper_width_gpus": 49.97,
+            "pinball_loss": 9.314
           },
           "10": {
             "samples": 286,
-            "bias_gpus": -2.64,
-            "mae_gpus": 16.04,
-            "rmse_gpus": 31.65,
-            "p90_abs_error_gpus": 52.0,
-            "coverage": 0.892,
-            "mean_upper_width_gpus": 53.95,
-            "pinball_loss": 9.647
+            "bias_gpus": -2.58,
+            "mae_gpus": 16.38,
+            "rmse_gpus": 32.16,
+            "p90_abs_error_gpus": 54.58,
+            "coverage": 0.888,
+            "mean_upper_width_gpus": 54.66,
+            "pinball_loss": 9.783
           },
           "15": {
             "samples": 285,
-            "bias_gpus": -3.32,
-            "mae_gpus": 16.36,
-            "rmse_gpus": 32.44,
-            "p90_abs_error_gpus": 52.65,
-            "coverage": 0.902,
-            "mean_upper_width_gpus": 56.24,
-            "pinball_loss": 9.989
+            "bias_gpus": -3.29,
+            "mae_gpus": 16.8,
+            "rmse_gpus": 33.18,
+            "p90_abs_error_gpus": 53.31,
+            "coverage": 0.895,
+            "mean_upper_width_gpus": 56.9,
+            "pinball_loss": 10.14
           },
           "20": {
             "samples": 284,
-            "bias_gpus": -3.46,
-            "mae_gpus": 17.37,
-            "rmse_gpus": 32.68,
-            "p90_abs_error_gpus": 51.68,
+            "bias_gpus": -3.66,
+            "mae_gpus": 17.8,
+            "rmse_gpus": 33.31,
+            "p90_abs_error_gpus": 52.0,
             "coverage": 0.898,
-            "mean_upper_width_gpus": 57.13,
-            "pinball_loss": 9.799
+            "mean_upper_width_gpus": 57.28,
+            "pinball_loss": 9.791
           },
           "30": {
             "samples": 282,
-            "bias_gpus": -2.95,
-            "mae_gpus": 19.05,
-            "rmse_gpus": 34.31,
-            "p90_abs_error_gpus": 55.0,
-            "coverage": 0.897,
-            "mean_upper_width_gpus": 59.7,
-            "pinball_loss": 10.433
+            "bias_gpus": -3.14,
+            "mae_gpus": 19.41,
+            "rmse_gpus": 34.73,
+            "p90_abs_error_gpus": 56.0,
+            "coverage": 0.89,
+            "mean_upper_width_gpus": 59.37,
+            "pinball_loss": 10.481
           },
           "40": {
             "samples": 280,
-            "bias_gpus": -2.0,
-            "mae_gpus": 20.25,
-            "rmse_gpus": 36.41,
-            "p90_abs_error_gpus": 59.0,
-            "coverage": 0.9,
-            "mean_upper_width_gpus": 61.41,
-            "pinball_loss": 11.193
+            "bias_gpus": -2.19,
+            "mae_gpus": 20.65,
+            "rmse_gpus": 37.18,
+            "p90_abs_error_gpus": 60.31,
+            "coverage": 0.904,
+            "mean_upper_width_gpus": 63.29,
+            "pinball_loss": 11.427
           }
         }
       }
