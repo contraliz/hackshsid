@@ -149,7 +149,6 @@ Run a same-input dynamic-policy batch with the operational experiment tool:
 The tracked [seed-2026 report](results/operational-experiments/seed-2026/report.md) and [CSV](results/operational-experiments/seed-2026/summary.csv) are actual outputs. See the [batch experiment guide](docs/operational-experiments.md) for scenarios, comparison rules, and caveats.
 
 ## Project notes
-## sanwenyu
 
 - [Course and event requirements](notes/course-assessment-requirements.md)
 - [Track 2 problem and evaluation questions](notes/track2-problem-and-evaluation.md)
