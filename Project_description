@@ -1,0 +1,59 @@
+## 1. Project Inspiration and Our Approach
+
+With the expansion of AI, the energy expenses and CO2 emissions of the data centers keep on rising. Yet, there is an irregularity in the computational requests, energy costs, and renewable energy supply throughout the day. Some operations performed by the AI need instant computation while others can be postponed.
+
+This inspired us to create GridShift, a simulated framework that integrates the optimization of GPU workloads and server power management.
+
+Our approach has two main components:
+
+1. Intelligent Workload Scheduling: GridShift separates real-time computing requests from flexible jobs. Real-time jobs are scheduled by applying mathematical models based on energy costs, renewable availability, GPU capacity, job deadlines, and priorities. Priority jobs are executed before other jobs and a carbon weight factor optimizes economics and environment objectives.
+
+2. Prediction Based Server Management: Rather than leaving all the servers running at once, GridShift uses an Exponentially Weighted Moving Averag (EWMA) method to predict the computing needs of the system, updating prediction every five minutes. The servers move through four stages :active, warm standby, boot-up, and powered-off.
+
+The virtual data center that we use consists of 32 computing nodes with 8 GPUs each (total of 256 GPUs). Our simulation covers a span of 24 hours with hour-based electricity prices and minute-based computations.
+
+What makes GridShift unique is how we combined hourly workload optimization with minute-level predictive server management, coordinating both when tasks execute and when servers should remain powered.
+
+
+## 2. How Do We Define a Good Solution?
+
+- Service Reliability: Job completion, deadline violations, request rejection rates, and p50/p95 latency.
+
+- Economic Efficiency: Total electricity consumption (kWh), grid purchases, and electricity costs (CNY).
+
+- Environmental Sustainability: Grid CO₂ emissions, renewable energy utilization, and renewable curtailment.
+
+
+## 3. How Does GridShift Improve on Simpler Approaches?
+
+- Always-On: All servers are kept up and running, providing capacity availability at the cost of unnecessarily using idle electricity.
+
+- Reactive Scheduling: Servers activate based on current demand, reducing electricity use but potentially causing startup delays.
+
+- GridShift Prediction-Based Scheduling: It predicts future demand and sets up capacity in advance for servers.
+
+
+Our simulation will report electricity savings 26.5%, cost reduction 28%, emissions reduction 30.4%, and differences in service performance.
+
+
+## 4. Why Are Our Results Close to Optimal?
+
+GridShift uses mathematical optimization in assigning flexible GPU workloads, taking into account deadlines, computational capacity, and maximum GPU usage per job.
+
+In contrast with greedy scheduling, the solver takes into account the constraints of all jobs in all periods. Optimality certified by the solver pertains only to the mathematical workload assignment problem, whereas the predictive server management is evaluated experimentally.
+
+
+## 5. Robustness and Failure Conditions
+
+GridShift updates demand forecasts regularly and can respond to changing workloads. We intend to test our system with peak loads, fluctuating renewables, and varying server startups.
+
+Nevertheless, unexpected demand peaks, incorrect forecasting, or not enough GPUs could lead to delays, request rejections, or missed deadlines. These scenarios are accounted for in the simulation by recording the failure events.
+
+
+## 6. Assumptions and Limitations
+
+GridShift uses synthetic workload models and simplifying power assumptions, such as a PUE of 1.25, electricity rates, and a yearly average grid emission factor.
+
+The higher actual value of standby power than what we assume could result in lower electricity savings than what we estimate. Longer boot time and unexpected demand could cause delays that would make the Always-On scheduling approach more likely to succeed. In addition, inflexible workloads mean fewer opportunities for saving money, whereas different electricity costs or emission factors mean altered cost benefits.
+
+Moreover, GridShift is designed to be adaptable to different operating conditions. By adjusting parameters such as server power consumption, startup delays, forecasting methods, and workload constraints, the system can be customized for a wide range of real-world data centers while maintaining its core optimization approach.
